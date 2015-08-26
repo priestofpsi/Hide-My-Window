@@ -41,7 +41,8 @@ namespace theDiary.Tools.HideMyWindow
 
         private static void Application_ApplicationExit(object sender, EventArgs e)
         {
-            Program.mainForm.UnhideAllWindows(sender, e);
+            if (Runtime.Instance.Settings.RestoreWindowsOnExit)
+                Program.mainForm.UnhideAllWindows(sender, e);
             Settings.Save(Runtime.Instance.Settings);
         }
     }

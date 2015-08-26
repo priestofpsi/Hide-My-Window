@@ -20,12 +20,6 @@ namespace theDiary.Tools.HideMyWindow
         [XmlAttribute]
         public Keys HotKey;
 
-        [XmlAttribute]
-        public bool ShowOSD
-        {
-            get; set;
-        }
-
         [XmlIgnore]
         internal short ID;
 
@@ -143,6 +137,16 @@ namespace theDiary.Tools.HideMyWindow
         internal void Unregister()
         {
             ExternalReferences.UnregisterGlobalHotKey(ID);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Function.GetHashCode()
+                | this.HotKey.GetHashCode()
+                | this.Shift.GetHashCode()
+                | this.Win.GetHashCode()
+                | this.Alt.GetHashCode()
+                | this.Control.GetHashCode();
         }
     }
 }

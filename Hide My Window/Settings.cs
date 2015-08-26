@@ -13,41 +13,100 @@ namespace theDiary.Tools.HideMyWindow
 {
     public class Settings
     {
+        #region Constructors
         public Settings()
         {
             this.Hotkey = new HotKeyBindingList();
         }
+        #endregion
 
-        private Point location;
+        #region Private Declarations
+        private FormState lastState;
+        #endregion
 
+        #region Internal Constant & Static Declarations
         [XmlIgnore]
-        internal static string settingsxml = "Settings.xml";
+        internal const string settingsxml = "Settings.xml";
+        private static bool failed = false;
+        #endregion
 
+        #region Public Properties
         [XmlElement]
         public HotKeyBindingList Hotkey;
 
-        [XmlElement]
+        [XmlAttribute]
         public View CurrentView
         {
             get; set;
-        }
-        [XmlElement]
+        }        
+
+        [XmlAttribute]
         public bool HideStatusbar
         {
             get; set;
         }
-        public Point Location
+
+        [XmlAttribute]
+        public bool StartInTaskBar
+        {
+            get; set;
+        }
+        [XmlAttribute]
+        public bool MinimizeToTaskBar
+        {
+            get; set;
+        }
+
+        [XmlAttribute]
+        public bool CloseToTaskBar
+        {
+            get; set;
+        }
+
+        [XmlAttribute]
+        public bool RestoreWindowsOnExit
+        {
+            get; set;
+        }
+
+        [XmlAttribute]
+        public bool ConfirmApplicationExit
+        {
+            get; set;
+        }
+
+        [XmlElement]
+        public FormState LastState
         {
             get
             {
-                return this.location;
+                if (this.lastState == null)
+                    this.lastState = new FormState();
+
+                return this.lastState;
             }
             set
             {
-                this.location = value;
+                this.lastState = value;
             }
         }
 
+        
+        #endregion
+
+        #region Public Methods & Functions
+        public void Save()
+        {
+            Settings.Save(Runtime.Instance.Settings);
+        }
+
+        public void Reset()
+        {
+            Runtime.Instance.Settings = Settings.Load();
+        }
+        #endregion
+
+        #region Internal Static Methods & Functions
         internal static void Save(Settings settings)
         {
             if (settings == null)
@@ -59,7 +118,7 @@ namespace theDiary.Tools.HideMyWindow
             using (var tw = new StreamWriter(stream))
                 xs.Serialize(tw, settings);
         }
-        private static bool failed = false;
+        
         internal static Settings Load()
         {
             System.IO.Stream stream = null;
@@ -85,5 +144,6 @@ namespace theDiary.Tools.HideMyWindow
                 return Settings.Load();
             }
         }
+        #endregion
     }
 }

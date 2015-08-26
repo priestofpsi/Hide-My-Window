@@ -1,4 +1,6 @@
-﻿namespace theDiary.Tools.HideMyWindow
+﻿using System.Windows.Forms;
+
+namespace theDiary.Tools.HideMyWindow
 {
     partial class MainForm
     {
@@ -40,21 +42,21 @@
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusbarToggle = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToggle = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.openConfigurationForm = new System.Windows.Forms.ToolStripMenuItem();
-            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.hiddenWindows = new System.Windows.Forms.ListView();
-            this.imageListBig = new System.Windows.Forms.ImageList(this.components);
-            this.imageListSmall = new System.Windows.Forms.ImageList(this.components);
             this.viewDetails = new System.Windows.Forms.ToolStripMenuItem();
             this.viewLargeIcons = new System.Windows.Forms.ToolStripMenuItem();
             this.viewSmallIcons = new System.Windows.Forms.ToolStripMenuItem();
             this.viewList = new System.Windows.Forms.ToolStripMenuItem();
             this.viewTiles = new System.Windows.Forms.ToolStripMenuItem();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.openConfigurationForm = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.hiddenWindows = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageListBig = new System.Windows.Forms.ImageList(this.components);
+            this.imageListSmall = new System.Windows.Forms.ImageList(this.components);
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -92,7 +94,6 @@
             this.statusStrip1.Size = new System.Drawing.Size(284, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
-            this.statusStrip1.VisibleChanged += new System.EventHandler(this.statusStrip1_VisibleChanged);
             // 
             // statusLabel
             // 
@@ -144,7 +145,7 @@
             this.statusbarToggle.CheckOnClick = true;
             this.statusbarToggle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.statusbarToggle.Name = "statusbarToggle";
-            this.statusbarToggle.Size = new System.Drawing.Size(152, 22);
+            this.statusbarToggle.Size = new System.Drawing.Size(127, 22);
             this.statusbarToggle.Text = "&Statusbar";
             this.statusbarToggle.Click += new System.EventHandler(this.statusbarToggle_Click);
             // 
@@ -157,20 +158,71 @@
             this.viewList,
             this.viewTiles});
             this.viewToggle.Name = "viewToggle";
-            this.viewToggle.Size = new System.Drawing.Size(152, 22);
+            this.viewToggle.Size = new System.Drawing.Size(127, 22);
             this.viewToggle.Text = "&View";
             this.viewToggle.DropDownOpening += new System.EventHandler(this.viewToggle_DropDownOpening);
+            // 
+            // viewDetails
+            // 
+            this.viewDetails.Name = "viewDetails";
+            this.viewDetails.Size = new System.Drawing.Size(134, 22);
+            this.viewDetails.Text = "&Details";
+            this.viewDetails.Click += new System.EventHandler(this.ToggleView);
+            // 
+            // viewLargeIcons
+            // 
+            this.viewLargeIcons.Name = "viewLargeIcons";
+            this.viewLargeIcons.Size = new System.Drawing.Size(134, 22);
+            this.viewLargeIcons.Text = "&Large Icons";
+            this.viewLargeIcons.Click += new System.EventHandler(this.ToggleView);
+            // 
+            // viewSmallIcons
+            // 
+            this.viewSmallIcons.Name = "viewSmallIcons";
+            this.viewSmallIcons.Size = new System.Drawing.Size(134, 22);
+            this.viewSmallIcons.Text = "&Small Icons";
+            this.viewSmallIcons.Click += new System.EventHandler(this.ToggleView);
+            // 
+            // viewList
+            // 
+            this.viewList.Name = "viewList";
+            this.viewList.Size = new System.Drawing.Size(134, 22);
+            this.viewList.Text = "L&ist";
+            this.viewList.Click += new System.EventHandler(this.ToggleView);
+            // 
+            // viewTiles
+            // 
+            this.viewTiles.Name = "viewTiles";
+            this.viewTiles.Size = new System.Drawing.Size(134, 22);
+            this.viewTiles.Text = "&Tiles";
+            this.viewTiles.Click += new System.EventHandler(this.ToggleView);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(124, 6);
             // 
             // openConfigurationForm
             // 
             this.openConfigurationForm.Name = "openConfigurationForm";
-            this.openConfigurationForm.Size = new System.Drawing.Size(152, 22);
+            this.openConfigurationForm.Size = new System.Drawing.Size(127, 22);
             this.openConfigurationForm.Text = "&Configure";
+            this.openConfigurationForm.Click += new System.EventHandler(this.openConfigurationForm_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "&Help";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Text = "&About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // notifyIcon
             // 
@@ -195,6 +247,14 @@
             this.hiddenWindows.UseCompatibleStateImageBehavior = false;
             this.hiddenWindows.DoubleClick += new System.EventHandler(this.UnhideWindows);
             // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Title";
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Path";
+            // 
             // imageListBig
             // 
             this.imageListBig.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
@@ -207,69 +267,10 @@
             this.imageListSmall.ImageSize = new System.Drawing.Size(16, 16);
             this.imageListSmall.TransparentColor = System.Drawing.Color.Transparent;
             // 
-            // viewDetails
-            // 
-            this.viewDetails.Name = "viewDetails";
-            this.viewDetails.Size = new System.Drawing.Size(152, 22);
-            this.viewDetails.Text = "&Details";
-            this.viewDetails.Click += new System.EventHandler(this.ToggleView);
-            // 
-            // viewLargeIcons
-            // 
-            this.viewLargeIcons.Name = "viewLargeIcons";
-            this.viewLargeIcons.Size = new System.Drawing.Size(152, 22);
-            this.viewLargeIcons.Text = "&Large Icons";
-            this.viewLargeIcons.Click += new System.EventHandler(this.ToggleView);
-            // 
-            // viewSmallIcons
-            // 
-            this.viewSmallIcons.Name = "viewSmallIcons";
-            this.viewSmallIcons.Size = new System.Drawing.Size(152, 22);
-            this.viewSmallIcons.Text = "&Small Icons";
-            this.viewSmallIcons.Click += new System.EventHandler(this.ToggleView);
-            // 
-            // viewList
-            // 
-            this.viewList.Name = "viewList";
-            this.viewList.Size = new System.Drawing.Size(152, 22);
-            this.viewList.Text = "L&ist";
-            this.viewList.Click += new System.EventHandler(this.ToggleView);
-            // 
-            // viewTiles
-            // 
-            this.viewTiles.Name = "viewTiles";
-            this.viewTiles.Size = new System.Drawing.Size(152, 22);
-            this.viewTiles.Text = "&Tiles";
-            this.viewTiles.Click += new System.EventHandler(this.ToggleView);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Title";
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Path";
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "&Help";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.aboutToolStripMenuItem.Text = "&About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(284, 329);
             this.Controls.Add(this.hiddenWindows);
             this.Controls.Add(this.statusStrip1);
@@ -279,12 +280,18 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Hide My Window";
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.viewDetails.Tag = View.Details;
+            this.viewLargeIcons.Tag = View.LargeIcon;
+            this.viewSmallIcons.Tag = View.SmallIcon;
+            this.viewTiles.Tag = View.Tile;
+            this.viewList.Tag = View.List;
             this.PerformLayout();
 
         }

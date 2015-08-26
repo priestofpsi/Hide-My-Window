@@ -21,7 +21,12 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.settings;
             }
+            internal set{
+                this.settings = value;
+            }
         }
+
+
         public HiddenWindowStore Store
         {
             get
