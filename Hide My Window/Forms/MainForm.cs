@@ -97,8 +97,18 @@ namespace theDiary.Tools.HideMyWindow
 
         private void notifyIcon_DoubleClick(object sender, EventArgs e)
         {
-            this.Show();
-            this.notifyIcon.Visible = false;
+            bool canShow = !Runtime.Instance.Settings.RequirePasswordOnShow;
+            if (!canShow)
+
+                using (var password = new UnlockForm("Hide My Window"))
+                {
+                    canShow = (password.ShowDialog(this) == DialogResult.OK && password.PasswordMatched);
+                }
+
+            if (!canShow)
+                return;
+            this.RestoreFromTray();
+
         }
 
         private void ToggleView(object sender, EventArgs e)
@@ -177,6 +187,14 @@ namespace theDiary.Tools.HideMyWindow
             if (Runtime.Instance.Settings.StartInTaskBar)
                 this.Shown += (s, e) => this.MinimizeToTray();
             Runtime.Instance.Store.ForEach(item => this.AddHiddenWindow(new WindowInfo(item)));
+            this.Shown += (s, e) => this.hiddenWindows_SelectedIndexChanged(s, e);
+            this.Shown += (s, e) => SetToolbarText();
+        }
+
+        private void RestoreFromTray()
+        {
+            this.Show();
+            this.notifyIcon.Visible = false;
         }
 
         private void MinimizeToTray()
@@ -231,5 +249,83 @@ namespace theDiary.Tools.HideMyWindow
         }
         #endregion
 
+        private void hiddenWindows_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.showWindow.Enabled = this.hiddenWindows.SelectedItems.Count > 0;
+            this.unlockWindow.Visible = this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => item.Window.IsLocked);
+            this.lockWindow.Visible = this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => !item.Window.IsLocked);
+        }
+
+        private void lockWindow_Click(object sender, EventArgs e)
+        {
+            this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item => item.Window.Lock(this.UnlockWindow));
+            this.hiddenWindows_SelectedIndexChanged(sender, e);
+        }
+
+        private bool UnlockWindow(WindowInfo window)
+        {
+            using (var password = new UnlockForm(window.Title))
+            {
+                return (password.ShowDialog(this) == DialogResult.OK && password.PasswordMatched);
+            }
+        }
+
+        private void unlockWindow_Click(object sender, EventArgs e)
+        {
+            this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item => item.Window.Unlock());
+            this.hiddenWindows_SelectedIndexChanged(sender, e);
+        }
+
+        private void smallIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+            Runtime.Instance.Settings.SmallToolbarIcons = true;
+            this.SetToolbarIcons();
+        }
+
+        private void largeIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+            Runtime.Instance.Settings.SmallToolbarIcons = false;
+            this.SetToolbarIcons();
+        }
+
+        private void SetToolbarIcons()
+        {
+            switch (Runtime.Instance.Settings.SmallToolbarIcons)
+            {
+                case true:
+                    this.unlockWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.unlockwindow_small;
+                    this.lockWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.lockwindow_small;
+                    this.showWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.show_small;
+                    break;
+                case false:
+                    this.unlockWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.unlockwindow;
+                    this.lockWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.lockwindow;
+                    this.showWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.show;
+                    break;
+            }
+        }
+        private void SetToolbarText()
+        {
+            this.showWindow.DisplayStyle = Runtime.Instance.Settings.HideToolbarText ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.ImageAndText;
+            this.unlockWindow.DisplayStyle = Runtime.Instance.Settings.HideToolbarText ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.ImageAndText;
+            this.lockWindow.DisplayStyle = Runtime.Instance.Settings.HideToolbarText ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.ImageAndText;
+        }
+
+        private void showToolbarText_Click(object sender, EventArgs e)
+        {
+            Runtime.Instance.Settings.HideToolbarText = !Runtime.Instance.Settings.HideToolbarText;
+            this.SetToolbarText();
+        }
+
+        private void openConfigurationForm_DropDownOpening(object sender, EventArgs e)
+        {
+            this.showToolbarText.Checked = !Runtime.Instance.Settings.HideToolbarText;
+            this.largeToolbarIcons.Checked = !Runtime.Instance.Settings.SmallToolbarIcons;
+            this.smallToolbarIcons.Checked = Runtime.Instance.Settings.SmallToolbarIcons;
+        }
     }
+
+    public delegate bool UnlockWindowDelegate(WindowInfo window);
 }

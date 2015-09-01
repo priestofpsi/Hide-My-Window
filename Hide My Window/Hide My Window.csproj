@@ -55,8 +55,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ActionResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="Extensions.cs" />
-    <Compile Include="FormState.cs" />
+    <Compile Include="Forms\PasswordTextbox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\WatermarkTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Settings.FormState.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,10 +106,15 @@
     <Compile Include="Forms\UnlockForm.Designer.cs">
       <DependentUpon>UnlockForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings.Password.cs" />
     <Compile Include="Windows\WindowCommand.cs" />
     <Compile Include="Windows\WindowInfo.cs" />
     <Compile Include="Windows\WindowInfoEventArgs.cs" />
     <Compile Include="Windows\WindowState.cs" />
+    <EmbeddedResource Include="ActionResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ActionResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
@@ -144,6 +160,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="application.ico" />
+    <None Include="Resources\Images\configure_small.png" />
+    <None Include="Resources\Images\configure.png" />
+    <None Include="Resources\Images\hide-small.png" />
+    <None Include="Resources\Images\hide.png" />
+    <None Include="Resources\Images\lock-small.png" />
+    <None Include="Resources\Images\lock.png" />
+    <None Include="Resources\Images\rename-small.png" />
+    <None Include="Resources\Images\rename.png" />
+    <None Include="Resources\Images\show-small.png" />
+    <None Include="Resources\Images\show.png" />
+    <None Include="Resources\Images\unlock-small.png" />
+    <None Include="Resources\Images\unlock.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

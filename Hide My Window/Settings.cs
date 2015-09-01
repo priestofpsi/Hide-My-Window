@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -11,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public class Settings
+    public partial class Settings
     {
         #region Constructors
         public Settings()
@@ -51,6 +52,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             get; set;
         }
+
         [XmlAttribute]
         public bool MinimizeToTaskBar
         {
@@ -91,7 +93,45 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        
+        [XmlElement]
+        public string Password
+        {
+            get; set;
+        }
+
+        [XmlElement]
+        public bool RequirePasswordOnShow
+        {
+            get; set;
+        }
+
+        [XmlIgnore]
+        public string HashedPassword
+        {
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    this.Password = string.Empty;
+                }
+                else
+                {
+                    this.Password = value.GetMD5Hash();
+                }
+            }
+        }
+
+        [XmlAttribute]
+        public bool SmallToolbarIcons
+        {
+            get; set;
+        }
+
+        [XmlAttribute]
+        public bool HideToolbarText
+        {
+            get; set;
+        }
         #endregion
 
         #region Public Methods & Functions
@@ -122,11 +162,13 @@ namespace theDiary.Tools.HideMyWindow
         internal static Settings Load()
         {
             System.IO.Stream stream = null;
-            if (System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(settingsxml))
-                stream = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().OpenFile(settingsxml, FileMode.Open);
+            
 
             try
             {
+                if (System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(settingsxml))
+                    stream = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().OpenFile(settingsxml, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+
                 if (stream == null)
                     stream = new FileStream(settingsxml, FileMode.OpenOrCreate);
                 var xs = new XmlSerializer(typeof(Settings));

@@ -20,8 +20,10 @@ namespace theDiary.Tools.HideMyWindow
         #endregion
 
         #region Private Declarations
+        private string title;
         private readonly object syncObject = new object();
         private volatile Process applicationProcess;
+        private UnlockWindowDelegate unlockWindowHandler;
         #endregion
 
         #region Public Events
@@ -51,8 +53,16 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                return ExternalReferences.GetWindowText(this.Handle);
+                if (string.IsNullOrWhiteSpace(this.title))
+                    return ExternalReferences.GetWindowText(this.Handle);
+
+                return this.title;
             }
+            set
+            {
+                this.title = value;
+            }
+
         }
 
         public bool CanShow
@@ -60,6 +70,14 @@ namespace theDiary.Tools.HideMyWindow
             get
             {
                 return this.OriginalState != IntPtr.Zero;
+            }
+        }
+
+        public bool IsLocked
+        {
+            get
+            {
+                return this.unlockWindowHandler != null;
             }
         }
 
@@ -100,7 +118,15 @@ namespace theDiary.Tools.HideMyWindow
         #endregion
 
         #region Public Methods & Functions
+        public void Lock(UnlockWindowDelegate handler)
+        {
+            this.unlockWindowHandler = handler;
+        }
 
+        public void Unlock()
+        {
+            this.unlockWindowHandler = null;
+        }
         public bool Hide()
         {
             if (!this.CanHide)
@@ -112,7 +138,8 @@ namespace theDiary.Tools.HideMyWindow
         {
             if (!this.CanShow)
                 return;
-
+            if (this.unlockWindowHandler == null
+                || this.unlockWindowHandler(this))
             ExternalReferences.ShowWindow(this);
         }
 

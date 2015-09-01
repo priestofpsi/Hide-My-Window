@@ -16,20 +16,20 @@ namespace theDiary.Tools.HideMyWindow
         static void Main()
         {
 
-            Runtime.Instance.Settings.Hotkey.Add(new Hotkey()
-            {
-                Control = true,
-                Alt = true,
-                Key = "H",
-                Function = HotkeyFunction.HideCurrentWindow,
-            });
-            Runtime.Instance.Settings.Hotkey.Add(new Hotkey()
-            {
-                Control = true,
-                Alt = true,
-                Key = "S",
-                Function = HotkeyFunction.UnhideLastWindow,
-            });
+            //Runtime.Instance.Settings.Hotkey.Add(new Hotkey()
+            //{
+            //    Control = true,
+            //    Alt = true,
+            //    Key = "H",
+            //    Function = HotkeyFunction.HideCurrentWindow,
+            //});
+            //Runtime.Instance.Settings.Hotkey.Add(new Hotkey()
+            //{
+            //    Control = true,
+            //    Alt = true,
+            //    Key = "S",
+            //    Function = HotkeyFunction.UnhideLastWindow,
+            //});
 
 
             Application.EnableVisualStyles();

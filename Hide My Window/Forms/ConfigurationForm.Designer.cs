@@ -34,12 +34,13 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
-            this.tabHotKeys = new System.Windows.Forms.TabPage();
-            this.minimizeToTaskbar = new System.Windows.Forms.CheckBox();
-            this.closeToTaskbar = new System.Windows.Forms.CheckBox();
-            this.restoreWindowsOnExit = new System.Windows.Forms.CheckBox();
-            this.confirmWhenExiting = new System.Windows.Forms.CheckBox();
+            this.requirePasswordOnShow = new System.Windows.Forms.CheckBox();
             this.startInTaskbar = new System.Windows.Forms.CheckBox();
+            this.confirmWhenExiting = new System.Windows.Forms.CheckBox();
+            this.restoreWindowsOnExit = new System.Windows.Forms.CheckBox();
+            this.closeToTaskbar = new System.Windows.Forms.CheckBox();
+            this.minimizeToTaskbar = new System.Windows.Forms.CheckBox();
+            this.tabHotKeys = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.Function = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Control = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -47,6 +48,7 @@
             this.Shift = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Win = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.HotKey = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.password = new theDiary.Tools.HideMyWindow.PasswordTextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -100,11 +102,14 @@
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.password);
+            this.tabGeneral.Controls.Add(this.requirePasswordOnShow);
             this.tabGeneral.Controls.Add(this.startInTaskbar);
             this.tabGeneral.Controls.Add(this.confirmWhenExiting);
             this.tabGeneral.Controls.Add(this.restoreWindowsOnExit);
             this.tabGeneral.Controls.Add(this.closeToTaskbar);
             this.tabGeneral.Controls.Add(this.minimizeToTaskbar);
+            this.tabGeneral.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Name = "tabGeneral";
             this.tabGeneral.Padding = new System.Windows.Forms.Padding(5);
@@ -113,49 +118,27 @@
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
             // 
-            // tabHotKeys
+            // requirePasswordOnShow
             // 
-            this.tabHotKeys.Controls.Add(this.dataGridView1);
-            this.tabHotKeys.Location = new System.Drawing.Point(4, 22);
-            this.tabHotKeys.Name = "tabHotKeys";
-            this.tabHotKeys.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHotKeys.Size = new System.Drawing.Size(306, 221);
-            this.tabHotKeys.TabIndex = 1;
-            this.tabHotKeys.Text = "Hot Keys";
-            this.tabHotKeys.UseVisualStyleBackColor = true;
+            this.requirePasswordOnShow.AutoSize = true;
+            this.requirePasswordOnShow.Location = new System.Drawing.Point(8, 128);
+            this.requirePasswordOnShow.Name = "requirePasswordOnShow";
+            this.requirePasswordOnShow.Size = new System.Drawing.Size(192, 18);
+            this.requirePasswordOnShow.TabIndex = 5;
+            this.requirePasswordOnShow.Text = "Require Password when Showing";
+            this.requirePasswordOnShow.UseCompatibleTextRendering = true;
+            this.requirePasswordOnShow.UseVisualStyleBackColor = true;
             // 
-            // minimizeToTaskbar
+            // startInTaskbar
             // 
-            this.minimizeToTaskbar.AutoSize = true;
-            this.minimizeToTaskbar.Location = new System.Drawing.Point(8, 8);
-            this.minimizeToTaskbar.Name = "minimizeToTaskbar";
-            this.minimizeToTaskbar.Size = new System.Drawing.Size(124, 18);
-            this.minimizeToTaskbar.TabIndex = 0;
-            this.minimizeToTaskbar.Text = "Minimize to Taskbar";
-            this.minimizeToTaskbar.UseCompatibleTextRendering = true;
-            this.minimizeToTaskbar.UseVisualStyleBackColor = true;
-            // 
-            // closeToTaskbar
-            // 
-            this.closeToTaskbar.AutoSize = true;
-            this.closeToTaskbar.Location = new System.Drawing.Point(8, 32);
-            this.closeToTaskbar.Name = "closeToTaskbar";
-            this.closeToTaskbar.Size = new System.Drawing.Size(109, 18);
-            this.closeToTaskbar.TabIndex = 1;
-            this.closeToTaskbar.Text = "Close to Taskbar";
-            this.closeToTaskbar.UseCompatibleTextRendering = true;
-            this.closeToTaskbar.UseVisualStyleBackColor = true;
-            // 
-            // restoreWindowsOnExit
-            // 
-            this.restoreWindowsOnExit.AutoSize = true;
-            this.restoreWindowsOnExit.Location = new System.Drawing.Point(8, 56);
-            this.restoreWindowsOnExit.Name = "restoreWindowsOnExit";
-            this.restoreWindowsOnExit.Size = new System.Drawing.Size(178, 18);
-            this.restoreWindowsOnExit.TabIndex = 2;
-            this.restoreWindowsOnExit.Text = "Restore Windows when exiting";
-            this.restoreWindowsOnExit.UseCompatibleTextRendering = true;
-            this.restoreWindowsOnExit.UseVisualStyleBackColor = true;
+            this.startInTaskbar.AutoSize = true;
+            this.startInTaskbar.Location = new System.Drawing.Point(8, 104);
+            this.startInTaskbar.Name = "startInTaskbar";
+            this.startInTaskbar.Size = new System.Drawing.Size(103, 18);
+            this.startInTaskbar.TabIndex = 4;
+            this.startInTaskbar.Text = "Start in Taskbar";
+            this.startInTaskbar.UseCompatibleTextRendering = true;
+            this.startInTaskbar.UseVisualStyleBackColor = true;
             // 
             // confirmWhenExiting
             // 
@@ -168,16 +151,49 @@
             this.confirmWhenExiting.UseCompatibleTextRendering = true;
             this.confirmWhenExiting.UseVisualStyleBackColor = true;
             // 
-            // startInTaskbar
+            // restoreWindowsOnExit
             // 
-            this.startInTaskbar.AutoSize = true;
-            this.startInTaskbar.Location = new System.Drawing.Point(8, 104);
-            this.startInTaskbar.Name = "startInTaskbar";
-            this.startInTaskbar.Size = new System.Drawing.Size(103, 18);
-            this.startInTaskbar.TabIndex = 4;
-            this.startInTaskbar.Text = "Start in Taskbar";
-            this.startInTaskbar.UseCompatibleTextRendering = true;
-            this.startInTaskbar.UseVisualStyleBackColor = true;
+            this.restoreWindowsOnExit.AutoSize = true;
+            this.restoreWindowsOnExit.Location = new System.Drawing.Point(8, 56);
+            this.restoreWindowsOnExit.Name = "restoreWindowsOnExit";
+            this.restoreWindowsOnExit.Size = new System.Drawing.Size(178, 18);
+            this.restoreWindowsOnExit.TabIndex = 2;
+            this.restoreWindowsOnExit.Text = "Restore Windows when exiting";
+            this.restoreWindowsOnExit.UseCompatibleTextRendering = true;
+            this.restoreWindowsOnExit.UseVisualStyleBackColor = true;
+            // 
+            // closeToTaskbar
+            // 
+            this.closeToTaskbar.AutoSize = true;
+            this.closeToTaskbar.Location = new System.Drawing.Point(8, 32);
+            this.closeToTaskbar.Name = "closeToTaskbar";
+            this.closeToTaskbar.Size = new System.Drawing.Size(109, 18);
+            this.closeToTaskbar.TabIndex = 1;
+            this.closeToTaskbar.Text = "Close to Taskbar";
+            this.closeToTaskbar.UseCompatibleTextRendering = true;
+            this.closeToTaskbar.UseVisualStyleBackColor = true;
+            // 
+            // minimizeToTaskbar
+            // 
+            this.minimizeToTaskbar.AutoSize = true;
+            this.minimizeToTaskbar.Location = new System.Drawing.Point(8, 8);
+            this.minimizeToTaskbar.Name = "minimizeToTaskbar";
+            this.minimizeToTaskbar.Size = new System.Drawing.Size(124, 18);
+            this.minimizeToTaskbar.TabIndex = 0;
+            this.minimizeToTaskbar.Text = "Minimize to Taskbar";
+            this.minimizeToTaskbar.UseCompatibleTextRendering = true;
+            this.minimizeToTaskbar.UseVisualStyleBackColor = true;
+            // 
+            // tabHotKeys
+            // 
+            this.tabHotKeys.Controls.Add(this.dataGridView1);
+            this.tabHotKeys.Location = new System.Drawing.Point(4, 22);
+            this.tabHotKeys.Name = "tabHotKeys";
+            this.tabHotKeys.Padding = new System.Windows.Forms.Padding(3);
+            this.tabHotKeys.Size = new System.Drawing.Size(306, 221);
+            this.tabHotKeys.TabIndex = 1;
+            this.tabHotKeys.Text = "Hot Keys";
+            this.tabHotKeys.UseVisualStyleBackColor = true;
             // 
             // dataGridView1
             // 
@@ -236,6 +252,20 @@
             this.HotKey.HeaderText = "Hot Key";
             this.HotKey.Name = "HotKey";
             // 
+            // password
+            // 
+            this.password.ClearPassword = false;
+            this.password.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+            this.password.Location = new System.Drawing.Point(9, 153);
+            this.password.Name = "password";
+            this.password.PasswordChar = 'l';
+            this.password.Size = new System.Drawing.Size(191, 20);
+            this.password.TabIndex = 6;
+            this.password.WaterMark = "Enter Password";
+            this.password.WaterMarkActiveForeColor = System.Drawing.Color.Gray;
+            this.password.WaterMarkFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.password.WaterMarkForeColor = System.Drawing.Color.LightGray;
+            // 
             // ConfigurationForm
             // 
             this.AcceptButton = this.save;
@@ -280,5 +310,8 @@
         private System.Windows.Forms.DataGridViewCheckBoxColumn Shift;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Win;
         private System.Windows.Forms.DataGridViewComboBoxColumn HotKey;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.CheckBox requirePasswordOnShow;
+        private PasswordTextBox password;
     }
 }

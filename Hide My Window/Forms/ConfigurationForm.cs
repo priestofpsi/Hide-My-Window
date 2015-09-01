@@ -20,7 +20,8 @@ namespace theDiary.Tools.HideMyWindow
             this.restoreWindowsOnExit.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "RestoreWindowsOnExit"));
             this.confirmWhenExiting.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "ConfirmApplicationExit"));
             this.startInTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "StartInTaskBar"));
-
+            this.requirePasswordOnShow.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "RequirePasswordOnShow"));
+            
             this.Function.DataSource = Enum.GetNames(typeof(HotkeyFunction));
             this.Function.DataPropertyName = "HKFunction";
 
@@ -34,6 +35,17 @@ namespace theDiary.Tools.HideMyWindow
 
             this.dataGridView1.DataSource = Runtime.Instance.Settings.Hotkey;
             this.dataGridView1.CellValueChanged += (s,e)=> this.hotkeysChanged = true;
+            this.FormClosing += (s, e) =>
+            {
+                if (this.password.Password != string.Empty)
+                {
+                    Runtime.Instance.Settings.HashedPassword = this.password.Password;
+                }
+                else if (this.password.ClearPassword)
+                {
+                    Runtime.Instance.Settings.HashedPassword = string.Empty;
+                }
+            };
         }
         private bool hotkeysChanged;
 
