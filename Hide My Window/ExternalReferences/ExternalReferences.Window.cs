@@ -25,7 +25,8 @@ namespace theDiary.Tools.HideMyWindow
         #region Internal Methods & Functions
         internal static WindowInfo GetActiveWindow()
         {
-            return new WindowInfo(ExternalReferences.GetForegroundWindow());
+            IntPtr windowHandle = ExternalReferences.GetForegroundWindow();
+            return WindowInfo.Find(windowHandle);
         }
 
         internal static IntPtr SetWindowLongPtr(IntPtr hWnd, Int32 nIndex, IntPtr dwNewLong)

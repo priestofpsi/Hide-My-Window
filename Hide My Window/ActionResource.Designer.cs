@@ -163,6 +163,26 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap tack {
+            get {
+                object obj = ResourceManager.GetObject("tack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tack_small {
+            get {
+                object obj = ResourceManager.GetObject("tack_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap unlockwindow {
             get {
                 object obj = ResourceManager.GetObject("unlockwindow", resourceCulture);

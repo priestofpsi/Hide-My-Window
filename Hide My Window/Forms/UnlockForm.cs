@@ -21,7 +21,7 @@ namespace theDiary.Tools.HideMyWindow
         public UnlockForm(string title)
             : this()
         {
-            this.Text = $"Unlock - {title}";
+            this.Text = string.Format("Unlock - {0}", title);
         }
 
         public bool PasswordMatched

@@ -45,6 +45,9 @@ namespace theDiary.Tools.HideMyWindow
                 {
                     Runtime.Instance.Settings.HashedPassword = string.Empty;
                 }
+
+                ExternalReferences.UnregisterAll();
+                ExternalReferences.RegisterAll();
             };
         }
         private bool hotkeysChanged;

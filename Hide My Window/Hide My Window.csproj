@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>theDiary.Tools.HideMyWindow</RootNamespace>
     <AssemblyName>Hide My Window</AssemblyName>
-    <TargetFrameworkVersion>v4.0.3</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -61,12 +62,17 @@
       <DependentUpon>ActionResource.resx</DependentUpon>
     </Compile>
     <Compile Include="Extensions.cs" />
+    <Compile Include="Forms\HiddenWindowsListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\PasswordTextbox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\WatermarkTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Graphics\Graphics.Extensions.cs" />
+    <Compile Include="Graphics\OverlayPosition.cs" />
     <Compile Include="Settings.FormState.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
@@ -160,6 +166,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="application.ico" />
+    <Content Include="Resources\Images\tack-small.png" />
+    <Content Include="Resources\Images\tack.png" />
     <None Include="Resources\Images\configure_small.png" />
     <None Include="Resources\Images\configure.png" />
     <None Include="Resources\Images\hide-small.png" />

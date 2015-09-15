@@ -11,10 +11,7 @@ namespace theDiary.Tools.HideMyWindow
 {
     internal static class Extensions
     {
-        public static Icon GetApplicationIcon(this Process process)
-        {
-            return Icon.ExtractAssociatedIcon(process.MainModule.FileName);
-        }
+        
 
         public static string GetMD5Hash(this string value)
         {
@@ -32,5 +29,9 @@ namespace theDiary.Tools.HideMyWindow
 
             return sb.ToString();
         }
+
+        
+
+
     }
 }

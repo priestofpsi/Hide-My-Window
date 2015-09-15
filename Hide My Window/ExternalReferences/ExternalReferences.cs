@@ -10,18 +10,16 @@ using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    
-
-
-
-   
-
     internal static  partial class ExternalReferences
     {
+        internal static IntPtr CurrentState(IntPtr handle)
+        {
+            return ExternalReferences.GetWindowLongPtr64(handle, ExternalReferences.GWL_STYLE);
+        }
         internal static bool HideWindow(WindowInfo window)
         {
-            window.OriginalState = ExternalReferences.GetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE);
-            long style = window.OriginalState.ToInt64();
+            window.OriginalState = ExternalReferences.GetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE).ToInt64();
+            long style = window.OriginalState;
             style &= ~(ExternalReferences.WS_VISIBLE);    // this works - window become invisible 
 
             style |= ExternalReferences.WS_EX_TOOLWINDOW;   // flags don't work - windows remains in taskbar
@@ -42,10 +40,10 @@ namespace theDiary.Tools.HideMyWindow
             IntPtr style1 = ExternalReferences.GetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE);
 
             ExternalReferences.ShowWindow(window.Handle, (int)WindowCommand.ShowNoActivate); // show the window for the new style to 
-            ExternalReferences.SetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE, window.OriginalState); // set the style
+            ExternalReferences.SetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE, new IntPtr(window.OriginalState)); // set the style
             ExternalReferences.ShowWindow(window.Handle, (int)WindowCommand.HideWindow); // show the window for the new style to 
             ExternalReferences.ShowWindow(window.Handle, (int)WindowCommand.ShowNoActivate); // show the window for the new style to 
-            window.OriginalState = IntPtr.Zero;
+            window.OriginalState = 0;
         }
                 
         public static void SetWindowState(IntPtr hWnd, WindowCommand state)

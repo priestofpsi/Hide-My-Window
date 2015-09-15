@@ -8,7 +8,7 @@ namespace theDiary.Tools.HideMyWindow
 {
     static class Program
     {
-        private static MainForm mainForm;
+        internal static MainForm MainForm;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -31,18 +31,18 @@ namespace theDiary.Tools.HideMyWindow
             //    Function = HotkeyFunction.UnhideLastWindow,
             //});
 
-
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.ApplicationExit += Application_ApplicationExit;
-            Program.mainForm = new MainForm();
-            Application.Run(Program.mainForm);
+            Program.MainForm = new HideMyWindow.MainForm();
+            Application.Run(Program.MainForm);
         }
 
         private static void Application_ApplicationExit(object sender, EventArgs e)
         {
             if (Runtime.Instance.Settings.RestoreWindowsOnExit)
-                Program.mainForm.UnhideAllWindows(sender, e);
+                Program.MainForm.UnhideAllWindows(sender, e);
             Settings.Save(Runtime.Instance.Settings);
         }
     }

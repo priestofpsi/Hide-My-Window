@@ -11,10 +11,10 @@ namespace theDiary.Tools.HideMyWindow
     public class WindowInfo
     {
         #region Constructors
-        public WindowInfo(IntPtr wHnd)
+        private WindowInfo(IntPtr wHnd)
         {
             this.Handle = wHnd;
-            this.OriginalState = IntPtr.Zero;
+            this.OriginalState = 0;
             this.applicationProcess = ExternalReferences.GetWindowProcess(this.Handle);
         }
         #endregion
@@ -28,24 +28,41 @@ namespace theDiary.Tools.HideMyWindow
 
         #region Public Events
         public event ApplicationExited ApplicationExited;
-        
+
         #endregion
+
         #region Public Read-Only Properties
+        internal string Key
+        {
+            get
+            {
+                return this.Handle.ToString();
+            }
+        }
+
         public IntPtr Handle
         {
             get; set;
         }
 
-        public IntPtr OriginalState
+        public long OriginalState
         {
             get; set;
+        }
+
+        public IntPtr CurrentState
+        {
+            get
+            {
+                return ExternalReferences.CurrentState(this.Handle);
+            }
         }
 
         public bool CanHide
         {
             get
             {
-                return this.OriginalState == IntPtr.Zero;
+                return this.OriginalState == 0;
             }
         }
 
@@ -60,25 +77,33 @@ namespace theDiary.Tools.HideMyWindow
             }
             set
             {
+                if (this.title == value)
+                    return;
+
                 this.title = value;
             }
-
         }
 
         public bool CanShow
         {
             get
             {
-                return this.OriginalState != IntPtr.Zero;
+                return this.OriginalState != 0;
             }
         }
 
-        public bool IsLocked
+        public bool IsPasswordProtected
         {
             get
             {
                 return this.unlockWindowHandler != null;
             }
+        }
+
+        public bool IsPinned
+        {
+            get;
+            set;
         }
 
         protected Process ApplicationProcess
@@ -127,6 +152,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             this.unlockWindowHandler = null;
         }
+
         public bool Hide()
         {
             if (!this.CanHide)
@@ -140,7 +166,7 @@ namespace theDiary.Tools.HideMyWindow
                 return;
             if (this.unlockWindowHandler == null
                 || this.unlockWindowHandler(this))
-            ExternalReferences.ShowWindow(this);
+                ExternalReferences.ShowWindow(this);
         }
 
         public override string ToString()
@@ -164,7 +190,7 @@ namespace theDiary.Tools.HideMyWindow
         }
         #endregion
 
-
+        #region Private Methods & Functions
         private void LoadApplicationProcess()
         {
             lock (this.syncObject)
@@ -172,7 +198,7 @@ namespace theDiary.Tools.HideMyWindow
                 if (this.applicationProcess != null)
                     return;
                 this.applicationProcess = ExternalReferences.GetWindowProcess(this.Handle);
-                if (this.applicationProcess != null 
+                if (this.applicationProcess != null
                     && !this.applicationProcess.HasExited)
                     this.applicationProcess.Exited += this.applicationProcess_Exited;
             }
@@ -185,15 +211,17 @@ namespace theDiary.Tools.HideMyWindow
 
             this.ApplicationProcess.Exited -= this.applicationProcess_Exited;
         }
+        #endregion
 
-        private WindowListViewItem listViewItem;
-        internal WindowListViewItem GetListViewItem()
+        #region Public Static Methods & Functions
+        
+
+        
+
+        public static WindowInfo Find(IntPtr handle)
         {
-            return this.listViewItem;
+            return Runtime.Instance.FindWindow(handle) ?? new WindowInfo(handle);
         }
-        internal void SetListViewItem(WindowListViewItem listViewItem)
-        {
-            this.listViewItem = listViewItem;
-        }
+        #endregion
     }
 }

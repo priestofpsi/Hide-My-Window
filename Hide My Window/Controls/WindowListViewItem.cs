@@ -14,20 +14,12 @@ namespace theDiary.Tools.HideMyWindow
             : base()
         {
             this.Text = window.Title;
-            this.Name = window.Key;
-            this.ImageKey = window.Key;
-            this.SubItems.Add(new ListViewSubItem(this, window.IsPasswordProtected ? "Yes" : "No")
-            {
-                Tag = window.IsPasswordProtected
-            });
-            this.SubItems.Add(new ListViewSubItem(this, window.IsPinned ? "Yes" : "No") {
-                Tag = window.IsPinned
-            });
             this.SubItems.Add(new ListViewSubItem()
             {
                 Text = window.ApplicationPathName,
             });
-            this.Tag = window.Handle;
+            this.Tag = window;
+            window.SetListViewItem(this);
         }
         
         public override int GetHashCode()
@@ -38,7 +30,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                return Runtime.Instance.FindWindow((IntPtr)this.Tag);
+                return this.Tag as WindowInfo;
             }
         }
 

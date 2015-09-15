@@ -9,6 +9,20 @@ using System.Xml.Serialization;
 
 namespace theDiary.Tools.HideMyWindow
 {
+    public class WindowEventArgs
+        : EventArgs
+    {
+        public WindowEventArgs(WindowInfo window)
+        {
+            this.Window = window;
+        }
+
+        public WindowInfo Window
+        {
+            get;
+            private set;
+        }
+    }
     public class HiddenWindowStore
         : IList<long>
     {
@@ -25,9 +39,9 @@ namespace theDiary.Tools.HideMyWindow
         #endregion
 
         #region Public Event Declarations
-        public event EventHandler Added;
+        public event EventHandler<WindowEventArgs> Added;
 
-        public event EventHandler Removed;
+        public event EventHandler<WindowEventArgs> Removed;
         #endregion
 
         #region Public Methods & Functions
@@ -38,7 +52,7 @@ namespace theDiary.Tools.HideMyWindow
                 return;
             this.items.Add(value);
             if (this.Added != null)
-                this.Added(this, new EventArgs());
+                this.Added(this, new WindowEventArgs(WindowInfo.Find(handle)));
         }
 
         public bool Remove(IntPtr handle)
@@ -47,7 +61,7 @@ namespace theDiary.Tools.HideMyWindow
             bool returnValue = this.items.Remove(value);
 
             if (returnValue && this.Removed != null)
-                this.Removed(this, new EventArgs());
+                this.Removed(this, new WindowEventArgs(WindowInfo.Find(handle)));
 
             return returnValue;
         }
@@ -166,9 +180,10 @@ namespace theDiary.Tools.HideMyWindow
 
         void IList<long>.RemoveAt(int index)
         {
+            IntPtr handle = new IntPtr(this.items[index]);
             this.items.RemoveAt(index);
             if (this.Removed != null)
-                this.Removed(this, new EventArgs());
+                this.Removed(this, new WindowEventArgs(WindowInfo.Find(handle)));
 
         }
 
@@ -181,9 +196,16 @@ namespace theDiary.Tools.HideMyWindow
 
         void ICollection<long>.Clear()
         {
+            var handleVals = this.items.ToArray();
             this.items.Clear();
-            if (this.Removed != null)
-                this.Removed(this, new EventArgs());
+            if (this.Removed == null)
+                return;
+            
+            foreach (var value in handleVals)
+            {
+                IntPtr handle = new IntPtr(value);
+                this.Removed(this, new WindowEventArgs(WindowInfo.Find(handle)));
+            }
         }
 
         bool ICollection<long>.Contains(long item)
