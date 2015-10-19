@@ -1,42 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    static class Program
+    internal static class Program
     {
+        #region Internal Static Declarations
+
         internal static MainForm MainForm;
+        internal static bool IsConfigured;
+        #endregion
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
-
-            //Runtime.Instance.Settings.Hotkey.Add(new Hotkey()
-            //{
-            //    Control = true,
-            //    Alt = true,
-            //    Key = "H",
-            //    Function = HotkeyFunction.HideCurrentWindow,
-            //});
-            //Runtime.Instance.Settings.Hotkey.Add(new Hotkey()
-            //{
-            //    Control = true,
-            //    Alt = true,
-            //    Key = "S",
-            //    Function = HotkeyFunction.UnhideLastWindow,
-            //});
-
-            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.ApplicationExit += Application_ApplicationExit;
             Program.MainForm = new HideMyWindow.MainForm();
             Application.Run(Program.MainForm);
+            
         }
 
         private static void Application_ApplicationExit(object sender, EventArgs e)

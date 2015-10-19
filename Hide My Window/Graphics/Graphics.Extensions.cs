@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
@@ -29,6 +24,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             return graphics.AddImage(bounds, icon.ToBitmap(), position, minX, minY);
         }
+
         public static Rectangle AddImage(this Graphics graphics, Rectangle bounds, Image image, ImagePosition position, int? minX = null, int? minY = null)
         {
             Rectangle newBounds = bounds.GetImageBounds(image.Size, position, minX, minY);
@@ -36,6 +32,7 @@ namespace theDiary.Tools.HideMyWindow
 
             return newBounds;
         }
+
         /*
         public static void AddOverlayIcon(this Graphics graphics, Image image, Rectangle bounds, ImagePosition position)
         {
@@ -52,25 +49,30 @@ namespace theDiary.Tools.HideMyWindow
         {
             return new SolidBrush(color);
         }
+
         public static Rectangle GetImageBounds(this Rectangle currentBounds, int imageWidth, int imageHeight, ImagePosition position, int? minX = null, int? minY = null)
         {
             Rectangle returnValue;
             switch (position)
             {
-                case ImagePosition.BottomRight:                
+                case ImagePosition.BottomRight:
                     returnValue = new Rectangle((currentBounds.X + currentBounds.Width) - imageWidth, (currentBounds.Y + currentBounds.Height) - imageHeight, imageWidth, imageHeight);
                     break;
+
                 case ImagePosition.BottomLeft:
                     returnValue = new Rectangle(currentBounds.X, (currentBounds.Y + currentBounds.Height) - imageHeight, imageWidth, imageHeight);
                     break;
+
                 case ImagePosition.TopLeft:
                     returnValue = new Rectangle(currentBounds.X, currentBounds.Y, imageWidth, imageHeight);
                     break;
+
                 case ImagePosition.TopRight:
                     returnValue = new Rectangle((currentBounds.X + currentBounds.Width) - imageWidth, currentBounds.Y, imageWidth, imageHeight);
                     break;
+
                 case ImagePosition.Centered:
-                default:                
+                default:
                     returnValue = new Rectangle(currentBounds.X + ((currentBounds.Width - imageWidth) / 2), currentBounds.Y + ((currentBounds.Height - imageHeight) / 2), imageWidth, imageHeight);
                     break;
             }

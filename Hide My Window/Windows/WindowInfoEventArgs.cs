@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
-
     public delegate void ApplicationExited(object sender, WindowInfoEventArgs e);
 
     public class WindowInfoEventArgs
@@ -23,6 +18,7 @@ namespace theDiary.Tools.HideMyWindow
             this.ProcessId = window.ApplicationId;
             this.State = window.CanShow ? WindowState.Hidden : WindowState.Normal;
         }
+
         public IntPtr Handle
         {
             get;

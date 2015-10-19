@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace theDiary.Tools.HideMyWindow
 {
@@ -19,16 +14,17 @@ namespace theDiary.Tools.HideMyWindow
             {
                 if (HotKeyBindingList.defaultHideCurrentWindowHotKey == null)
                     HotKeyBindingList.defaultHideCurrentWindowHotKey = new Hotkey()
-                        {
-                            Control = true,
-                            Alt = true,
-                            Key = "H",
-                            Function = HotkeyFunction.HideCurrentWindow,
-                        };
+                    {
+                        Control = true,
+                        Alt = true,
+                        Key = "H",
+                        Function = HotkeyFunction.HideCurrentWindow,
+                    };
 
                 return HotKeyBindingList.defaultHideCurrentWindowHotKey;
             }
         }
+
         public static Hotkey DefaultUnhideLastWindowHotKey
         {
             get

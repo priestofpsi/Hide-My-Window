@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -15,23 +8,31 @@ namespace theDiary.Tools.HideMyWindow
     public partial class Settings
     {
         #region Constructors
+
         public Settings()
         {
             this.Hotkey = new HotKeyBindingList();
         }
-        #endregion
+
+        #endregion Constructors
 
         #region Private Declarations
+
         private FormState lastState;
-        #endregion
+
+        #endregion Private Declarations
 
         #region Internal Constant & Static Declarations
+
         [XmlIgnore]
         internal const string settingsxml = "Settings.xml";
-        private static bool failed = false;
-        #endregion
+
+        private static bool FailedToLoad = false;
+
+        #endregion Internal Constant & Static Declarations
 
         #region Public Properties
+
         [XmlElement]
         public HotKeyBindingList Hotkey;
 
@@ -39,7 +40,7 @@ namespace theDiary.Tools.HideMyWindow
         public View CurrentView
         {
             get; set;
-        }        
+        }
 
         [XmlAttribute]
         public bool HideStatusbar
@@ -99,6 +100,15 @@ namespace theDiary.Tools.HideMyWindow
             get; set;
         }
 
+        [XmlIgnore]
+        public bool PasswordIsSet
+        {
+            get
+            {
+
+                return !string.IsNullOrWhiteSpace(this.Password);
+            }
+        }
         [XmlElement]
         public bool RequirePasswordOnShow
         {
@@ -132,9 +142,11 @@ namespace theDiary.Tools.HideMyWindow
         {
             get; set;
         }
-        #endregion
+
+        #endregion Public Properties
 
         #region Public Methods & Functions
+
         public void Save()
         {
             Settings.Save(Runtime.Instance.Settings);
@@ -144,9 +156,11 @@ namespace theDiary.Tools.HideMyWindow
         {
             Runtime.Instance.Settings = Settings.Load();
         }
-        #endregion
+
+        #endregion Public Methods & Functions
 
         #region Internal Static Methods & Functions
+
         internal static void Save(Settings settings)
         {
             if (settings == null)
@@ -158,34 +172,40 @@ namespace theDiary.Tools.HideMyWindow
             using (var tw = new StreamWriter(stream))
                 xs.Serialize(tw, settings);
         }
-        
+
         internal static Settings Load()
         {
             System.IO.Stream stream = null;
-            
 
             try
             {
                 if (System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(settingsxml))
                     stream = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().OpenFile(settingsxml, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
 
-                if (stream == null)
+                Program.IsConfigured = (stream != null);
+                if (stream == null)                
                     stream = new FileStream(settingsxml, FileMode.OpenOrCreate);
+
                 var xs = new XmlSerializer(typeof(Settings));
                 using (var fileStream = new StreamReader(stream))
-                    return (Settings)xs.Deserialize(fileStream);
+                {
+                    Settings returnValue = (Settings)xs.Deserialize(fileStream);
+                    Program.IsConfigured = (returnValue.Hotkey.Count != 0);
+                    return returnValue;
+                }
             }
-            catch (Exception ex)
+            catch
             {
-                if (failed)
+                if (Settings.FailedToLoad)
                     return new Settings();
 
-                failed = true;
+                Settings.FailedToLoad = true;
                 if (System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(settingsxml))
                     System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().DeleteFile(settingsxml);
                 return Settings.Load();
             }
         }
-        #endregion
+
+        #endregion Internal Static Methods & Functions
     }
 }

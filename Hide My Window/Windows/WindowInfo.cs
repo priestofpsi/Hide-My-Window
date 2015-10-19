@@ -1,37 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
     public class WindowInfo
     {
         #region Constructors
+
         private WindowInfo(IntPtr wHnd)
         {
             this.Handle = wHnd;
             this.OriginalState = 0;
             this.applicationProcess = ExternalReferences.GetWindowProcess(this.Handle);
         }
-        #endregion
+
+        #endregion Constructors
 
         #region Private Declarations
+
         private string title;
         private readonly object syncObject = new object();
         private volatile Process applicationProcess;
         private UnlockWindowDelegate unlockWindowHandler;
-        #endregion
+
+        #endregion Private Declarations
 
         #region Public Events
+
         public event ApplicationExited ApplicationExited;
 
-        #endregion
+        #endregion Public Events
 
         #region Public Read-Only Properties
+
         internal string Key
         {
             get
@@ -140,9 +142,11 @@ namespace theDiary.Tools.HideMyWindow
                 return this.ApplicationProcess.GetApplicationIcon();
             }
         }
-        #endregion
+
+        #endregion Public Read-Only Properties
 
         #region Public Methods & Functions
+
         public void Lock(UnlockWindowDelegate handler)
         {
             this.unlockWindowHandler = handler;
@@ -188,9 +192,11 @@ namespace theDiary.Tools.HideMyWindow
         {
             return this.Handle.GetHashCode();
         }
-        #endregion
+
+        #endregion Public Methods & Functions
 
         #region Private Methods & Functions
+
         private void LoadApplicationProcess()
         {
             lock (this.syncObject)
@@ -211,17 +217,16 @@ namespace theDiary.Tools.HideMyWindow
 
             this.ApplicationProcess.Exited -= this.applicationProcess_Exited;
         }
-        #endregion
+
+        #endregion Private Methods & Functions
 
         #region Public Static Methods & Functions
-        
-
-        
 
         public static WindowInfo Find(IntPtr handle)
         {
             return Runtime.Instance.FindWindow(handle) ?? new WindowInfo(handle);
         }
-        #endregion
+
+        #endregion Public Static Methods & Functions
     }
 }

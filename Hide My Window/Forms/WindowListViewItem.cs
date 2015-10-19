@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
@@ -20,7 +16,8 @@ namespace theDiary.Tools.HideMyWindow
             {
                 Tag = window.IsPasswordProtected
             });
-            this.SubItems.Add(new ListViewSubItem(this, window.IsPinned ? "Yes" : "No") {
+            this.SubItems.Add(new ListViewSubItem(this, window.IsPinned ? "Yes" : "No")
+            {
                 Tag = window.IsPinned
             });
             this.SubItems.Add(new ListViewSubItem()
@@ -29,11 +26,12 @@ namespace theDiary.Tools.HideMyWindow
             });
             this.Tag = window.Handle;
         }
-        
+
         public override int GetHashCode()
         {
             return this.Window.GetHashCode();
         }
+
         public WindowInfo Window
         {
             get

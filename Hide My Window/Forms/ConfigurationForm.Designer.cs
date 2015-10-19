@@ -34,12 +34,14 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.password = new theDiary.Tools.HideMyWindow.PasswordTextBox();
             this.requirePasswordOnShow = new System.Windows.Forms.CheckBox();
             this.startInTaskbar = new System.Windows.Forms.CheckBox();
             this.confirmWhenExiting = new System.Windows.Forms.CheckBox();
             this.restoreWindowsOnExit = new System.Windows.Forms.CheckBox();
             this.closeToTaskbar = new System.Windows.Forms.CheckBox();
             this.minimizeToTaskbar = new System.Windows.Forms.CheckBox();
+            this.tabAppearance = new System.Windows.Forms.TabPage();
             this.tabHotKeys = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.Function = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -48,7 +50,6 @@
             this.Shift = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Win = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.HotKey = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.password = new theDiary.Tools.HideMyWindow.PasswordTextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -91,6 +92,7 @@
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabGeneral);
+            this.tabControl.Controls.Add(this.tabAppearance);
             this.tabControl.Controls.Add(this.tabHotKeys);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(5, 5);
@@ -117,6 +119,21 @@
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
+            // 
+            // password
+            // 
+            this.password.ClearPassword = false;
+            this.password.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+            this.password.Location = new System.Drawing.Point(9, 153);
+            this.password.Name = "password";
+            this.password.Password = "";
+            this.password.PasswordChar = 'l';
+            this.password.Size = new System.Drawing.Size(191, 20);
+            this.password.TabIndex = 6;
+            this.password.WaterMark = "Enter Password";
+            this.password.WaterMarkActiveForeColor = System.Drawing.Color.Gray;
+            this.password.WaterMarkFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.password.WaterMarkForeColor = System.Drawing.Color.LightGray;
             // 
             // requirePasswordOnShow
             // 
@@ -183,6 +200,15 @@
             this.minimizeToTaskbar.Text = "Minimize to Taskbar";
             this.minimizeToTaskbar.UseCompatibleTextRendering = true;
             this.minimizeToTaskbar.UseVisualStyleBackColor = true;
+            // 
+            // tabAppearance
+            // 
+            this.tabAppearance.Location = new System.Drawing.Point(4, 22);
+            this.tabAppearance.Name = "tabAppearance";
+            this.tabAppearance.Size = new System.Drawing.Size(306, 221);
+            this.tabAppearance.TabIndex = 2;
+            this.tabAppearance.Text = "Appearance";
+            this.tabAppearance.UseVisualStyleBackColor = true;
             // 
             // tabHotKeys
             // 
@@ -252,20 +278,6 @@
             this.HotKey.HeaderText = "Hot Key";
             this.HotKey.Name = "HotKey";
             // 
-            // password
-            // 
-            this.password.ClearPassword = false;
-            this.password.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.password.Location = new System.Drawing.Point(9, 153);
-            this.password.Name = "password";
-            this.password.PasswordChar = 'l';
-            this.password.Size = new System.Drawing.Size(191, 20);
-            this.password.TabIndex = 6;
-            this.password.WaterMark = "Enter Password";
-            this.password.WaterMarkActiveForeColor = System.Drawing.Color.Gray;
-            this.password.WaterMarkFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.password.WaterMarkForeColor = System.Drawing.Color.LightGray;
-            // 
             // ConfigurationForm
             // 
             this.AcceptButton = this.save;
@@ -310,8 +322,8 @@
         private System.Windows.Forms.DataGridViewCheckBoxColumn Shift;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Win;
         private System.Windows.Forms.DataGridViewComboBoxColumn HotKey;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.CheckBox requirePasswordOnShow;
         private PasswordTextBox password;
+        private System.Windows.Forms.TabPage tabAppearance;
     }
 }

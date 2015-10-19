@@ -1,28 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
     internal static partial class ExternalReferences
     {
         #region Private Constant Declarations
+
         internal const int GWL_STYLE = -16,
             GWL_EXSTYLE = -20;
+
         internal const long WS_VISIBLE = 0x10000000,
             WS_MAXIMIZE = 0x01000000,
             WS_BORDER = 0x00800000,
             WS_CHILD = 0x40000000,
             WS_EX_APPWINDOW = 0x00040000,
             WS_EX_TOOLWINDOW = 0x00000080;
-        #endregion
+
+        #endregion Private Constant Declarations
 
         #region Internal Methods & Functions
+
         internal static WindowInfo GetActiveWindow()
         {
             IntPtr windowHandle = ExternalReferences.GetForegroundWindow();
@@ -40,6 +41,7 @@ namespace theDiary.Tools.HideMyWindow
                 return ExternalReferences.SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
             }
         }
+
         internal static IntPtr GetWindowLongPtr(IntPtr hWnd, Int32 nIndex)
         {
             if (IntPtr.Size == 4)
@@ -65,11 +67,12 @@ namespace theDiary.Tools.HideMyWindow
         {
             uint processId;
             uint callResult = ExternalReferences.GetWindowThreadProcessId(hWnd, out processId);
-            Process returnValue = Process.GetProcessById((int) processId);
+            Process returnValue = Process.GetProcessById((int)processId);
 
             return returnValue;
         }
-        #endregion
+
+        #endregion Internal Methods & Functions
 
         [DllImport("user32.dll", SetLastError = true, EntryPoint = "SetWindowLong")]
         [SuppressMessage("Microsoft.Portability", "CA1901:PInvokeDeclarationsShouldBePortable", MessageId = "return", Justification = "This declaration is not used on 64-bit Windows.")]
@@ -91,7 +94,7 @@ namespace theDiary.Tools.HideMyWindow
 
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        
+
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 

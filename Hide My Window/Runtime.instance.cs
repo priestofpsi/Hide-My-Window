@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
@@ -21,11 +19,13 @@ namespace theDiary.Tools.HideMyWindow
                     Runtime.instance.Store.Remove(e.Window.Handle);
             };
         }
+
         private Settings settings;
         private HiddenWindowStore store;
         private Dictionary<IntPtr, WindowInfo> hiddenWindows = new Dictionary<IntPtr, WindowInfo>();
 
         public event EventHandler<WindowEventArgs> WindowHidden;
+
         public event EventHandler<WindowEventArgs> WindowShown;
 
         public Settings Settings
@@ -43,7 +43,6 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-
         public HiddenWindowStore Store
         {
             get
@@ -54,20 +53,6 @@ namespace theDiary.Tools.HideMyWindow
                 return this.store;
             }
         }
-
-        //internal MainForm MainForm
-        //{
-        //    get
-        //    {
-        //        lock (this.instanceSyncObject)
-        //        {
-        //            if (this.mainForm == null)
-        //                this.mainForm = new MainForm();
-
-        //            return this.mainForm;
-        //        }
-        //    }
-        //}
 
         public WindowInfo LastWindow()
         {
@@ -84,6 +69,7 @@ namespace theDiary.Tools.HideMyWindow
                 return this.hiddenWindows.Count;
             }
         }
+
         internal void AddHiddenWindow(WindowInfo window)
         {
             if (window.Equals(Program.MainForm.Handle)
@@ -92,13 +78,12 @@ namespace theDiary.Tools.HideMyWindow
             if (!this.hiddenWindows.ContainsKey(window.Handle))
                 this.hiddenWindows.Add(window.Handle, window);
 
-
             if (this.WindowHidden != null)
                 this.WindowHidden(this, new WindowEventArgs(window));
         }
+
         internal void ToggleHiddenWindow(WindowInfo window)
         {
-
             if (window.CanShow)
             {
                 this.RemoveHiddenWindow(window);
@@ -108,6 +93,7 @@ namespace theDiary.Tools.HideMyWindow
                 this.AddHiddenWindow(window);
             }
         }
+
         internal void RemoveHiddenWindow(WindowInfo window)
         {
             if (!this.hiddenWindows.ContainsKey(window.Handle))
@@ -124,7 +110,6 @@ namespace theDiary.Tools.HideMyWindow
                 return this.hiddenWindows[handle];
 
             return null;
-
         }
     }
 }

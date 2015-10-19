@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
     internal static class Extensions
     {
-        
-
         public static string GetMD5Hash(this string value)
         {
             using (var hash = MD5.Create())
@@ -29,9 +21,5 @@ namespace theDiary.Tools.HideMyWindow
 
             return sb.ToString();
         }
-
-        
-
-
     }
 }

@@ -39,6 +39,7 @@
             this.passwordTextBox1.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
             this.passwordTextBox1.Location = new System.Drawing.Point(12, 12);
             this.passwordTextBox1.Name = "passwordTextBox1";
+            this.passwordTextBox1.Password = "";
             this.passwordTextBox1.PasswordChar = 'l';
             this.passwordTextBox1.Size = new System.Drawing.Size(261, 20);
             this.passwordTextBox1.TabIndex = 0;

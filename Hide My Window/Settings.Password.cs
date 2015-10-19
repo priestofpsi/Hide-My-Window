@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
@@ -13,12 +10,10 @@ namespace theDiary.Tools.HideMyWindow
     public class PasswordSettings
         : IXmlSerializable
     {
-
         public bool RequirePasswordOnShow
         {
             get; set;
         }
-
 
         private string password;
 
@@ -29,6 +24,7 @@ namespace theDiary.Tools.HideMyWindow
                 return !string.IsNullOrEmpty(this.password);
             }
         }
+
         public string Password
         {
             get
@@ -49,7 +45,7 @@ namespace theDiary.Tools.HideMyWindow
             using (var hash = MD5.Create())
             {
                 return this.Password.Equals(GetHashString(hash.ComputeHash(Encoding.UTF8.GetBytes(password))));
-            }            
+            }
         }
 
         private void SetPassword(string password)
@@ -64,7 +60,7 @@ namespace theDiary.Tools.HideMyWindow
                 {
                     this.password = GetHashString(hash.ComputeHash(Encoding.UTF8.GetBytes(password)));
                 }
-            }                
+            }
         }
 
         private static string GetHashString(byte[] value)
@@ -91,8 +87,9 @@ namespace theDiary.Tools.HideMyWindow
             {
                 this.password = reader.ReadElementString("Password");
             }
-            catch(Exception ex)
+            catch
             {
+                this.password = string.Empty;
             }
         }
 

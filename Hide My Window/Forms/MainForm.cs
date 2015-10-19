@@ -20,14 +20,19 @@ namespace theDiary.Tools.HideMyWindow
             this.InitializeComponent();
             this.InitializeFormHandlers();
             this.InitializeFormFromSettings();
+            this.Icon = Runtime.Instance.Settings.ApplicationIcon;
+            Runtime.Instance.Settings.ApplicationIconChanged += (s, e) => {
+                this.Icon = e.Icon;
+                this.notifyIcon.Icon = e.Icon;
+                };
         }
-        #endregion
+        #endregion Constructors
         private FormInitState initializing = FormInitState.NotInitialized;
         #region Public Event Declarations
         public event EventHandler HiddenWindowsChanged;
-        #endregion
+        #endregion Public Event Declarations
 
-        #region Protected Overriden Methods & Functions
+        #region Protected Over Riden Methods & Functions
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         protected override void WndProc(ref Message m)
         {
@@ -38,6 +43,7 @@ namespace theDiary.Tools.HideMyWindow
                     this.HotKeyPressed((short)m.WParam);
                     passThrough = false;
                     break;
+
                 case ExternalReferences.WM_SYSCOMMAND:
                     int command = m.WParam.ToInt32() & 0xfff0;
                     if (command == ExternalReferences.SC_MINIMIZE
@@ -47,6 +53,7 @@ namespace theDiary.Tools.HideMyWindow
                         passThrough = false;
                     }
                     break;
+
                 case 0x84:
                     passThrough = false;
                     break;
@@ -54,7 +61,7 @@ namespace theDiary.Tools.HideMyWindow
             if (passThrough)
                 base.WndProc(ref m);
         }
-        #endregion
+        #endregion Protected Overriden Methods & Functions
 
         #region Event Handlers
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -108,7 +115,6 @@ namespace theDiary.Tools.HideMyWindow
             if (!canShow)
                 return;
             this.RestoreFromTray();
-
         }
 
         private void ToggleView(object sender, EventArgs e)
@@ -150,12 +156,13 @@ namespace theDiary.Tools.HideMyWindow
                     case DialogResult.OK:
                         Runtime.Instance.Settings.Save();
                         break;
+
                     default:
                         Runtime.Instance.Settings.Reset();
                         break;
                 }
         }
-        #endregion
+        #endregion Event Handlers
 
         #region Private Methods & Functions
         private void InitializeFormHandlers()
@@ -199,7 +206,10 @@ namespace theDiary.Tools.HideMyWindow
             {
                 Runtime.Instance.Store.ForEach(item => Runtime.Instance.AddHiddenWindow(WindowInfo.Find(item)));
                 this.hiddenWindows_SelectedIndexChanged(s, e);
-                this.SetToolbarText();                
+                this.SetToolbarText();
+
+                if (!Program.IsConfigured)
+                    this.openConfigurationForm_Click(this, EventArgs.Empty);
             };
             Runtime.Instance.WindowHidden += Store_Added;
             Runtime.Instance.WindowShown += Store_Removed;
@@ -222,7 +232,7 @@ namespace theDiary.Tools.HideMyWindow
                 this.imageListSmall.Images.Add(e.Window.Key, e.Window.ApplicationIcon.ToBitmap());
             if (!this.imageListBig.Images.ContainsKey(e.Window.Key))
                 this.imageListBig.Images.Add(e.Window.Key, e.Window.ApplicationIcon.ToBitmap());
-            
+
             if (!this.hiddenWindows.Items.ContainsKey(e.Window.Key))
                 this.hiddenWindows.Items.Add(item);
 
@@ -262,13 +272,13 @@ namespace theDiary.Tools.HideMyWindow
                     break;
             }
         }
-        #endregion
+        #endregion Private Methods & Functions
 
         private void hiddenWindows_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.showWindow.Enabled = this.hiddenWindows.SelectedItems.Count > 0;
-            this.unlockWindow.Visible = this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => item.Window.IsPasswordProtected);
-            this.lockWindow.Visible = this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => !item.Window.IsPasswordProtected);
+            this.unlockWindow.Visible = Runtime.Instance.Settings.PasswordIsSet && this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => item.Window.IsPasswordProtected);
+            this.lockWindow.Visible = Runtime.Instance.Settings.PasswordIsSet && this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => !item.Window.IsPasswordProtected);
             this.pinWindow.Enabled = this.hiddenWindows.SelectedItems.Count > 0;
             this.renameWindow.Enabled = this.hiddenWindows.SelectedItems.Count > 0;
             this.hiddenWindows.Invalidate();
@@ -296,14 +306,12 @@ namespace theDiary.Tools.HideMyWindow
 
         private void smallIconsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
             Runtime.Instance.Settings.SmallToolbarIcons = true;
             this.SetToolbarIcons();
         }
 
         private void largeIconsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
             Runtime.Instance.Settings.SmallToolbarIcons = false;
             this.SetToolbarIcons();
         }
@@ -319,6 +327,7 @@ namespace theDiary.Tools.HideMyWindow
                     this.pinWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.tack_small;
                     this.renameWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.tack_small;
                     break;
+
                 case false:
                     this.unlockWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.unlockwindow;
                     this.lockWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.lockwindow;
@@ -342,7 +351,7 @@ namespace theDiary.Tools.HideMyWindow
             this.SetToolbarText();
         }
 
-        private void openConfigurationForm_DropDownOpening(object sender, EventArgs e)
+        private void toolbarToggle_DropDownOpening(object sender, EventArgs e)
         {
             this.showToolbarText.Checked = !Runtime.Instance.Settings.HideToolbarText;
             this.largeToolbarIcons.Checked = !Runtime.Instance.Settings.SmallToolbarIcons;

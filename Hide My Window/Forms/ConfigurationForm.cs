@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
@@ -21,7 +14,7 @@ namespace theDiary.Tools.HideMyWindow
             this.confirmWhenExiting.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "ConfirmApplicationExit"));
             this.startInTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "StartInTaskBar"));
             this.requirePasswordOnShow.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "RequirePasswordOnShow"));
-            
+
             this.Function.DataSource = Enum.GetNames(typeof(HotkeyFunction));
             this.Function.DataPropertyName = "HKFunction";
 
@@ -34,7 +27,7 @@ namespace theDiary.Tools.HideMyWindow
             this.Win.DataPropertyName = "Win";
 
             this.dataGridView1.DataSource = Runtime.Instance.Settings.Hotkey;
-            this.dataGridView1.CellValueChanged += (s,e)=> this.hotkeysChanged = true;
+            this.dataGridView1.CellValueChanged += (s, e) => this.hotkeysChanged = true;
             this.FormClosing += (s, e) =>
             {
                 if (this.password.Password != string.Empty)
@@ -45,16 +38,25 @@ namespace theDiary.Tools.HideMyWindow
                 {
                     Runtime.Instance.Settings.HashedPassword = string.Empty;
                 }
-
-                ExternalReferences.UnregisterAll();
-                ExternalReferences.RegisterAll();
+                if (this.hotkeysChanged)
+                {
+                    ExternalReferences.UnregisterAll();
+                    ExternalReferences.RegisterAll();
+                }
             };
         }
-        private bool hotkeysChanged;
+
+        public TabPage ActivePage
+        {
+            get
+            {
+                return this.tabControl.SelectedTab;
+            }
+        }
+        private bool hotkeysChanged = false;
 
         private void tabControl_Selected(object sender, TabControlEventArgs e)
         {
-            
         }
     }
 }

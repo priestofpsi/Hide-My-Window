@@ -2,49 +2,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO.IsolatedStorage;
 using System.Xml.Serialization;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public class WindowEventArgs
-        : EventArgs
-    {
-        public WindowEventArgs(WindowInfo window)
-        {
-            this.Window = window;
-        }
-
-        public WindowInfo Window
-        {
-            get;
-            private set;
-        }
-    }
     public class HiddenWindowStore
         : IList<long>
     {
         #region Constructors
+
         public HiddenWindowStore()
         {
             this.Added += Items_Added;
             this.Removed += Items_Removed;
         }
-        #endregion
+
+        #endregion Constructors
 
         #region Private Declarations
+
         private List<long> items = new List<long>();
-        #endregion
+
+        #endregion Private Declarations
 
         #region Public Event Declarations
+
         public event EventHandler<WindowEventArgs> Added;
 
         public event EventHandler<WindowEventArgs> Removed;
-        #endregion
+
+        #endregion Public Event Declarations
 
         #region Public Methods & Functions
+
         public void Add(IntPtr handle)
         {
             long value = handle.ToInt64();
@@ -85,11 +76,13 @@ namespace theDiary.Tools.HideMyWindow
         {
             throw new NotImplementedException();
         }
-        #endregion
+
+        #endregion Public Methods & Functions
 
         [XmlIgnore]
         internal static string StoreFileName = "WindowStore.xml";
-        private static bool failed = false;
+
+        private static bool FailedToLoad = false;
 
         int ICollection<long>.Count
         {
@@ -135,35 +128,36 @@ namespace theDiary.Tools.HideMyWindow
             if (store == null)
                 store = HiddenWindowStore.Load();
 
-            System.IO.Stream stream = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().OpenFile(HiddenWindowStore.StoreFileName, FileMode.OpenOrCreate, FileAccess.Write);
+            System.IO.Stream stream = IsolatedStorageFile.GetUserStoreForAssembly().OpenFile(HiddenWindowStore.StoreFileName, FileMode.OpenOrCreate, FileAccess.Write);
 
             var xs = new XmlSerializer(typeof(HiddenWindowStore));
             using (var tw = new StreamWriter(stream))
                 xs.Serialize(tw, store);
         }
-        
+
         internal static HiddenWindowStore Load()
         {
             System.IO.Stream stream = null;
-            if (System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(HiddenWindowStore.StoreFileName))
-                stream = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().OpenFile(HiddenWindowStore.StoreFileName, FileMode.Open);
-
             try
             {
+                if (IsolatedStorageFile.GetUserStoreForAssembly().FileExists(HiddenWindowStore.StoreFileName))
+                    stream = IsolatedStorageFile.GetUserStoreForAssembly().OpenFile(HiddenWindowStore.StoreFileName, FileMode.Open);
+
                 if (stream == null)
                     stream = new FileStream(HiddenWindowStore.StoreFileName, FileMode.OpenOrCreate);
                 var xs = new XmlSerializer(typeof(HiddenWindowStore));
                 using (var fileStream = new StreamReader(stream))
                     return (HiddenWindowStore)xs.Deserialize(fileStream);
             }
-            catch (Exception ex)
+            catch
             {
-                if (failed)
+                if (HiddenWindowStore.FailedToLoad)
                     return new HiddenWindowStore();
 
-                failed = true;
-                if (System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(HiddenWindowStore.StoreFileName))
-                    System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().DeleteFile(HiddenWindowStore.StoreFileName);
+                HiddenWindowStore.FailedToLoad = true;
+                if (IsolatedStorageFile.GetUserStoreForAssembly().FileExists(HiddenWindowStore.StoreFileName))
+                    IsolatedStorageFile.GetUserStoreForAssembly().DeleteFile(HiddenWindowStore.StoreFileName);
+
                 return HiddenWindowStore.Load();
             }
         }
@@ -184,7 +178,6 @@ namespace theDiary.Tools.HideMyWindow
             this.items.RemoveAt(index);
             if (this.Removed != null)
                 this.Removed(this, new WindowEventArgs(WindowInfo.Find(handle)));
-
         }
 
         public void Add(long item)
@@ -200,7 +193,7 @@ namespace theDiary.Tools.HideMyWindow
             this.items.Clear();
             if (this.Removed == null)
                 return;
-            
+
             foreach (var value in handleVals)
             {
                 IntPtr handle = new IntPtr(value);
@@ -222,5 +215,5 @@ namespace theDiary.Tools.HideMyWindow
         {
             throw new NotImplementedException();
         }
-    }   
+    }
 }

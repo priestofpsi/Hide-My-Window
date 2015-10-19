@@ -22,7 +22,7 @@ namespace theDiary.Tools.HideMyWindow {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ActionResource {
+    public class ActionResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace theDiary.Tools.HideMyWindow {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("theDiary.Tools.HideMyWindow.ActionResource", typeof(ActionResource).Assembly);
@@ -51,7 +51,7 @@ namespace theDiary.Tools.HideMyWindow {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap configure {
+        public static System.Drawing.Bitmap configure {
             get {
                 object obj = ResourceManager.GetObject("configure", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -73,7 +73,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap configure_small {
+        public static System.Drawing.Bitmap configure_small {
             get {
                 object obj = ResourceManager.GetObject("configure_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -83,7 +83,27 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap hide {
+        public static System.Drawing.Bitmap exit {
+            get {
+                object obj = ResourceManager.GetObject("exit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap exit_small {
+            get {
+                object obj = ResourceManager.GetObject("exit_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap hide {
             get {
                 object obj = ResourceManager.GetObject("hide", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -93,7 +113,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap hide_small {
+        public static System.Drawing.Bitmap hide_small {
             get {
                 object obj = ResourceManager.GetObject("hide_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -103,7 +123,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap lockwindow {
+        public static System.Drawing.Bitmap lockwindow {
             get {
                 object obj = ResourceManager.GetObject("lockwindow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -113,7 +133,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap lockwindow_small {
+        public static System.Drawing.Bitmap lockwindow_small {
             get {
                 object obj = ResourceManager.GetObject("lockwindow_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -123,7 +143,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap rename {
+        public static System.Drawing.Bitmap rename {
             get {
                 object obj = ResourceManager.GetObject("rename", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -133,7 +153,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap rename_small {
+        public static System.Drawing.Bitmap rename_small {
             get {
                 object obj = ResourceManager.GetObject("rename_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -143,7 +163,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap show {
+        public static System.Drawing.Bitmap show {
             get {
                 object obj = ResourceManager.GetObject("show", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -153,7 +173,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap show_small {
+        public static System.Drawing.Bitmap show_small {
             get {
                 object obj = ResourceManager.GetObject("show_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -163,7 +183,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap tack {
+        public static System.Drawing.Bitmap tack {
             get {
                 object obj = ResourceManager.GetObject("tack", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -173,7 +193,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap tack_small {
+        public static System.Drawing.Bitmap tack_small {
             get {
                 object obj = ResourceManager.GetObject("tack_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -183,7 +203,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap unlockwindow {
+        public static System.Drawing.Bitmap unlockwindow {
             get {
                 object obj = ResourceManager.GetObject("unlockwindow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -193,7 +213,7 @@ namespace theDiary.Tools.HideMyWindow {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap unlockwindow_small {
+        public static System.Drawing.Bitmap unlockwindow_small {
             get {
                 object obj = ResourceManager.GetObject("unlockwindow_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));

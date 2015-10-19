@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
     public partial class Runtime
     {
@@ -13,16 +7,15 @@ namespace theDiary.Tools.HideMyWindow
 
         public static Runtime Instance
         {
-        get
+            get
             {
-                lock(Runtime.syncObject)
+                lock (Runtime.syncObject)
                 {
                     if (Runtime.instance == null)
                         Runtime.instance = new Runtime();
 
                     return Runtime.instance;
                 }
-
             }
         }
     }

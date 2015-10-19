@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
@@ -21,7 +16,7 @@ namespace theDiary.Tools.HideMyWindow
             this.DrawSubItem += new DrawListViewSubItemEventHandler(HiddenWindowsListView_DrawSubItem);
         }
 
-        void HiddenWindowsListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+        private void HiddenWindowsListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
         {
             if (e.ColumnIndex == 0)
                 return;
@@ -32,13 +27,14 @@ namespace theDiary.Tools.HideMyWindow
                 case 1:
                     e.SubItem.Text = currentItem.IsPasswordProtected ? "Yes" : "No";
                     break;
+
                 case 2:
                     e.SubItem.Text = currentItem.IsPinned ? "Yes" : "No";
                     break;
             }
         }
 
-        void HiddenWindowsListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+        private void HiddenWindowsListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
         {
             switch (e.ColumnIndex)
             {
@@ -46,17 +42,19 @@ namespace theDiary.Tools.HideMyWindow
                     e.DrawBackground();
                     e.Graphics.AddImage(e.Bounds, ActionResource.lockwindow_small);
                     break;
+
                 case 2:
                     e.DrawBackground();
                     e.Graphics.AddImage(e.Bounds, ActionResource.tack_small);
                     break;
+
                 default:
                     e.DrawDefault = true;
                     break;
             }
         }
 
-        void HiddenWindowsListView_DrawItem(object sender, DrawListViewItemEventArgs e)
+        private void HiddenWindowsListView_DrawItem(object sender, DrawListViewItemEventArgs e)
         {
             WindowInfo currentItem = (e.Item as WindowListViewItem).Window;
             switch (this.View)
@@ -67,7 +65,7 @@ namespace theDiary.Tools.HideMyWindow
                     Rectangle itemBounds = new Rectangle(e.Bounds.Location, new Size(e.Bounds.Width, 65));
                     //if (e.Item.Selected)
                     //    e.Graphics.FillRectangle(SystemColors.Highlight.ToBrush(), e.Bounds);
-                    
+
                     var iconBounds = e.Graphics.AddImage(e.Bounds, currentItem.ApplicationIcon, null, (e.Item.Selected) ? 16 : 18);
                     e.Graphics.AddImage(e.Bounds, (currentItem.IsPasswordProtected) ? ActionResource.lockwindow_small : ActionResource.unlockwindow_small, ImagePosition.TopLeft);
                     if (currentItem.IsPinned)
@@ -77,16 +75,17 @@ namespace theDiary.Tools.HideMyWindow
                     TextRenderer.DrawText(e.Graphics, e.Item.Text, e.Item.Font, rec, e.Item.ForeColor, TextFormatFlags.Bottom | TextFormatFlags.Left | TextFormatFlags.EndEllipsis | TextFormatFlags.ExpandTabs | TextFormatFlags.SingleLine);
                     //e.DrawFocusRectangle();
                     break;
+
                 default:
                     e.DrawDefault = true;
                     break;
             }
-            if ((bool) e.Item.SubItems[1].Tag != currentItem.IsPasswordProtected)
+            if ((bool)e.Item.SubItems[1].Tag != currentItem.IsPasswordProtected)
             {
                 e.Item.SubItems[1].Tag = currentItem.IsPasswordProtected;
                 e.Item.SubItems[1].Text = currentItem.IsPasswordProtected ? "Yes" : "No";
             }
-            if ((bool) e.Item.SubItems[2].Tag != currentItem.IsPinned)
+            if ((bool)e.Item.SubItems[2].Tag != currentItem.IsPinned)
             {
                 e.Item.SubItems[2].Tag = currentItem.IsPinned;
                 e.Item.SubItems[2].Text = currentItem.IsPinned ? "Yes" : "No";

@@ -36,6 +36,9 @@ namespace theDiary.Tools.HideMyWindow
             this.show = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,12 +65,19 @@ namespace theDiary.Tools.HideMyWindow
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.showWindow = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.pinWindow = new System.Windows.Forms.ToolStripButton();
+            this.renameWindow = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.lockWindow = new System.Windows.Forms.ToolStripButton();
             this.unlockWindow = new System.Windows.Forms.ToolStripButton();
-            this.pinWindow = new System.Windows.Forms.ToolStripButton();
             this.actionImageListSmall = new System.Windows.Forms.ImageList(this.components);
             this.actionImageList = new System.Windows.Forms.ImageList(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.hiddenWindows = new theDiary.Tools.HideMyWindow.HiddenWindowsListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.hiddenWindowsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -75,16 +85,6 @@ namespace theDiary.Tools.HideMyWindow
             this.unprotectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hiddenWindows = new theDiary.Tools.HideMyWindow.HiddenWindowsListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.renameWindow = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -132,10 +132,34 @@ namespace theDiary.Tools.HideMyWindow
             // statusLabel
             // 
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(377, 17);
+            this.statusLabel.Size = new System.Drawing.Size(408, 17);
             this.statusLabel.Spring = true;
             this.statusLabel.Text = "Windows: 0";
             this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // toolStripStatusLabel3
+            // 
+            this.toolStripStatusLabel3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripStatusLabel3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripStatusLabel3.Image")));
+            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(16, 17);
+            this.toolStripStatusLabel3.Text = "toolStripStatusLabel3";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripStatusLabel1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripStatusLabel1.Image")));
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(16, 17);
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripStatusLabel2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripStatusLabel2.Image")));
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(16, 17);
+            this.toolStripStatusLabel2.Text = "toolStripStatusLabel2";
             // 
             // menuStrip1
             // 
@@ -159,6 +183,7 @@ namespace theDiary.Tools.HideMyWindow
             // 
             // exitToolStripMenuItem
             // 
+            this.exitToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("exitToolStripMenuItem.Image")));
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
@@ -239,7 +264,7 @@ namespace theDiary.Tools.HideMyWindow
             this.toolbarToolStripMenuItem.Name = "toolbarToolStripMenuItem";
             this.toolbarToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.toolbarToolStripMenuItem.Text = "&Toolbar";
-            this.toolbarToolStripMenuItem.DropDownOpening += new System.EventHandler(this.openConfigurationForm_DropDownOpening);
+            this.toolbarToolStripMenuItem.DropDownOpening += new System.EventHandler(this.toolbarToggle_DropDownOpening);
             // 
             // showToolbarText
             // 
@@ -247,7 +272,7 @@ namespace theDiary.Tools.HideMyWindow
             this.showToolbarText.Name = "showToolbarText";
             this.showToolbarText.Size = new System.Drawing.Size(134, 22);
             this.showToolbarText.Text = "Show &Text";
-            this.showToolbarText.CheckedChanged += new System.EventHandler(this.showToolbarText_Click);
+            this.showToolbarText.Click += new System.EventHandler(this.showToolbarText_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -285,7 +310,7 @@ namespace theDiary.Tools.HideMyWindow
             // 
             // openConfigurationForm
             // 
-            this.openConfigurationForm.Image = global::theDiary.Tools.HideMyWindow.ActionResource.configure_small;
+            this.openConfigurationForm.Image = ((System.Drawing.Image)(resources.GetObject("openConfigurationForm.Image")));
             this.openConfigurationForm.Name = "openConfigurationForm";
             this.openConfigurationForm.Size = new System.Drawing.Size(127, 22);
             this.openConfigurationForm.Text = "&Configure";
@@ -329,25 +354,25 @@ namespace theDiary.Tools.HideMyWindow
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showWindow,
             this.toolStripSeparator1,
-            this.lockWindow,
-            this.unlockWindow,
             this.pinWindow,
+            this.renameWindow,
             this.toolStripSeparator2,
-            this.renameWindow});
+            this.lockWindow,
+            this.unlockWindow});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(471, 54);
+            this.toolStrip1.Size = new System.Drawing.Size(471, 86);
             this.toolStrip1.TabIndex = 6;
             this.toolStrip1.Text = "toolStrip1";
             // 
             // showWindow
             // 
             this.showWindow.Enabled = false;
-            this.showWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.show;
+            this.showWindow.Image = ((System.Drawing.Image)(resources.GetObject("showWindow.Image")));
             this.showWindow.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.showWindow.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.showWindow.Name = "showWindow";
-            this.showWindow.Size = new System.Drawing.Size(87, 51);
+            this.showWindow.Size = new System.Drawing.Size(87, 83);
             this.showWindow.Text = "Show Window";
             this.showWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.showWindow.Click += new System.EventHandler(this.ToggleHiddenWindows);
@@ -355,41 +380,59 @@ namespace theDiary.Tools.HideMyWindow
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 54);
-            // 
-            // lockWindow
-            // 
-            this.lockWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.lockwindow;
-            this.lockWindow.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.lockWindow.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.lockWindow.Name = "lockWindow";
-            this.lockWindow.Size = new System.Drawing.Size(49, 51);
-            this.lockWindow.Text = "Protect";
-            this.lockWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.lockWindow.Click += new System.EventHandler(this.lockWindow_Click);
-            // 
-            // unlockWindow
-            // 
-            this.unlockWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.unlockwindow;
-            this.unlockWindow.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.unlockWindow.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.unlockWindow.Name = "unlockWindow";
-            this.unlockWindow.Size = new System.Drawing.Size(64, 51);
-            this.unlockWindow.Text = "Unprotect";
-            this.unlockWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.unlockWindow.Click += new System.EventHandler(this.unlockWindow_Click);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 86);
             // 
             // pinWindow
             // 
-            this.pinWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.tack;
+            this.pinWindow.Image = ((System.Drawing.Image)(resources.GetObject("pinWindow.Image")));
             this.pinWindow.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.pinWindow.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.pinWindow.Name = "pinWindow";
-            this.pinWindow.Size = new System.Drawing.Size(36, 51);
+            this.pinWindow.Size = new System.Drawing.Size(68, 83);
             this.pinWindow.Text = "Pin";
             this.pinWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.pinWindow.ToolTipText = "A pinned window will not be removed from the list of hidden windows.";
             this.pinWindow.Click += new System.EventHandler(this.pinWindow_Click);
+            // 
+            // renameWindow
+            // 
+            this.renameWindow.Image = ((System.Drawing.Image)(resources.GetObject("renameWindow.Image")));
+            this.renameWindow.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.renameWindow.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.renameWindow.Name = "renameWindow";
+            this.renameWindow.Size = new System.Drawing.Size(68, 83);
+            this.renameWindow.Text = "Rename";
+            this.renameWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.renameWindow.ToolTipText = "A pinned window will not be removed from the list of hidden windows.";
+            this.renameWindow.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 86);
+            // 
+            // lockWindow
+            // 
+            this.lockWindow.Image = ((System.Drawing.Image)(resources.GetObject("lockWindow.Image")));
+            this.lockWindow.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.lockWindow.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.lockWindow.Name = "lockWindow";
+            this.lockWindow.Size = new System.Drawing.Size(68, 83);
+            this.lockWindow.Text = "Protect";
+            this.lockWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.lockWindow.ToolTipText = "Enables password protection from the selected Window(s)";
+            this.lockWindow.Click += new System.EventHandler(this.lockWindow_Click);
+            // 
+            // unlockWindow
+            // 
+            this.unlockWindow.Image = ((System.Drawing.Image)(resources.GetObject("unlockWindow.Image")));
+            this.unlockWindow.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.unlockWindow.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.unlockWindow.Name = "unlockWindow";
+            this.unlockWindow.Size = new System.Drawing.Size(68, 83);
+            this.unlockWindow.Text = "Unlock";
+            this.unlockWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.unlockWindow.ToolTipText = "Removes the Password protection from the selected Window(s)";
             // 
             // actionImageListSmall
             // 
@@ -415,64 +458,10 @@ namespace theDiary.Tools.HideMyWindow
             // 
             this.panel1.Controls.Add(this.hiddenWindows);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 78);
+            this.panel1.Location = new System.Drawing.Point(0, 110);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(471, 248);
+            this.panel1.Size = new System.Drawing.Size(471, 216);
             this.panel1.TabIndex = 7;
-            // 
-            // hiddenWindowsContextMenu
-            // 
-            this.hiddenWindowsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showWindowToolStripMenuItem,
-            this.toolStripMenuItem3,
-            this.protectToolStripMenuItem,
-            this.unprotectToolStripMenuItem,
-            this.toolStripMenuItem4,
-            this.renameToolStripMenuItem});
-            this.hiddenWindowsContextMenu.Name = "hiddenWindowsContextMenu";
-            this.hiddenWindowsContextMenu.Size = new System.Drawing.Size(151, 104);
-            this.hiddenWindowsContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.hiddenWindowsContextMenu_Opening);
-            // 
-            // showWindowToolStripMenuItem
-            // 
-            this.showWindowToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("showWindowToolStripMenuItem.Image")));
-            this.showWindowToolStripMenuItem.Name = "showWindowToolStripMenuItem";
-            this.showWindowToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
-            this.showWindowToolStripMenuItem.Text = "&Show Window";
-            this.showWindowToolStripMenuItem.Click += new System.EventHandler(this.ToggleHiddenWindows);
-            // 
-            // toolStripMenuItem3
-            // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(147, 6);
-            // 
-            // protectToolStripMenuItem
-            // 
-            this.protectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("protectToolStripMenuItem.Image")));
-            this.protectToolStripMenuItem.Name = "protectToolStripMenuItem";
-            this.protectToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
-            this.protectToolStripMenuItem.Text = "&Protect";
-            this.protectToolStripMenuItem.Click += new System.EventHandler(this.lockWindow_Click);
-            // 
-            // unprotectToolStripMenuItem
-            // 
-            this.unprotectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("unprotectToolStripMenuItem.Image")));
-            this.unprotectToolStripMenuItem.Name = "unprotectToolStripMenuItem";
-            this.unprotectToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
-            this.unprotectToolStripMenuItem.Text = "&Unprotect";
-            this.unprotectToolStripMenuItem.Click += new System.EventHandler(this.unlockWindow_Click);
-            // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(147, 6);
-            // 
-            // renameToolStripMenuItem
-            // 
-            this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
-            this.renameToolStripMenuItem.Text = "&Rename";
-            this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
             // hiddenWindows
             // 
@@ -489,7 +478,7 @@ namespace theDiary.Tools.HideMyWindow
             this.hiddenWindows.LargeImageList = this.imageListBig;
             this.hiddenWindows.Location = new System.Drawing.Point(12, 15);
             this.hiddenWindows.Name = "hiddenWindows";
-            this.hiddenWindows.Size = new System.Drawing.Size(446, 220);
+            this.hiddenWindows.Size = new System.Drawing.Size(446, 188);
             this.hiddenWindows.SmallImageList = this.imageListSmall;
             this.hiddenWindows.TabIndex = 6;
             this.hiddenWindows.UseCompatibleStateImageBehavior = false;
@@ -516,46 +505,60 @@ namespace theDiary.Tools.HideMyWindow
             // 
             this.columnHeader2.Text = "Path";
             // 
-            // renameWindow
+            // hiddenWindowsContextMenu
             // 
-            this.renameWindow.Image = global::theDiary.Tools.HideMyWindow.ActionResource.rename;
-            this.renameWindow.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.renameWindow.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.renameWindow.Name = "renameWindow";
-            this.renameWindow.Size = new System.Drawing.Size(54, 51);
-            this.renameWindow.Text = "Rename";
-            this.renameWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.renameWindow.ToolTipText = "A pinned window will not be removed from the list of hidden windows.";
-            this.renameWindow.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
+            this.hiddenWindowsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showWindowToolStripMenuItem,
+            this.toolStripMenuItem3,
+            this.protectToolStripMenuItem,
+            this.unprotectToolStripMenuItem,
+            this.toolStripMenuItem4,
+            this.renameToolStripMenuItem});
+            this.hiddenWindowsContextMenu.Name = "hiddenWindowsContextMenu";
+            this.hiddenWindowsContextMenu.Size = new System.Drawing.Size(153, 126);
+            this.hiddenWindowsContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.hiddenWindowsContextMenu_Opening);
             // 
-            // toolStripSeparator2
+            // showWindowToolStripMenuItem
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 54);
+            this.showWindowToolStripMenuItem.Image = global::theDiary.Tools.HideMyWindow.ActionResource.show_small;
+            this.showWindowToolStripMenuItem.Name = "showWindowToolStripMenuItem";
+            this.showWindowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.showWindowToolStripMenuItem.Text = "&Show Window";
+            this.showWindowToolStripMenuItem.Click += new System.EventHandler(this.ToggleHiddenWindows);
             // 
-            // toolStripStatusLabel1
+            // toolStripMenuItem3
             // 
-            this.toolStripStatusLabel1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripStatusLabel1.Image = global::theDiary.Tools.HideMyWindow.ActionResource.lockwindow_small;
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(16, 17);
-            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(149, 6);
             // 
-            // toolStripStatusLabel2
+            // protectToolStripMenuItem
             // 
-            this.toolStripStatusLabel2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripStatusLabel2.Image = global::theDiary.Tools.HideMyWindow.ActionResource.tack;
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(16, 17);
-            this.toolStripStatusLabel2.Text = "toolStripStatusLabel2";
+            this.protectToolStripMenuItem.Image = global::theDiary.Tools.HideMyWindow.ActionResource.lockwindow_small;
+            this.protectToolStripMenuItem.Name = "protectToolStripMenuItem";
+            this.protectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.protectToolStripMenuItem.Text = "&Protect";
+            this.protectToolStripMenuItem.Click += new System.EventHandler(this.lockWindow_Click);
             // 
-            // toolStripStatusLabel3
+            // unprotectToolStripMenuItem
             // 
-            this.toolStripStatusLabel3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripStatusLabel3.Image = global::theDiary.Tools.HideMyWindow.ActionResource.hide;
-            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(16, 17);
-            this.toolStripStatusLabel3.Text = "toolStripStatusLabel3";
+            this.unprotectToolStripMenuItem.Image = global::theDiary.Tools.HideMyWindow.ActionResource.unlockwindow_small;
+            this.unprotectToolStripMenuItem.Name = "unprotectToolStripMenuItem";
+            this.unprotectToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.unprotectToolStripMenuItem.Text = "&Unprotect";
+            this.unprotectToolStripMenuItem.Click += new System.EventHandler(this.unlockWindow_Click);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(149, 6);
+            // 
+            // renameToolStripMenuItem
+            // 
+            this.renameToolStripMenuItem.Image = global::theDiary.Tools.HideMyWindow.ActionResource.rename_small;
+            this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.renameToolStripMenuItem.Text = "&Rename";
+            this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -614,7 +617,6 @@ namespace theDiary.Tools.HideMyWindow
         private ToolStrip toolStrip1;
         private ToolStripButton showWindow;
         private ToolStripButton lockWindow;
-        private ToolStripButton unlockWindow;
         private ImageList actionImageListSmall;
         private ImageList actionImageList;
         private Panel panel1;
@@ -642,6 +644,7 @@ namespace theDiary.Tools.HideMyWindow
         private ToolStripStatusLabel toolStripStatusLabel3;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripStatusLabel toolStripStatusLabel2;
+        private ToolStripButton unlockWindow;
     }
 }
 
