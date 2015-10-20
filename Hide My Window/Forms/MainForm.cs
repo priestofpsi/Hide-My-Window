@@ -90,6 +90,7 @@ namespace theDiary.Tools.HideMyWindow
         private void ToggleHiddenWindows(object sender, EventArgs e)
         {
             this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item => Runtime.Instance.ToggleHiddenWindow(item));
+            this.hiddenWindows_SelectedIndexChanged(sender, e);
         }
 
         internal void UnhideAllWindows(object sender, EventArgs e)
@@ -276,10 +277,13 @@ namespace theDiary.Tools.HideMyWindow
 
         private void hiddenWindows_SelectedIndexChanged(object sender, EventArgs e)
         {
+            this.hideWindow.Visible = this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => item.Window.CanHide);
+            this.showWindow.Visible = !this.hideWindow.Visible;
             this.showWindow.Enabled = this.hiddenWindows.SelectedItems.Count > 0;
             this.unlockWindow.Visible = Runtime.Instance.Settings.PasswordIsSet && this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => item.Window.IsPasswordProtected);
             this.lockWindow.Visible = Runtime.Instance.Settings.PasswordIsSet && this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => !item.Window.IsPasswordProtected);
             this.pinWindow.Enabled = this.hiddenWindows.SelectedItems.Count > 0;
+            this.pinWindow.Text = (this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().First().Window.IsPinned) ? "Unpin" : "Pin";
             this.renameWindow.Enabled = this.hiddenWindows.SelectedItems.Count > 0;
             this.hiddenWindows.Invalidate();
         }

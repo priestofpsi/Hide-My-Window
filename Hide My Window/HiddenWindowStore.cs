@@ -141,10 +141,9 @@ namespace theDiary.Tools.HideMyWindow
             try
             {
                 if (IsolatedStorageFile.GetUserStoreForAssembly().FileExists(HiddenWindowStore.StoreFileName))
-                    stream = IsolatedStorageFile.GetUserStoreForAssembly().OpenFile(HiddenWindowStore.StoreFileName, FileMode.Open);
-
-                if (stream == null)
-                    stream = new FileStream(HiddenWindowStore.StoreFileName, FileMode.OpenOrCreate);
+                    stream = IsolatedStorageFile.GetUserStoreForAssembly().OpenFile(HiddenWindowStore.StoreFileName, FileMode.OpenOrCreate);
+                if (stream.Length == 0)
+                    return new HiddenWindowStore();
                 var xs = new XmlSerializer(typeof(HiddenWindowStore));
                 using (var fileStream = new StreamReader(stream))
                     return (HiddenWindowStore)xs.Deserialize(fileStream);

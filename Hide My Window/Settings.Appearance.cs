@@ -11,25 +11,34 @@ namespace theDiary.Tools.HideMyWindow
 {
     public partial class Settings
     {
+        #region Private Declarations
         private string applicationIconPath = null;
-        private static Icon DefaultApplicationIcon = new Icon(typeof(Settings).Assembly.GetManifestResourceStream("theDiary.Tools.HideMyWindow.Resources.application.ico"));
+        private Icon applicationIcon;
+        #endregion
+
+        #region Private Constant Declarations
+        private static readonly Icon DefaultApplicationIcon = new Icon(typeof(Settings).Assembly.GetManifestResourceStream("theDiary.Tools.HideMyWindow.Resources.application.ico"));
+        #endregion
 
         #region Public Events
         public event EventHandler<IconEventArgs> ApplicationIconChanged;
 
         public event MessageBoxHandler ConfirmIconOverride;
         #endregion
-
-
+        
         public Icon ApplicationIcon
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(this.ApplicationIconPath)
-                    && System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(this.ApplicationIconPath))
-                    return new Icon(this.ApplicationIconPath);
+                if (this.applicationIcon == null)
+                {
+                    if (!string.IsNullOrWhiteSpace(this.ApplicationIconPath)
+                        && System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(this.ApplicationIconPath))
+                        this.applicationIcon = new Icon(this.ApplicationIconPath);
 
-                return Settings.DefaultApplicationIcon;
+                    this.applicationIcon = Settings.DefaultApplicationIcon;
+                }
+                return this.applicationIcon;
             }
         }
 
@@ -73,5 +82,5 @@ namespace theDiary.Tools.HideMyWindow
         }
         
     }
-    public delegate bool MessageBoxHandler(object sender, MessageBoxEventArgs e);
+    
 }

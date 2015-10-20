@@ -34,7 +34,6 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
-            this.password = new theDiary.Tools.HideMyWindow.PasswordTextBox();
             this.requirePasswordOnShow = new System.Windows.Forms.CheckBox();
             this.startInTaskbar = new System.Windows.Forms.CheckBox();
             this.confirmWhenExiting = new System.Windows.Forms.CheckBox();
@@ -50,31 +49,41 @@
             this.Shift = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Win = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.HotKey = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.clearPassword = new System.Windows.Forms.CheckBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.tooltipLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.glowPanel1 = new theDiary.Tools.HideMyWindow.GlowPanel();
+            this.password = new theDiary.Tools.HideMyWindow.PasswordTextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabHotKeys.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.panel3.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
+            this.glowPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.panel3);
             this.panel1.Controls.Add(this.save);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 257);
+            this.panel1.Location = new System.Drawing.Point(0, 328);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(5);
-            this.panel1.Size = new System.Drawing.Size(324, 34);
+            this.panel1.Size = new System.Drawing.Size(627, 34);
             this.panel1.TabIndex = 1;
             // 
             // save
             // 
-            this.save.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.save.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.save.Location = new System.Drawing.Point(245, 5);
+            this.save.Dock = System.Windows.Forms.DockStyle.Right;
+            this.save.Location = new System.Drawing.Point(547, 5);
             this.save.Name = "save";
-            this.save.Size = new System.Drawing.Size(75, 23);
+            this.save.Size = new System.Drawing.Size(75, 24);
             this.save.TabIndex = 0;
             this.save.Text = "&Close";
             this.save.UseVisualStyleBackColor = true;
@@ -86,7 +95,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.panel2.Size = new System.Drawing.Size(324, 257);
+            this.panel2.Size = new System.Drawing.Size(627, 328);
             this.panel2.TabIndex = 2;
             // 
             // tabControl
@@ -98,13 +107,14 @@
             this.tabControl.Location = new System.Drawing.Point(5, 5);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(314, 247);
+            this.tabControl.Size = new System.Drawing.Size(617, 318);
             this.tabControl.TabIndex = 0;
             this.tabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl_Selected);
             // 
             // tabGeneral
             // 
-            this.tabGeneral.Controls.Add(this.password);
+            this.tabGeneral.Controls.Add(this.glowPanel1);
+            this.tabGeneral.Controls.Add(this.clearPassword);
             this.tabGeneral.Controls.Add(this.requirePasswordOnShow);
             this.tabGeneral.Controls.Add(this.startInTaskbar);
             this.tabGeneral.Controls.Add(this.confirmWhenExiting);
@@ -115,28 +125,14 @@
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Name = "tabGeneral";
             this.tabGeneral.Padding = new System.Windows.Forms.Padding(5);
-            this.tabGeneral.Size = new System.Drawing.Size(306, 221);
+            this.tabGeneral.Size = new System.Drawing.Size(609, 292);
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
             // 
-            // password
-            // 
-            this.password.ClearPassword = false;
-            this.password.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.password.Location = new System.Drawing.Point(9, 153);
-            this.password.Name = "password";
-            this.password.Password = "";
-            this.password.PasswordChar = 'l';
-            this.password.Size = new System.Drawing.Size(191, 20);
-            this.password.TabIndex = 6;
-            this.password.WaterMark = "Enter Password";
-            this.password.WaterMarkActiveForeColor = System.Drawing.Color.Gray;
-            this.password.WaterMarkFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.password.WaterMarkForeColor = System.Drawing.Color.LightGray;
-            // 
             // requirePasswordOnShow
             // 
+            this.requirePasswordOnShow.AccessibleName = "When showing from the Tool Tray the application will confirm password.";
             this.requirePasswordOnShow.AutoSize = true;
             this.requirePasswordOnShow.Location = new System.Drawing.Point(8, 128);
             this.requirePasswordOnShow.Name = "requirePasswordOnShow";
@@ -148,6 +144,7 @@
             // 
             // startInTaskbar
             // 
+            this.startInTaskbar.AccessibleDescription = "Application will start in the Tool Tray.";
             this.startInTaskbar.AutoSize = true;
             this.startInTaskbar.Location = new System.Drawing.Point(8, 104);
             this.startInTaskbar.Name = "startInTaskbar";
@@ -159,6 +156,7 @@
             // 
             // confirmWhenExiting
             // 
+            this.confirmWhenExiting.AccessibleDescription = "Confirm before exiting application.";
             this.confirmWhenExiting.AutoSize = true;
             this.confirmWhenExiting.Location = new System.Drawing.Point(8, 80);
             this.confirmWhenExiting.Name = "confirmWhenExiting";
@@ -181,6 +179,7 @@
             // 
             // closeToTaskbar
             // 
+            this.closeToTaskbar.AccessibleDescription = "Closing the window will send the application to the Tool Tray.";
             this.closeToTaskbar.AutoSize = true;
             this.closeToTaskbar.Location = new System.Drawing.Point(8, 32);
             this.closeToTaskbar.Name = "closeToTaskbar";
@@ -192,6 +191,7 @@
             // 
             // minimizeToTaskbar
             // 
+            this.minimizeToTaskbar.AccessibleDescription = "Closing the window will send the application to the Tool Tray.";
             this.minimizeToTaskbar.AutoSize = true;
             this.minimizeToTaskbar.Location = new System.Drawing.Point(8, 8);
             this.minimizeToTaskbar.Name = "minimizeToTaskbar";
@@ -205,7 +205,7 @@
             // 
             this.tabAppearance.Location = new System.Drawing.Point(4, 22);
             this.tabAppearance.Name = "tabAppearance";
-            this.tabAppearance.Size = new System.Drawing.Size(306, 221);
+            this.tabAppearance.Size = new System.Drawing.Size(609, 292);
             this.tabAppearance.TabIndex = 2;
             this.tabAppearance.Text = "Appearance";
             this.tabAppearance.UseVisualStyleBackColor = true;
@@ -216,7 +216,7 @@
             this.tabHotKeys.Location = new System.Drawing.Point(4, 22);
             this.tabHotKeys.Name = "tabHotKeys";
             this.tabHotKeys.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHotKeys.Size = new System.Drawing.Size(306, 221);
+            this.tabHotKeys.Size = new System.Drawing.Size(609, 292);
             this.tabHotKeys.TabIndex = 1;
             this.tabHotKeys.Text = "Hot Keys";
             this.tabHotKeys.UseVisualStyleBackColor = true;
@@ -234,7 +234,7 @@
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(3, 3);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(300, 215);
+            this.dataGridView1.Size = new System.Drawing.Size(603, 286);
             this.dataGridView1.TabIndex = 0;
             // 
             // Function
@@ -278,12 +278,81 @@
             this.HotKey.HeaderText = "Hot Key";
             this.HotKey.Name = "HotKey";
             // 
+            // clearPassword
+            // 
+            this.clearPassword.AutoSize = true;
+            this.clearPassword.Location = new System.Drawing.Point(208, 155);
+            this.clearPassword.Name = "clearPassword";
+            this.clearPassword.Size = new System.Drawing.Size(99, 17);
+            this.clearPassword.TabIndex = 7;
+            this.clearPassword.Text = "Clear Password";
+            this.clearPassword.UseVisualStyleBackColor = true;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.statusStrip1);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(5, 5);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(542, 24);
+            this.panel3.TabIndex = 1;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.AutoSize = false;
+            this.statusStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tooltipLabel});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 0);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(542, 24);
+            this.statusStrip1.SizingGrip = false;
+            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // tooltipLabel
+            // 
+            this.tooltipLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tooltipLabel.Name = "tooltipLabel";
+            this.tooltipLabel.Size = new System.Drawing.Size(0, 19);
+            this.tooltipLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // glowPanel1
+            // 
+            this.glowPanel1.Controls.Add(this.password);
+            this.glowPanel1.EffectColor = System.Drawing.Color.Firebrick;
+            this.glowPanel1.EffectEnabled = true;
+            this.glowPanel1.FeatherEffect = 100;
+            this.glowPanel1.GlowThickness = 5;
+            this.glowPanel1.Location = new System.Drawing.Point(5, 150);
+            this.glowPanel1.Name = "glowPanel1";
+            this.glowPanel1.Padding = new System.Windows.Forms.Padding(5);
+            this.glowPanel1.Size = new System.Drawing.Size(201, 30);
+            this.glowPanel1.TabIndex = 8;
+            this.glowPanel1.Trigger = theDiary.Tools.HideMyWindow.EffectTrigger.AlwaysOn;
+            // 
+            // password
+            // 
+            this.password.ClearPassword = false;
+            this.password.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+            this.password.Location = new System.Drawing.Point(4, 4);
+            this.password.Name = "password";
+            this.password.Password = "";
+            this.password.PasswordChar = 'l';
+            this.password.Size = new System.Drawing.Size(191, 20);
+            this.password.TabIndex = 6;
+            this.password.WaterMark = "Enter Password";
+            this.password.WaterMarkActiveForeColor = System.Drawing.Color.Gray;
+            this.password.WaterMarkFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.password.WaterMarkForeColor = System.Drawing.Color.LightGray;
+            this.password.TextChanged += new System.EventHandler(this.password_TextChanged);
+            // 
             // ConfigurationForm
             // 
             this.AcceptButton = this.save;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(324, 291);
+            this.ClientSize = new System.Drawing.Size(627, 362);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -299,6 +368,11 @@
             this.tabGeneral.PerformLayout();
             this.tabHotKeys.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.panel3.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            this.glowPanel1.ResumeLayout(false);
+            this.glowPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -325,5 +399,10 @@
         private System.Windows.Forms.CheckBox requirePasswordOnShow;
         private PasswordTextBox password;
         private System.Windows.Forms.TabPage tabAppearance;
+        private System.Windows.Forms.CheckBox clearPassword;
+        private GlowPanel glowPanel1;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel tooltipLabel;
     }
 }
