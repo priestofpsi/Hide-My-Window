@@ -13,15 +13,17 @@ namespace theDiary.Tools.HideMyWindow
             this.Handle = wHnd;
             this.OriginalState = 0;
             this.applicationProcess = ExternalReferences.GetWindowProcess(this.Handle);
+            
         }
 
         #endregion Constructors
 
         #region Private Declarations
-
+        
         private string title;
         private readonly object syncObject = new object();
         private volatile Process applicationProcess;
+        
         private UnlockWindowDelegate unlockWindowHandler;
 
         #endregion Private Declarations
@@ -29,6 +31,10 @@ namespace theDiary.Tools.HideMyWindow
         #region Public Events
 
         public event ApplicationExited ApplicationExited;
+        public event EventHandler<WindowEventArgs> Pinned;
+        public event EventHandler<WindowEventArgs> Unpinned;
+        public event EventHandler<WindowEventArgs> Protected;
+        public event EventHandler<WindowEventArgs> Unprotected;
 
         #endregion Public Events
 
@@ -108,7 +114,7 @@ namespace theDiary.Tools.HideMyWindow
             set;
         }
 
-        protected Process ApplicationProcess
+        internal protected Process ApplicationProcess
         {
             get
             {
@@ -219,10 +225,17 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         #endregion Private Methods & Functions
-
+        internal void NotifyApplicationExited()
+        {
+            if (this.ApplicationExited != null)
+                this.ApplicationExited(this, new WindowInfoEventArgs(this));
+        }
         #region Public Static Methods & Functions
-
-        public static WindowInfo Find(IntPtr handle)
+        public static WindowInfo Find(long handle)
+        {
+            return WindowInfo.FindByHandle(new IntPtr(handle));
+        }
+        public static WindowInfo FindByHandle(IntPtr handle)
         {
             return Runtime.Instance.FindWindow(handle) ?? new WindowInfo(handle);
         }

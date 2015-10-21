@@ -14,15 +14,18 @@ namespace theDiary.Tools.HideMyWindow
             this.ImageKey = window.Key;
             this.SubItems.Add(new ListViewSubItem(this, window.IsPasswordProtected ? "Yes" : "No")
             {
-                Tag = window.IsPasswordProtected
+                Tag = window.IsPasswordProtected,
+                Name = "IsPasswordProtected",
             });
             this.SubItems.Add(new ListViewSubItem(this, window.IsPinned ? "Yes" : "No")
             {
-                Tag = window.IsPinned
+                Tag = window.IsPinned,
+                Name = "IsPinned",
             });
             this.SubItems.Add(new ListViewSubItem()
             {
                 Text = window.ApplicationPathName,
+                Name = "ApplicationPathName",
             });
             this.Tag = window.Handle;
         }
@@ -30,6 +33,13 @@ namespace theDiary.Tools.HideMyWindow
         public override int GetHashCode()
         {
             return this.Window.GetHashCode();
+        }
+
+        public void Update()
+        {
+            this.SubItems["IsPasswordProtected"].Text = this.Window.IsPasswordProtected ? "Yes" : "No";
+            this.SubItems["IsPinned"].Text = this.Window.IsPinned ? "Yes" : "No";
+            this.SubItems["ApplicationPathName"].Text = this.Window.ApplicationPathName;
         }
 
         public WindowInfo Window

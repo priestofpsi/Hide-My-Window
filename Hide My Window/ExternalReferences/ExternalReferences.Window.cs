@@ -27,7 +27,7 @@ namespace theDiary.Tools.HideMyWindow
         internal static WindowInfo GetActiveWindow()
         {
             IntPtr windowHandle = ExternalReferences.GetForegroundWindow();
-            return WindowInfo.Find(windowHandle);
+            return WindowInfo.FindByHandle(windowHandle);
         }
 
         internal static IntPtr SetWindowLongPtr(IntPtr hWnd, Int32 nIndex, IntPtr dwNewLong)
@@ -68,6 +68,7 @@ namespace theDiary.Tools.HideMyWindow
             uint processId;
             uint callResult = ExternalReferences.GetWindowThreadProcessId(hWnd, out processId);
             Process returnValue = Process.GetProcessById((int)processId);
+            //returnValue.EnableRaisingEvents = true;
 
             return returnValue;
         }

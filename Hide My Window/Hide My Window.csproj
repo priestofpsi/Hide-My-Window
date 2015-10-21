@@ -89,7 +89,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ActionResource.resx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Color_glowColor.cs" />
     <Compile Include="Controls\GlowGroupBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -111,8 +110,6 @@
     <Compile Include="IconEventArgs.cs" />
     <Compile Include="MessageBoxEventArgs.cs" />
     <Compile Include="MessageBoxEventArgs.Delegates.cs" />
-    <Compile Include="Settings.Appearance.cs" />
-    <Compile Include="Settings.FormState.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,7 +126,6 @@
     <Compile Include="ExternalReferences\ExternalReferences.HotKeys.cs" />
     <Compile Include="ExternalReferences\ExternalReferences.Window.cs" />
     <Compile Include="Forms\WindowListViewItem.cs" />
-    <Compile Include="HiddenWindowStore.cs" />
     <Compile Include="HotKeys\HotKeyBindingList.cs" />
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
@@ -144,14 +140,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime.instance.cs" />
     <Compile Include="Runtime.singleton.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="Forms\UnlockForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\UnlockForm.Designer.cs">
       <DependentUpon>UnlockForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Settings.Password.cs" />
+    <Compile Include="FileStorage\FileEventArgs.cs" />
+    <Compile Include="FileStorage\HiddenWindowStore.cs" />
+    <Compile Include="FileStorage\Settings.Appearance.cs" />
+    <Compile Include="FileStorage\Settings.cs" />
+    <Compile Include="FileStorage\Settings.FormState.cs" />
+    <Compile Include="FileStorage\Settings.Password.cs" />
     <Compile Include="Windows\WindowCommand.cs" />
     <Compile Include="Windows\WindowEventArgs.cs" />
     <Compile Include="Windows\WindowInfo.cs" />
@@ -237,6 +237,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

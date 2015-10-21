@@ -21,10 +21,13 @@ namespace theDiary.Tools.HideMyWindow
             this.InitializeFormHandlers();
             this.InitializeFormFromSettings();
             this.Icon = Runtime.Instance.Settings.ApplicationIcon;
+            Settings.Notification += (s,e)=> this.labelNotifications.Text = e.EventText;
+            HiddenWindowStore.Notification += (s, e) => this.labelNotifications.Text = e.EventText;
             Runtime.Instance.Settings.ApplicationIconChanged += (s, e) => {
                 this.Icon = e.Icon;
                 this.notifyIcon.Icon = e.Icon;
                 };
+            Runtime.Instance.Store.Removed += (s,e)=>this.HiddenWindowsChanged(s, EventArgs.Empty);
         }
         #endregion Constructors
         private FormInitState initializing = FormInitState.NotInitialized;
@@ -177,21 +180,35 @@ namespace theDiary.Tools.HideMyWindow
             this.FormClosing += this.Form1_FormClosing;
             this.hiddenWindows.SelectedIndexChanged += (s, e) =>
             {
-                this.show.Enabled = this.hiddenWindows.SelectedItems.Count != 0;
+                this.DoInvoke(() =>this.show.Enabled = this.hiddenWindows.SelectedItems.Count != 0);
+
             };
             this.HiddenWindowsChanged += (s, e) =>
             {
-                this.showAll.Enabled = this.hiddenWindows.Items.Count != 0;
-                this.statusLabel.Text = string.Format("Hidden Windows: {0}", this.hiddenWindows.Items.Count);
-                if (this.hiddenWindows.View == View.Details)
-                    this.hiddenWindows.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                this.DoInvoke(() =>
+                {
+                    this.showAll.Enabled = this.hiddenWindows.Items.Count != 0;                    
+                    this.ItemsCount.Text = string.Format("{0} items", this.hiddenWindows.Items.Count);
+                    if (this.hiddenWindows.View == View.Details)
+                        this.hiddenWindows.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                });
             };
             this.VisibleChanged += (s, e) =>
             {
-                this.notifyIcon.Visible = !this.Visible;
+                this.DoInvoke(() => this.notifyIcon.Visible = !this.Visible);
             };
         }
-
+        private void DoInvoke(Action action)
+        {
+            if (action == null)
+                return;
+            if (this.InvokeRequired)
+            {
+                this.Invoke(action);
+                return;
+            }
+            action();
+        }
         private void InitializeFormFromSettings()
         {
             if (this.initializing == FormInitState.Initialized)
@@ -205,42 +222,62 @@ namespace theDiary.Tools.HideMyWindow
 
             this.Shown += (s, e) =>
             {
-                Runtime.Instance.Store.ForEach(item => Runtime.Instance.AddHiddenWindow(WindowInfo.Find(item)));
+                ((HiddenWindowStore) Runtime.Instance.Store).ForEach(item => Runtime.Instance.AddHiddenWindow(WindowInfo.Find(item)));
                 this.hiddenWindows_SelectedIndexChanged(s, e);
                 this.SetToolbarText();
 
                 if (!Program.IsConfigured)
                     this.openConfigurationForm_Click(this, EventArgs.Empty);
             };
-            Runtime.Instance.WindowHidden += Store_Added;
-            Runtime.Instance.WindowShown += Store_Removed;
+            Runtime.Instance.WindowHidden += this.Store_Added;
+            Runtime.Instance.WindowShown += this.Store_Removed;
             this.initializing = FormInitState.Initialized;
         }
 
         void Store_Removed(object sender, WindowEventArgs e)
         {
-            if (!e.Window.IsPinned)
-                this.hiddenWindows.Items.RemoveByKey(e.Window.Key);
+            this.DoInvoke(() =>
+            {
+                if (!e.Window.IsPinned)
+                    this.hiddenWindows.Items.RemoveByKey(e.Window.Key);
 
-            if (this.HiddenWindowsChanged != null)
-                this.HiddenWindowsChanged(this, new EventArgs());
+                if (this.HiddenWindowsChanged != null)
+                    this.HiddenWindowsChanged(this, new EventArgs());
+            });
         }
 
         void Store_Added(object sender, WindowEventArgs e)
         {
-            WindowListViewItem item = new WindowListViewItem(e.Window);
-            if (!this.imageListSmall.Images.ContainsKey(e.Window.Key))
-                this.imageListSmall.Images.Add(e.Window.Key, e.Window.ApplicationIcon.ToBitmap());
-            if (!this.imageListBig.Images.ContainsKey(e.Window.Key))
-                this.imageListBig.Images.Add(e.Window.Key, e.Window.ApplicationIcon.ToBitmap());
+            this.DoInvoke(() =>
+            {
+                WindowListViewItem item = new WindowListViewItem(e.Window);
+                if (!this.imageListSmall.Images.ContainsKey(e.Window.Key))
+                    this.imageListSmall.Images.Add(e.Window.Key, e.Window.ApplicationIcon.ToBitmap());
+                if (!this.imageListBig.Images.ContainsKey(e.Window.Key))
+                    this.imageListBig.Images.Add(e.Window.Key, e.Window.ApplicationIcon.ToBitmap());
 
-            if (!this.hiddenWindows.Items.ContainsKey(e.Window.Key))
-                this.hiddenWindows.Items.Add(item);
-
-            if (this.HiddenWindowsChanged != null)
-                this.HiddenWindowsChanged(this, new EventArgs());
+                if (!this.hiddenWindows.Items.ContainsKey(e.Window.Key))
+                {
+                    this.hiddenWindows.Items.Add(item);
+                    e.Window.ApplicationExited += this.RemoveClosedApplication;
+                }
+                if (this.HiddenWindowsChanged != null)
+                    this.HiddenWindowsChanged(this, new EventArgs());
+            });
         }
 
+        private void RemoveClosedApplication(object sender, WindowInfoEventArgs e)
+        {
+            this.DoInvoke(() =>
+            {
+                string key = e.Handle.ToInt64().ToString();
+                if (this.hiddenWindows.Items.ContainsKey(key))
+                {
+                    WindowInfo.FindByHandle(e.Handle).ApplicationExited -= this.RemoveClosedApplication;
+                    this.hiddenWindows.Items.RemoveByKey(key);
+                }
+            });
+        }
         private void RestoreFromTray()
         {
             this.Show();
@@ -277,20 +314,30 @@ namespace theDiary.Tools.HideMyWindow
 
         private void hiddenWindows_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.hideWindow.Visible = this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => item.Window.CanHide);
-            this.showWindow.Visible = !this.hideWindow.Visible;
-            this.showWindow.Enabled = this.hiddenWindows.SelectedItems.Count > 0;
-            this.unlockWindow.Visible = Runtime.Instance.Settings.PasswordIsSet && this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => item.Window.IsPasswordProtected);
-            this.lockWindow.Visible = Runtime.Instance.Settings.PasswordIsSet && this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => !item.Window.IsPasswordProtected);
-            this.pinWindow.Enabled = this.hiddenWindows.SelectedItems.Count > 0;
-            this.pinWindow.Text = (this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().First().Window.IsPinned) ? "Unpin" : "Pin";
-            this.renameWindow.Enabled = this.hiddenWindows.SelectedItems.Count > 0;
-            this.hiddenWindows.Invalidate();
+            this.DoInvoke(() =>
+            {
+                this.statusLabel.Text = string.Format("{0} items selected", this.hiddenWindows.SelectedItems.Count);
+                bool hasSelectedItems = this.hiddenWindows.SelectedItems.Count > 0;                
+                this.hiddenWindows.ContextMenuStrip = (hasSelectedItems) ? this.hiddenWindowsContextMenu : null;
+                this.hideWindow.Visible = hasSelectedItems && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().Any(item => item.Window.CanHide);
+                this.showWindow.Visible = !this.hideWindow.Visible;
+                this.showWindow.Enabled = hasSelectedItems;
+                this.unlockWindow.Visible = Runtime.Instance.Settings.PasswordIsSet && hasSelectedItems && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().Any(item => item.Window.IsPasswordProtected);
+                this.lockWindow.Visible = Runtime.Instance.Settings.PasswordIsSet && hasSelectedItems && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().Any(item => !item.Window.IsPasswordProtected);
+                this.pinWindow.Enabled = hasSelectedItems;
+                this.pinWindow.Text = (hasSelectedItems && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().First().Window.IsPinned) ? "Unpin" : "Pin";
+                this.renameWindow.Enabled = hasSelectedItems;
+                this.hiddenWindows.Invalidate();
+            });
         }
 
         private void lockWindow_Click(object sender, EventArgs e)
         {
-            this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item => item.Window.Lock(this.UnlockWindow));
+            this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item => 
+            {
+                item.Window.Lock(this.UnlockWindow);
+                item.Update();
+            });
             this.hiddenWindows_SelectedIndexChanged(sender, e);
         }
 
@@ -364,6 +411,8 @@ namespace theDiary.Tools.HideMyWindow
 
         private void hiddenWindowsContextMenu_Opening(object sender, CancelEventArgs e)
         {
+            this.hideWindowToolStripMenuItem.Visible = this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().Any(item => item.Window.CanHide);
+            this.showWindowToolStripMenuItem.Visible = this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().Any(item => item.Window.CanShow);
             this.protectToolStripMenuItem.Visible = this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => !item.Window.IsPasswordProtected);
             this.unprotectToolStripMenuItem.Visible = this.hiddenWindows.SelectedItems.Count > 0 && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().Any(item => item.Window.IsPasswordProtected);
         }
@@ -381,7 +430,11 @@ namespace theDiary.Tools.HideMyWindow
 
         private void pinWindow_Click(object sender, EventArgs e)
         {
-            this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item => item.Window.IsPinned = !item.Window.IsPinned);
+            this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item =>
+            {
+                item.Window.IsPinned = !item.Window.IsPinned;
+                item.Update();
+            });
             this.hiddenWindows_SelectedIndexChanged(sender, e);
         }
 
