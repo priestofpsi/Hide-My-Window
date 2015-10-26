@@ -22,10 +22,53 @@ namespace theDiary.Tools.HideMyWindow
             this.hotKeyMimicTextBox2.HotKey = Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.UnhideLastWindow);
             this.hotKeyMimicTextBox3.HotKey = Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.HideAllWindows);
             this.hotKeyMimicTextBox4.HotKey = Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.UnhideAllWindows);
-            this.hotKeyMimicTextBox1.HotKeyChanged += (s, e) => this.hotkeysChanged = true;
-            this.hotKeyMimicTextBox2.HotKeyChanged += (s, e) => this.hotkeysChanged = true;
-            this.hotKeyMimicTextBox3.HotKeyChanged += (s, e) => this.hotkeysChanged = true;
-            this.hotKeyMimicTextBox4.HotKeyChanged += (s, e) => this.hotkeysChanged = true;
+            this.hotKeyMimicTextBox1.HotKeyChanged += (s, e) =>
+            {
+                if (!Runtime.Instance.Settings.Hotkey.Contains(this.hotKeyMimicTextBox1.HotKey)){
+                    Runtime.Instance.Settings.Hotkey.Add(this.hotKeyMimicTextBox1.HotKey);
+                }
+                else
+                {
+                    Runtime.Instance.Settings.Hotkey[0] = this.hotKeyMimicTextBox1.HotKey;
+                }
+                this.hotkeysChanged = true;
+            };
+            this.hotKeyMimicTextBox2.HotKeyChanged += (s, e) =>
+            {
+                if (!Runtime.Instance.Settings.Hotkey.Contains(this.hotKeyMimicTextBox2.HotKey))
+                {
+                    Runtime.Instance.Settings.Hotkey.Add(this.hotKeyMimicTextBox2.HotKey);
+                }
+                else
+                {
+                    Runtime.Instance.Settings.Hotkey[1] = this.hotKeyMimicTextBox2.HotKey;
+                }
+                this.hotkeysChanged = true;
+            };
+            this.hotKeyMimicTextBox3.HotKeyChanged += (s, e) =>
+            {
+                if (!Runtime.Instance.Settings.Hotkey.Contains(this.hotKeyMimicTextBox3.HotKey))
+                {
+                    Runtime.Instance.Settings.Hotkey.Add(this.hotKeyMimicTextBox3.HotKey);
+                }
+                else
+                {
+                    Runtime.Instance.Settings.Hotkey[0] = this.hotKeyMimicTextBox3.HotKey;
+                }
+                this.hotkeysChanged = true;
+            };
+            this.hotKeyMimicTextBox4.HotKeyChanged += (s, e) =>
+            {
+                if (!Runtime.Instance.Settings.Hotkey.Contains(this.hotKeyMimicTextBox4.HotKey))
+                {
+                    Runtime.Instance.Settings.Hotkey.Add(this.hotKeyMimicTextBox4.HotKey);
+                }
+                else
+                {
+                    Runtime.Instance.Settings.Hotkey[0] = this.hotKeyMimicTextBox4.HotKey;
+                }
+                this.hotkeysChanged = true;
+            };
 
             this.glowPanel1.EffectColor = Runtime.Instance.Settings.PasswordIsSet ? Color.LimeGreen : Color.Firebrick;
             if (!Runtime.Instance.Settings.PasswordIsSet)
@@ -42,13 +85,13 @@ namespace theDiary.Tools.HideMyWindow
             this.clearPassword.AccessibleDescription = "Check to have your password cleared when closing.";
             this.FormClosing += (s, e) =>
             {
-                if (this.password.ClearPassword)                
+                if (this.password.ClearPassword)
                 {
                     Runtime.Instance.Settings.HashedPassword = string.Empty;
                 }
                 else if (this.password.Password != string.Empty)
                 {
-                    Runtime.Instance.Settings.HashedPassword = this.password.Password;                    
+                    Runtime.Instance.Settings.HashedPassword = this.password.Password;
                 }
                 if (this.hotkeysChanged)
                 {
