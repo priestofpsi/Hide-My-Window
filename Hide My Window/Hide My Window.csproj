@@ -95,7 +95,14 @@
     <Compile Include="Controls\GlowPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\HotKeyMimicTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\HotKeyMimicTextBox.Designer.cs">
+      <DependentUpon>HotKeyMimicTextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Extensions.cs" />
+    <Compile Include="Extensions.Text.cs" />
     <Compile Include="Forms\HiddenWindowsListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -160,6 +167,9 @@
     <EmbeddedResource Include="ActionResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ActionResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\HotKeyMimicTextBox.resx">
+      <DependentUpon>HotKeyMimicTextBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>

@@ -16,7 +16,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             this.Handle = window.Handle;
             this.ProcessId = window.ApplicationId;
-            this.State = window.CanShow ? WindowState.Hidden : WindowState.Normal;
+            this.State = window.CanShow ? WindowStates.Hidden : WindowStates.Normal;
         }
 
         public IntPtr Handle
@@ -31,7 +31,7 @@ namespace theDiary.Tools.HideMyWindow
             private set;
         }
 
-        public WindowState State
+        public WindowStates State
         {
             get;
             private set;

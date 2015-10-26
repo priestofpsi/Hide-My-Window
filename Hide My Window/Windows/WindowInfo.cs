@@ -21,21 +21,43 @@ namespace theDiary.Tools.HideMyWindow
         #region Private Declarations
         
         private string title;
+        private bool isPinned;
         private readonly object syncObject = new object();
-        private volatile Process applicationProcess;
-        
+        private volatile Process applicationProcess;        
         private UnlockWindowDelegate unlockWindowHandler;
 
         #endregion Private Declarations
 
         #region Public Events
-
+        /// <summary>
+        /// The event that is raised when the underlying application for a <see cref="WindowInfo"/> instance is exited, or terminated.
+        /// </summary>
         public event ApplicationExited ApplicationExited;
-        public event EventHandler<WindowEventArgs> Pinned;
-        public event EventHandler<WindowEventArgs> Unpinned;
-        public event EventHandler<WindowEventArgs> Protected;
-        public event EventHandler<WindowEventArgs> Unprotected;
 
+        /// <summary>
+        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as pinned.
+        /// </summary>
+        public event WindowEventHandler Pinned;
+
+        /// <summary>
+        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as unpinned.
+        /// </summary>
+        public event WindowEventHandler Unpinned;
+
+        /// <summary>
+        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as protected.
+        /// </summary>
+        public event WindowEventHandler Protected;
+
+        /// <summary>
+        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as been unprotected.
+        /// </summary>
+        public event WindowEventHandler Unprotected;
+
+        /// <summary>
+        /// The event that is raised when the title for a <see cref="WindowInfo"/> instance is changed.
+        /// </summary>
+        public event WindowEventHandler TitleChanged;
         #endregion Public Events
 
         #region Public Read-Only Properties
@@ -50,12 +72,12 @@ namespace theDiary.Tools.HideMyWindow
 
         public IntPtr Handle
         {
-            get; set;
+            get; internal set;
         }
 
         public long OriginalState
         {
-            get; set;
+            get; internal set;
         }
 
         public IntPtr CurrentState
@@ -74,23 +96,7 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        public string Title
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(this.title))
-                    return ExternalReferences.GetWindowText(this.Handle);
-
-                return this.title;
-            }
-            set
-            {
-                if (this.title == value)
-                    return;
-
-                this.title = value;
-            }
-        }
+       
 
         public bool CanShow
         {
@@ -110,8 +116,44 @@ namespace theDiary.Tools.HideMyWindow
 
         public bool IsPinned
         {
-            get;
-            set;
+            get
+            {
+                return this.isPinned;
+            }
+            set
+            {
+                if (this.isPinned == value)
+                    return;
+
+                this.isPinned = value;
+                if (this.isPinned && this.Pinned != null)
+                    this.Pinned(this, new WindowEventArgs(this));
+                else if (!this.isPinned && this.Unpinned != null)
+                    this.Unpinned(this, new WindowEventArgs(this));
+            }
+        }
+
+        public string Title
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(this.title))
+                    return ExternalReferences.GetWindowText(this.Handle);
+
+                return this.title;
+            }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    value = null;
+
+                if (this.title == value)
+                    return;
+
+                this.title = value;
+                if (this.TitleChanged != null)
+                    this.TitleChanged(this, new WindowEventArgs(this));
+            }
         }
 
         internal protected Process ApplicationProcess
@@ -155,18 +197,32 @@ namespace theDiary.Tools.HideMyWindow
 
         public void Lock(UnlockWindowDelegate handler)
         {
+            if (handler == null)
+                throw new ArgumentNullException("handler");
+
+            if (this.unlockWindowHandler == handler)
+                return;
+
             this.unlockWindowHandler = handler;
+            if (this.Protected != null)
+                this.Protected(this, new WindowEventArgs(this));
         }
 
         public void Unlock()
         {
+            if (this.unlockWindowHandler == null)
+                return;
+
             this.unlockWindowHandler = null;
+            if (this.Unprotected != null)
+                this.Unprotected(this, new WindowEventArgs(this));
         }
 
         public bool Hide()
         {
             if (!this.CanHide)
                 return false;
+
             return ExternalReferences.HideWindow(this);
         }
 
@@ -174,6 +230,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             if (!this.CanShow)
                 return;
+
             if (this.unlockWindowHandler == null
                 || this.unlockWindowHandler(this))
                 ExternalReferences.ShowWindow(this);

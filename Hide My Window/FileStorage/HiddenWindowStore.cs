@@ -74,7 +74,7 @@ namespace theDiary.Tools.HideMyWindow
             if (this.running)
                 return;
 
-            System.Threading.ThreadPool.QueueUserWorkItem((a) =>
+            var task = System.Threading.Tasks.Task.Run(() =>
             {
                 Thread.CurrentThread.Name = "HideMyWindow:CheckWindowProcesses";
                 this.running = true;

@@ -38,6 +38,14 @@ namespace theDiary.Tools.HideMyWindow
         [XmlElement]
         public HotKeyBindingList Hotkey;
 
+        public Hotkey GetHotKeyByFunction(HotkeyFunction function)
+        {
+            foreach (var key in this.Hotkey)
+                if (key.Function == function)
+                    return key;
+
+            return new HideMyWindow.Hotkey() { Function = function };
+        }
         [XmlAttribute]
         public View CurrentView
         {

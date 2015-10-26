@@ -7,6 +7,26 @@ namespace theDiary.Tools.HideMyWindow
     public sealed class Hotkey
         : IDisposable
     {
+        [XmlIgnore]
+        public string HotKeyString
+        {
+            get
+            {
+                var keystring = "";
+                if ((this.ModifierKeys & HotModifierKeys.Alt) > 0)
+                    keystring += "Alt+";
+                if ((this.ModifierKeys & HotModifierKeys.Control) > 0)
+                    keystring += "Ctrl+";
+                if ((this.ModifierKeys & HotModifierKeys.Shift) > 0)
+                    keystring += "Shift+";
+                if ((this.ModifierKeys & HotModifierKeys.Win) > 0)
+                    keystring += "Win+";
+                keystring += this.Key.ToString();
+
+                return keystring;
+            }
+        }
+
         [XmlAttribute]
         public HotkeyFunction Function;
 
@@ -24,11 +44,14 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                return HotKey.ToString();
+                if (this.HotKey == 0)
+                    return string.Empty;
+
+                return this.HotKey.ToString();
             }
             set
             {
-                HotKey = (Keys)Enum.Parse(typeof(Keys), value);
+                this.HotKey = (Keys)Enum.Parse(typeof(Keys), value);
             }
         }
 
@@ -37,11 +60,11 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                return Function.ToString();
+                return this.Function.ToString();
             }
             set
             {
-                Function = (HotkeyFunction)Enum.Parse(typeof(HotkeyFunction), value);
+                this.Function = (HotkeyFunction)Enum.Parse(typeof(HotkeyFunction), value);
             }
         }
 
@@ -50,11 +73,11 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                return ModifierKeys.HasFlag(HotModifierKeys.Control);
+                return this.ModifierKeys.HasFlag(HotModifierKeys.Control);
             }
             set
             {
-                ModHotFlag(value, HotModifierKeys.Control);
+                this.ModHotFlag(value, HotModifierKeys.Control);
             }
         }
 
@@ -63,11 +86,11 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                return ModifierKeys.HasFlag(HotModifierKeys.Alt);
+                return this.ModifierKeys.HasFlag(HotModifierKeys.Alt);
             }
             set
             {
-                ModHotFlag(value, HotModifierKeys.Alt);
+                this.ModHotFlag(value, HotModifierKeys.Alt);
             }
         }
 
@@ -76,11 +99,11 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                return ModifierKeys.HasFlag(HotModifierKeys.Shift);
+                return this.ModifierKeys.HasFlag(HotModifierKeys.Shift);
             }
             set
             {
-                ModHotFlag(value, HotModifierKeys.Shift);
+                this.ModHotFlag(value, HotModifierKeys.Shift);
             }
         }
 
@@ -89,45 +112,45 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                return ModifierKeys.HasFlag(HotModifierKeys.Win);
+                return this.ModifierKeys.HasFlag(HotModifierKeys.Win);
             }
             set
             {
-                ModHotFlag(value, HotModifierKeys.Win);
+                this.ModHotFlag(value, HotModifierKeys.Win);
             }
         }
 
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
         }
 
         private void Dispose(bool disposing)
         {
             if (disposing)
             {
-                Unregister();
+                this.Unregister();
             }
         }
 
         private void ModHotFlag(bool enabled, HotModifierKeys toggleEnum)
         {
             if (enabled)
-                ModifierKeys |= toggleEnum;
+                this.ModifierKeys |= toggleEnum;
             else
-                ModifierKeys &= ~toggleEnum;
+                this.ModifierKeys &= ~toggleEnum;
         }
 
         internal bool Register()
         {
-            if (HotKey == Keys.None)
+            if (this.HotKey == Keys.None)
                 return false;
 
-            if (ID != 0)
-                Unregister();
+            if (this.ID != 0)
+                this.Unregister();
 
-            ID = ExternalReferences.RegisterGlobalHotKey(ID, ModifierKeys, HotKey);
-            return ID != 0;
+            this.ID = ExternalReferences.RegisterGlobalHotKey(this.ID, this.ModifierKeys, this.HotKey);
+            return this.ID != 0;
         }
 
         internal void Unregister()

@@ -2,6 +2,8 @@
 
 namespace theDiary.Tools.HideMyWindow
 {
+    public delegate void WindowEventHandler(object sender, WindowEventArgs e);
+
     public class WindowEventArgs
            : EventArgs
     {

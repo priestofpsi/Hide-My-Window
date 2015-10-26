@@ -16,17 +16,17 @@ namespace theDiary.Tools.HideMyWindow
             this.startInTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "StartInTaskBar"));
             this.requirePasswordOnShow.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "RequirePasswordOnShow"));
             this.requirePasswordOnShow.DataBindings.Add(new Binding("Enabled", Runtime.Instance.Settings, "PasswordIsSet"));
-            this.Function.DataSource = Enum.GetNames(typeof(HotkeyFunction));
-            this.Function.DataPropertyName = "HKFunction";
             this.clearPassword.CheckedChanged += (s, e) => this.glowPanel1.Enabled = !this.clearPassword.Checked;
 
-            this.HotKey.DataSource = Enum.GetNames(typeof(Keys));
-            this.HotKey.DataPropertyName = "Key";
+            this.hotKeyMimicTextBox1.HotKey = Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.HideCurrentWindow);
+            this.hotKeyMimicTextBox2.HotKey = Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.UnhideLastWindow);
+            this.hotKeyMimicTextBox3.HotKey = Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.HideAllWindows);
+            this.hotKeyMimicTextBox4.HotKey = Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.UnhideAllWindows);
+            this.hotKeyMimicTextBox1.HotKeyChanged += (s, e) => this.hotkeysChanged = true;
+            this.hotKeyMimicTextBox2.HotKeyChanged += (s, e) => this.hotkeysChanged = true;
+            this.hotKeyMimicTextBox3.HotKeyChanged += (s, e) => this.hotkeysChanged = true;
+            this.hotKeyMimicTextBox4.HotKeyChanged += (s, e) => this.hotkeysChanged = true;
 
-            this.Control.DataPropertyName = "Control";
-            this.Alt.DataPropertyName = "Alt";
-            this.Shift.DataPropertyName = "Shift";
-            this.Win.DataPropertyName = "Win";
             this.glowPanel1.EffectColor = Runtime.Instance.Settings.PasswordIsSet ? Color.LimeGreen : Color.Firebrick;
             if (!Runtime.Instance.Settings.PasswordIsSet)
                 this.password.TextChanged += (s, e) =>
@@ -40,8 +40,6 @@ namespace theDiary.Tools.HideMyWindow
             this.password.AccessibleDescription = Runtime.Instance.Settings.PasswordIsSet ? "The password has been configured." : "The password has not been set.";
             this.glowPanel1.AccessibleDescription = Runtime.Instance.Settings.PasswordIsSet ? "The password has been configured." : "The password has not been set.";
             this.clearPassword.AccessibleDescription = "Check to have your password cleared when closing.";
-            this.dataGridView1.DataSource = Runtime.Instance.Settings.Hotkey;
-            this.dataGridView1.CellValueChanged += (s, e) => this.hotkeysChanged = true;
             this.FormClosing += (s, e) =>
             {
                 if (this.password.ClearPassword)                

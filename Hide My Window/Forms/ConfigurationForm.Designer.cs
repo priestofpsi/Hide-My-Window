@@ -30,40 +30,35 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigurationForm));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.tooltipLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.save = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.glowPanel1 = new theDiary.Tools.HideMyWindow.GlowPanel();
+            this.password = new theDiary.Tools.HideMyWindow.PasswordTextBox();
+            this.clearPassword = new System.Windows.Forms.CheckBox();
             this.requirePasswordOnShow = new System.Windows.Forms.CheckBox();
             this.startInTaskbar = new System.Windows.Forms.CheckBox();
             this.confirmWhenExiting = new System.Windows.Forms.CheckBox();
             this.restoreWindowsOnExit = new System.Windows.Forms.CheckBox();
             this.closeToTaskbar = new System.Windows.Forms.CheckBox();
             this.minimizeToTaskbar = new System.Windows.Forms.CheckBox();
-            this.tabAppearance = new System.Windows.Forms.TabPage();
             this.tabHotKeys = new System.Windows.Forms.TabPage();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Function = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.Control = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Alt = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Shift = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Win = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.HotKey = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.clearPassword = new System.Windows.Forms.CheckBox();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.tooltipLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.glowPanel1 = new theDiary.Tools.HideMyWindow.GlowPanel();
-            this.password = new theDiary.Tools.HideMyWindow.PasswordTextBox();
+            this.hotKeyMimicTextBox4 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
+            this.hotKeyMimicTextBox3 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
+            this.hotKeyMimicTextBox2 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
+            this.hotKeyMimicTextBox1 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
             this.panel1.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabGeneral.SuspendLayout();
-            this.tabHotKeys.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.panel3.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             this.glowPanel1.SuspendLayout();
+            this.tabHotKeys.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -76,6 +71,35 @@
             this.panel1.Padding = new System.Windows.Forms.Padding(5);
             this.panel1.Size = new System.Drawing.Size(627, 34);
             this.panel1.TabIndex = 1;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.statusStrip1);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(5, 5);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(542, 24);
+            this.panel3.TabIndex = 1;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.AutoSize = false;
+            this.statusStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tooltipLabel});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 0);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(542, 24);
+            this.statusStrip1.SizingGrip = false;
+            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // tooltipLabel
+            // 
+            this.tooltipLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tooltipLabel.Name = "tooltipLabel";
+            this.tooltipLabel.Size = new System.Drawing.Size(0, 19);
+            this.tooltipLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // save
             // 
@@ -101,7 +125,6 @@
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabGeneral);
-            this.tabControl.Controls.Add(this.tabAppearance);
             this.tabControl.Controls.Add(this.tabHotKeys);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(5, 5);
@@ -129,6 +152,46 @@
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
+            // 
+            // glowPanel1
+            // 
+            this.glowPanel1.Controls.Add(this.password);
+            this.glowPanel1.EffectColor = System.Drawing.Color.Firebrick;
+            this.glowPanel1.EffectEnabled = true;
+            this.glowPanel1.FeatherEffect = 100;
+            this.glowPanel1.GlowThickness = 5;
+            this.glowPanel1.Location = new System.Drawing.Point(5, 150);
+            this.glowPanel1.Name = "glowPanel1";
+            this.glowPanel1.Padding = new System.Windows.Forms.Padding(5);
+            this.glowPanel1.Size = new System.Drawing.Size(201, 30);
+            this.glowPanel1.TabIndex = 8;
+            this.glowPanel1.Trigger = theDiary.Tools.HideMyWindow.EffectTrigger.AlwaysOn;
+            // 
+            // password
+            // 
+            this.password.ClearPassword = false;
+            this.password.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+            this.password.Location = new System.Drawing.Point(4, 4);
+            this.password.Name = "password";
+            this.password.Password = "";
+            this.password.PasswordChar = 'l';
+            this.password.Size = new System.Drawing.Size(191, 20);
+            this.password.TabIndex = 6;
+            this.password.WaterMark = "Enter Password";
+            this.password.WaterMarkActiveForeColor = System.Drawing.Color.Gray;
+            this.password.WaterMarkFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.password.WaterMarkForeColor = System.Drawing.Color.LightGray;
+            this.password.TextChanged += new System.EventHandler(this.password_TextChanged);
+            // 
+            // clearPassword
+            // 
+            this.clearPassword.AutoSize = true;
+            this.clearPassword.Location = new System.Drawing.Point(208, 155);
+            this.clearPassword.Name = "clearPassword";
+            this.clearPassword.Size = new System.Drawing.Size(99, 17);
+            this.clearPassword.TabIndex = 7;
+            this.clearPassword.Text = "Clear Password";
+            this.clearPassword.UseVisualStyleBackColor = true;
             // 
             // requirePasswordOnShow
             // 
@@ -201,18 +264,12 @@
             this.minimizeToTaskbar.UseCompatibleTextRendering = true;
             this.minimizeToTaskbar.UseVisualStyleBackColor = true;
             // 
-            // tabAppearance
-            // 
-            this.tabAppearance.Location = new System.Drawing.Point(4, 22);
-            this.tabAppearance.Name = "tabAppearance";
-            this.tabAppearance.Size = new System.Drawing.Size(609, 292);
-            this.tabAppearance.TabIndex = 2;
-            this.tabAppearance.Text = "Appearance";
-            this.tabAppearance.UseVisualStyleBackColor = true;
-            // 
             // tabHotKeys
             // 
-            this.tabHotKeys.Controls.Add(this.dataGridView1);
+            this.tabHotKeys.Controls.Add(this.hotKeyMimicTextBox4);
+            this.tabHotKeys.Controls.Add(this.hotKeyMimicTextBox3);
+            this.tabHotKeys.Controls.Add(this.hotKeyMimicTextBox2);
+            this.tabHotKeys.Controls.Add(this.hotKeyMimicTextBox1);
             this.tabHotKeys.Location = new System.Drawing.Point(4, 22);
             this.tabHotKeys.Name = "tabHotKeys";
             this.tabHotKeys.Padding = new System.Windows.Forms.Padding(3);
@@ -221,131 +278,49 @@
             this.tabHotKeys.Text = "Hot Keys";
             this.tabHotKeys.UseVisualStyleBackColor = true;
             // 
-            // dataGridView1
+            // hotKeyMimicTextBox4
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Function,
-            this.Control,
-            this.Alt,
-            this.Shift,
-            this.Win,
-            this.HotKey});
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(603, 286);
-            this.dataGridView1.TabIndex = 0;
+            this.hotKeyMimicTextBox4.AutoSize = true;
+            this.hotKeyMimicTextBox4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.hotKeyMimicTextBox4.HotKey = null;
+            this.hotKeyMimicTextBox4.Location = new System.Drawing.Point(3, 72);
+            this.hotKeyMimicTextBox4.Margin = new System.Windows.Forms.Padding(0);
+            this.hotKeyMimicTextBox4.Name = "hotKeyMimicTextBox4";
+            this.hotKeyMimicTextBox4.Size = new System.Drawing.Size(285, 23);
+            this.hotKeyMimicTextBox4.TabIndex = 4;
             // 
-            // Function
+            // hotKeyMimicTextBox3
             // 
-            this.Function.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Function.HeaderText = "Function";
-            this.Function.Name = "Function";
-            this.Function.Width = 54;
+            this.hotKeyMimicTextBox3.AutoSize = true;
+            this.hotKeyMimicTextBox3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.hotKeyMimicTextBox3.HotKey = null;
+            this.hotKeyMimicTextBox3.Location = new System.Drawing.Point(3, 49);
+            this.hotKeyMimicTextBox3.Margin = new System.Windows.Forms.Padding(0);
+            this.hotKeyMimicTextBox3.Name = "hotKeyMimicTextBox3";
+            this.hotKeyMimicTextBox3.Size = new System.Drawing.Size(285, 23);
+            this.hotKeyMimicTextBox3.TabIndex = 3;
             // 
-            // Control
+            // hotKeyMimicTextBox2
             // 
-            this.Control.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Control.HeaderText = "Control";
-            this.Control.Name = "Control";
-            this.Control.Width = 46;
+            this.hotKeyMimicTextBox2.AutoSize = true;
+            this.hotKeyMimicTextBox2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.hotKeyMimicTextBox2.HotKey = null;
+            this.hotKeyMimicTextBox2.Location = new System.Drawing.Point(3, 26);
+            this.hotKeyMimicTextBox2.Margin = new System.Windows.Forms.Padding(0);
+            this.hotKeyMimicTextBox2.Name = "hotKeyMimicTextBox2";
+            this.hotKeyMimicTextBox2.Size = new System.Drawing.Size(285, 23);
+            this.hotKeyMimicTextBox2.TabIndex = 2;
             // 
-            // Alt
+            // hotKeyMimicTextBox1
             // 
-            this.Alt.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Alt.HeaderText = "Alt";
-            this.Alt.Name = "Alt";
-            this.Alt.Width = 25;
-            // 
-            // Shift
-            // 
-            this.Shift.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Shift.HeaderText = "Shift";
-            this.Shift.Name = "Shift";
-            this.Shift.Width = 34;
-            // 
-            // Win
-            // 
-            this.Win.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Win.HeaderText = "Win";
-            this.Win.Name = "Win";
-            this.Win.Width = 32;
-            // 
-            // HotKey
-            // 
-            this.HotKey.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.HotKey.HeaderText = "Hot Key";
-            this.HotKey.Name = "HotKey";
-            // 
-            // clearPassword
-            // 
-            this.clearPassword.AutoSize = true;
-            this.clearPassword.Location = new System.Drawing.Point(208, 155);
-            this.clearPassword.Name = "clearPassword";
-            this.clearPassword.Size = new System.Drawing.Size(99, 17);
-            this.clearPassword.TabIndex = 7;
-            this.clearPassword.Text = "Clear Password";
-            this.clearPassword.UseVisualStyleBackColor = true;
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.statusStrip1);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(5, 5);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(542, 24);
-            this.panel3.TabIndex = 1;
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.AutoSize = false;
-            this.statusStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Visible;
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tooltipLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 0);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(542, 24);
-            this.statusStrip1.SizingGrip = false;
-            this.statusStrip1.TabIndex = 2;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // tooltipLabel
-            // 
-            this.tooltipLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.tooltipLabel.Name = "tooltipLabel";
-            this.tooltipLabel.Size = new System.Drawing.Size(0, 19);
-            this.tooltipLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // glowPanel1
-            // 
-            this.glowPanel1.Controls.Add(this.password);
-            this.glowPanel1.EffectColor = System.Drawing.Color.Firebrick;
-            this.glowPanel1.EffectEnabled = true;
-            this.glowPanel1.FeatherEffect = 100;
-            this.glowPanel1.GlowThickness = 5;
-            this.glowPanel1.Location = new System.Drawing.Point(5, 150);
-            this.glowPanel1.Name = "glowPanel1";
-            this.glowPanel1.Padding = new System.Windows.Forms.Padding(5);
-            this.glowPanel1.Size = new System.Drawing.Size(201, 30);
-            this.glowPanel1.TabIndex = 8;
-            this.glowPanel1.Trigger = theDiary.Tools.HideMyWindow.EffectTrigger.AlwaysOn;
-            // 
-            // password
-            // 
-            this.password.ClearPassword = false;
-            this.password.Font = new System.Drawing.Font("Wingdings", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.password.Location = new System.Drawing.Point(4, 4);
-            this.password.Name = "password";
-            this.password.Password = "";
-            this.password.PasswordChar = 'l';
-            this.password.Size = new System.Drawing.Size(191, 20);
-            this.password.TabIndex = 6;
-            this.password.WaterMark = "Enter Password";
-            this.password.WaterMarkActiveForeColor = System.Drawing.Color.Gray;
-            this.password.WaterMarkFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.password.WaterMarkForeColor = System.Drawing.Color.LightGray;
-            this.password.TextChanged += new System.EventHandler(this.password_TextChanged);
+            this.hotKeyMimicTextBox1.AutoSize = true;
+            this.hotKeyMimicTextBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.hotKeyMimicTextBox1.HotKey = null;
+            this.hotKeyMimicTextBox1.Location = new System.Drawing.Point(3, 3);
+            this.hotKeyMimicTextBox1.Margin = new System.Windows.Forms.Padding(0);
+            this.hotKeyMimicTextBox1.Name = "hotKeyMimicTextBox1";
+            this.hotKeyMimicTextBox1.Size = new System.Drawing.Size(285, 23);
+            this.hotKeyMimicTextBox1.TabIndex = 1;
             // 
             // ConfigurationForm
             // 
@@ -362,17 +337,17 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Configuration";
             this.panel1.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.tabControl.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.tabGeneral.PerformLayout();
-            this.tabHotKeys.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.panel3.ResumeLayout(false);
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.glowPanel1.ResumeLayout(false);
             this.glowPanel1.PerformLayout();
+            this.tabHotKeys.ResumeLayout(false);
+            this.tabHotKeys.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -389,20 +364,16 @@
         private System.Windows.Forms.CheckBox minimizeToTaskbar;
         private System.Windows.Forms.CheckBox confirmWhenExiting;
         private System.Windows.Forms.CheckBox startInTaskbar;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewComboBoxColumn Function;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Control;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Alt;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Shift;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Win;
-        private System.Windows.Forms.DataGridViewComboBoxColumn HotKey;
         private System.Windows.Forms.CheckBox requirePasswordOnShow;
         private PasswordTextBox password;
-        private System.Windows.Forms.TabPage tabAppearance;
         private System.Windows.Forms.CheckBox clearPassword;
         private GlowPanel glowPanel1;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tooltipLabel;
+        private HotKeyMimicTextBox hotKeyMimicTextBox1;
+        private HotKeyMimicTextBox hotKeyMimicTextBox4;
+        private HotKeyMimicTextBox hotKeyMimicTextBox3;
+        private HotKeyMimicTextBox hotKeyMimicTextBox2;
     }
 }

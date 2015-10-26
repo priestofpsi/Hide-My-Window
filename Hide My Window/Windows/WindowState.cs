@@ -1,6 +1,6 @@
 ﻿namespace theDiary.Tools.HideMyWindow
 {
-    public enum WindowState
+    public enum WindowStates
     {
         Normal = 0,
 
