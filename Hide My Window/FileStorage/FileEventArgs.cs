@@ -14,7 +14,6 @@ namespace theDiary.Tools.HideMyWindow
         public FileEventArgs()
             : base()
         {
-            
         }
         public FileEventArgs(string fileName)
             : this()

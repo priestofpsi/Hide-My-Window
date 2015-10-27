@@ -51,7 +51,7 @@ namespace theDiary.Tools.HideMyWindow
             }
             set
             {
-                this.HotKey = (Keys)Enum.Parse(typeof(Keys), value);
+                this.HotKey = (Keys) Enum.Parse(typeof(Keys), value);
             }
         }
 
@@ -64,7 +64,7 @@ namespace theDiary.Tools.HideMyWindow
             }
             set
             {
-                this.Function = (HotkeyFunction)Enum.Parse(typeof(HotkeyFunction), value);
+                this.Function = (HotkeyFunction) Enum.Parse(typeof(HotkeyFunction), value);
             }
         }
 

@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace theDiary.Tools.HideMyWindow
 {
     public partial class HotKeyMimicTextBox : UserControl
-    {   
+    {
         public HotKeyMimicTextBox()
         {
             InitializeComponent();

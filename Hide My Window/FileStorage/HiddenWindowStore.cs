@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
+using System.Linq;
 using System.Threading;
 using System.Xml.Serialization;
-using System.Linq;
 
 namespace theDiary.Tools.HideMyWindow
 {
@@ -90,7 +90,6 @@ namespace theDiary.Tools.HideMyWindow
 
         private void CheckWindowProcess(WindowInfo window)
         {
-
             long handle = window.Handle.ToInt64();
             try
             {
@@ -220,7 +219,7 @@ namespace theDiary.Tools.HideMyWindow
                     {
                         var xs = new XmlSerializer(typeof(HiddenWindowStore));
                         using (var fileStream = new StreamReader(stream))
-                            returnValue = (HiddenWindowStore)xs.Deserialize(fileStream);
+                            returnValue = (HiddenWindowStore) xs.Deserialize(fileStream);
                     }
                 }
                 catch

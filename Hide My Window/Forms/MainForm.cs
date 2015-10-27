@@ -21,13 +21,14 @@ namespace theDiary.Tools.HideMyWindow
             this.InitializeFormHandlers();
             this.InitializeFormFromSettings();
             this.Icon = Runtime.Instance.Settings.ApplicationIcon;
-            Settings.Notification += (s,e)=> this.labelNotifications.Text = e.EventText;
+            Settings.Notification += (s, e) => this.labelNotifications.Text = e.EventText;
             HiddenWindowStore.Notification += (s, e) => this.labelNotifications.Text = e.EventText;
-            Runtime.Instance.Settings.ApplicationIconChanged += (s, e) => {
+            Runtime.Instance.Settings.ApplicationIconChanged += (s, e) =>
+            {
                 this.Icon = e.Icon;
                 this.notifyIcon.Icon = e.Icon;
-                };
-            Runtime.Instance.Store.Removed += (s,e)=>this.HiddenWindowsChanged(s, EventArgs.Empty);
+            };
+            Runtime.Instance.Store.Removed += (s, e) => this.HiddenWindowsChanged(s, EventArgs.Empty);
         }
         #endregion Constructors
         private FormInitState initializing = FormInitState.NotInitialized;
@@ -43,7 +44,7 @@ namespace theDiary.Tools.HideMyWindow
             switch (m.Msg)
             {
                 case ExternalReferences.WM_HOTKEY:
-                    this.HotKeyPressed((short)m.WParam);
+                    this.HotKeyPressed((short) m.WParam);
                     passThrough = false;
                     break;
 
@@ -64,7 +65,7 @@ namespace theDiary.Tools.HideMyWindow
             if (passThrough)
                 base.WndProc(ref m);
         }
-        #endregion Protected Overriden Methods & Functions
+        #endregion Protected Over Riden Methods & Functions
 
         #region Event Handlers
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -124,7 +125,7 @@ namespace theDiary.Tools.HideMyWindow
         private void ToggleView(object sender, EventArgs e)
         {
             ToolStripMenuItem item = sender as ToolStripMenuItem;
-            this.SetHiddenWindowsView((View)item.Tag);
+            this.SetHiddenWindowsView((View) item.Tag);
         }
 
         private void SetHiddenWindowsView(View view)
@@ -180,14 +181,13 @@ namespace theDiary.Tools.HideMyWindow
             this.FormClosing += this.Form1_FormClosing;
             this.hiddenWindows.SelectedIndexChanged += (s, e) =>
             {
-                this.DoInvoke(() =>this.show.Enabled = this.hiddenWindows.SelectedItems.Count != 0);
-
+                this.DoInvoke(() => this.show.Enabled = this.hiddenWindows.SelectedItems.Count != 0);
             };
             this.HiddenWindowsChanged += (s, e) =>
             {
                 this.DoInvoke(() =>
                 {
-                    this.showAll.Enabled = this.hiddenWindows.Items.Count != 0;                    
+                    this.showAll.Enabled = this.hiddenWindows.Items.Count != 0;
                     this.ItemsCount.Text = string.Format("{0} items", this.hiddenWindows.Items.Count);
                     if (this.hiddenWindows.View == View.Details)
                         this.hiddenWindows.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -317,7 +317,7 @@ namespace theDiary.Tools.HideMyWindow
             this.DoInvoke(() =>
             {
                 this.statusLabel.Text = string.Format("{0} items selected", this.hiddenWindows.SelectedItems.Count);
-                bool hasSelectedItems = this.hiddenWindows.SelectedItems.Count > 0;                
+                bool hasSelectedItems = this.hiddenWindows.SelectedItems.Count > 0;
                 this.hiddenWindows.ContextMenuStrip = (hasSelectedItems) ? this.hiddenWindowsContextMenu : null;
                 this.hideWindow.Visible = hasSelectedItems && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().Any(item => item.Window.CanHide);
                 this.showWindow.Visible = !this.hideWindow.Visible;
@@ -333,7 +333,7 @@ namespace theDiary.Tools.HideMyWindow
 
         private void lockWindow_Click(object sender, EventArgs e)
         {
-            this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item => 
+            this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item =>
             {
                 item.Window.Lock(this.UnlockWindow);
                 item.Update();

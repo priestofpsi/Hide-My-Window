@@ -80,12 +80,12 @@ namespace theDiary.Tools.HideMyWindow
                     e.DrawDefault = true;
                     break;
             }
-            if ((bool)e.Item.SubItems[1].Tag != currentItem.IsPasswordProtected)
+            if ((bool) e.Item.SubItems[1].Tag != currentItem.IsPasswordProtected)
             {
                 e.Item.SubItems[1].Tag = currentItem.IsPasswordProtected;
                 e.Item.SubItems[1].Text = currentItem.IsPasswordProtected ? "Yes" : "No";
             }
-            if ((bool)e.Item.SubItems[2].Tag != currentItem.IsPinned)
+            if ((bool) e.Item.SubItems[2].Tag != currentItem.IsPinned)
             {
                 e.Item.SubItems[2].Tag = currentItem.IsPinned;
                 e.Item.SubItems[2].Text = currentItem.IsPinned ? "Yes" : "No";

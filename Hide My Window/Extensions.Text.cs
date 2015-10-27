@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace System
 {
-    /// <summary>
-    /// Provides extenion methods & Functions used in Text and <see cref="String"/> manipulation.
-    /// </summary>
+    /// <summary> Provides extenion methods & Functions used in Text and <see cref="String"/>
+    /// manipulation. </summary>
     public static class TextExtensions
     {
         private static readonly char WhiteSpace = ' ';
@@ -35,11 +34,9 @@ namespace System
         //    Regex regex = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)");
         //    List<string> result = new List<string>();
 
-        //    return regex.Replace(text, delegate(Match m)
-        //    {
-        //        Regex removed = new Regex(@"[_\-\.]+");
-        //        return removed.Replace(m.Groups[1].Value, String.Empty) + " " + removed.Replace(m.Groups[2].Value, String.Empty);
-        //    });
+        // return regex.Replace(text, delegate(Match m) { Regex removed = new Regex(@"[_\-\.]+");
+        // return removed.Replace(m.Groups[1].Value, String.Empty) + " " +
+        // removed.Replace(m.Groups[2].Value, String.Empty); });
 
         //}
 
@@ -70,25 +67,32 @@ namespace System
         //}
         #region IsNull Methods & Functions
         /// <summary>
-        /// Determines if the <paramref name="value"/> is either a <c>Null</c> instance, or is an <c>Empty</c> <see cref="string"/>.
+        /// Determines if the <paramref name="value"/> is either a <c> Null </c> instance, or is an
+        /// <c> Empty </c><see cref="string"/>.
         /// </summary>
-        /// <param name="value">The <see cref="String"/> to compare.</param>
-        /// <returns><c>True</c> if the <see cref="string"/> is <c>Null</c> or <c>Empty</c>.</returns>
+        /// <param name="value"> The <see cref="String"/> to compare. </param>
+        /// <returns>
+        /// <c> True </c> if the <see cref="string"/> is <c> Null </c> or <c> Empty </c>.
+        /// </returns>
         public static bool IsNullOrEmpty(this string value)
         {
             return string.IsNullOrEmpty(value);
         }
 
         /// <summary>
-        /// Determines if the <paramref name="value"/> is either a <c>Null</c> instance, or is an <c>Empty</c> or <c>Whitepsace</c> <see cref="string"/>..
+        /// Determines if the <paramref name="value"/> is either a <c> Null </c> instance, or is an
+        /// <c> Empty </c> or <c> Whitepsace </c><see cref="string"/>..
         /// </summary>
-        /// <param name="value">The <see cref="String"/> to compare.</param>
-        /// <returns><c>True</c> if the <see cref="string"/> is <c>Null</c>, <c>Empty</c> or <c>Whitespace</c>.</returns>
+        /// <param name="value"> The <see cref="String"/> to compare. </param>
+        /// <returns>
+        /// <c> True </c> if the <see cref="string"/> is <c> Null </c>, <c> Empty </c> or <c>
+        /// Whitespace </c>.
+        /// </returns>
         public static bool IsNullEmptyOrWhiteSpace(this string value)
         {
             return string.IsNullOrWhiteSpace(value);
         }
-        #endregion
+        #endregion IsNull Methods & Functions
 
         public static string AsReadable(this string value, ReadablilityCondition normalizeConditions = ReadablilityCondition.Default)
         {
@@ -100,18 +104,18 @@ namespace System
 
             string workingValue = value;
 
-            // Validate Whitespace Trim Conditions
+            // Validate Whitespace Trim Conditions 
             if (normalizeConditions.TrimStartWhitespace())
                 workingValue = workingValue.TrimStart();
 
             if (normalizeConditions.TrimEndWhitespace())
                 workingValue = workingValue.TrimEnd();
 
-            // Validate Normalization Conditions
+            // Validate Normalization Conditions 
             if (!normalizeConditions.CanMakeReadable(workingValue))
                 return workingValue;
 
-            // Declarations
+            // Declarations 
             System.Text.StringBuilder returnValue = new System.Text.StringBuilder();
             IEnumerable<string> workingValues = workingValue.SeperateForReadability(normalizeConditions);
             var iterator = workingValues.GetEnumerator();
@@ -336,7 +340,7 @@ namespace System
             @char = value[index - 1];
             return true;
         }
-        #endregion
+        #endregion Private Static Methods & Functions
 
         private static bool InsertLeadingWhiteSpace(this Char[] value, int index)
         {
@@ -361,7 +365,7 @@ namespace System
     }
 
     /// <summary>
-    /// A bitwise flag used to indicate the conditions to use when performing normalization.
+    /// A bitwise flag used to indicate the conditions to use when performing normalization. 
     /// </summary>
     [Flags]
     public enum ReadablilityCondition
@@ -369,28 +373,33 @@ namespace System
     {
         /// <summary>
         /// Specifies that Normalization should not happen if the value contains any whitespace.
-        /// <remarks>If specified with <value>TrimLeadingWhiteSpace</value> or <value>TrimTrailingWhiteSpace</value> then any leading or trailing
-        /// whitespace will be removed prior to checking for this flag.</remarks>
+        /// <remarks> If specified with <value> TrimLeadingWhiteSpace </value> or <value>
+        /// TrimTrailingWhiteSpace </value> then any leading or trailing whitespace will be removed
+        /// prior to checking for this flag. </remarks>
         /// </summary>
         StopIfAnyWhitespace = 1,
 
         /// <summary>
-        /// Specifies that the value to be normalized should have any leading whitespace removed, prior to normalization.
+        /// Specifies that the value to be normalized should have any leading whitespace removed,
+        /// prior to normalization.
         /// </summary>
         TrimLeadingWhiteSpace = 2,
 
         /// <summary>
-        /// Specifies that the value to be normalized should have any trailing whitespace removed, prior to normalization.
+        /// Specifies that the value to be normalized should have any trailing whitespace removed,
+        /// prior to normalization.
         /// </summary>
         TrimTrailingWhiteSpace = 4,
 
         /// <summary>
-        /// Specifies that the value to be normalized should have any leading and/or trailing whitespace removed, prior to normalization.
+        /// Specifies that the value to be normalized should have any leading and/or trailing
+        /// whitespace removed, prior to normalization.
         /// </summary>
         TrimWhiteSpace = 6,
 
         /// <summary>
-        /// Specifies that normalization should be performed on whether the Character is Upper or Lower case.
+        /// Specifies that normalization should be performed on whether the Character is Upper or
+        /// Lower case.
         /// </summary>
         ByCase = 8,
 
@@ -400,17 +409,18 @@ namespace System
         ByDigit = 16,
 
         /// <summary>
-        /// Specifies that normalization should be performed on whether the Character is an Underscore '_' character.
+        /// Specifies that normalization should be performed on whether the Character is an
+        /// Underscore '_' character.
         /// </summary>
         ByUnderscore = 32,
 
         /// <summary>
-        /// Specifies that normalization should make the first Character Upper case if it is not.
+        /// Specifies that normalization should make the first Character Upper case if it is not. 
         /// </summary>
         CapitalizeFirstCharacter = 64,
 
         /// <summary>
-        /// Specifies the default normalization conditions.
+        /// Specifies the default normalization conditions. 
         /// </summary>
         Default = 126
     }

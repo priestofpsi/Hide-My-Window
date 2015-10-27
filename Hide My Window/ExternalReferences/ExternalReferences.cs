@@ -21,10 +21,10 @@ namespace theDiary.Tools.HideMyWindow
             style |= ExternalReferences.WS_EX_TOOLWINDOW;   // flags don't work - windows remains in taskbar
             style &= ~(ExternalReferences.WS_EX_APPWINDOW);
 
-            ExternalReferences.ShowWindow(window.Handle, (int)WindowCommand.HideWindow); // hide the window
+            ExternalReferences.ShowWindow(window.Handle, (int) WindowCommand.HideWindow); // hide the window
             ExternalReferences.SetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE, new IntPtr(style)); // set the style
-            ExternalReferences.ShowWindow(window.Handle, (int)WindowCommand.ShowNoActivate); // show the window for the new style to
-            bool returnValue = ExternalReferences.ShowWindow(window.Handle, (int)WindowCommand.HideWindow);
+            ExternalReferences.ShowWindow(window.Handle, (int) WindowCommand.ShowNoActivate); // show the window for the new style to
+            bool returnValue = ExternalReferences.ShowWindow(window.Handle, (int) WindowCommand.HideWindow);
             if (!returnValue)
                 ExternalReferences.ShowWindow(window);
 
@@ -35,16 +35,16 @@ namespace theDiary.Tools.HideMyWindow
         {
             IntPtr style1 = ExternalReferences.GetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE);
 
-            ExternalReferences.ShowWindow(window.Handle, (int)WindowCommand.ShowNoActivate); // show the window for the new style to
+            ExternalReferences.ShowWindow(window.Handle, (int) WindowCommand.ShowNoActivate); // show the window for the new style to
             ExternalReferences.SetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE, new IntPtr(window.OriginalState)); // set the style
-            ExternalReferences.ShowWindow(window.Handle, (int)WindowCommand.HideWindow); // show the window for the new style to
-            ExternalReferences.ShowWindow(window.Handle, (int)WindowCommand.ShowNoActivate); // show the window for the new style to
+            ExternalReferences.ShowWindow(window.Handle, (int) WindowCommand.HideWindow); // show the window for the new style to
+            ExternalReferences.ShowWindow(window.Handle, (int) WindowCommand.ShowNoActivate); // show the window for the new style to
             window.OriginalState = 0;
         }
 
         public static void SetWindowState(IntPtr hWnd, WindowCommand state)
         {
-            ShowWindow(hWnd, (int)state);
+            ShowWindow(hWnd, (int) state);
         }
 
         [DllImport("user32.dll")]
@@ -61,7 +61,7 @@ namespace theDiary.Tools.HideMyWindow
             try
             {
                 var newID = HotKeyIDCounter++;
-                if (!RegisterHotKey(ExternalReferences.MainHandle, newID, (uint)modifierKeys, (uint)hotKey))
+                if (!RegisterHotKey(ExternalReferences.MainHandle, newID, (uint) modifierKeys, (uint) hotKey))
                     return 0;
                 return newID;
             }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using Microsoft.Win32;
 
 namespace theDiary.Tools.HideMyWindow
 {
@@ -19,6 +21,8 @@ namespace theDiary.Tools.HideMyWindow
         #region Private Declarations
 
         private FormState lastState;
+        private bool autoStartWithWindows = false;
+        private bool registryChecked = false;
 
         #endregion Private Declarations
 
@@ -27,6 +31,8 @@ namespace theDiary.Tools.HideMyWindow
         [XmlIgnore]
         internal const string StorageFileName = "Settings.xml";
 
+        private const string RegistryStartPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+
         private static bool FailedToLoad = false;
 
         #endregion Internal Constant & Static Declarations
@@ -34,6 +40,20 @@ namespace theDiary.Tools.HideMyWindow
         public static event FileEventHandler Notification;
 
         #region Public Properties
+        public bool AutoStartWithWindows
+        {
+            get
+            {
+                return this.autoStartWithWindows;
+            }
+            set
+            {
+                if (this.autoStartWithWindows == value)
+                    return;
+                this.autoStartWithWindows = value;
+                this.CheckWindowsRegistryAutoStart();
+            }
+        }
 
         [XmlElement]
         public HotKeyBindingList Hotkey;
@@ -115,7 +135,6 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-
                 return !string.IsNullOrWhiteSpace(this.Password);
             }
         }
@@ -169,6 +188,42 @@ namespace theDiary.Tools.HideMyWindow
 
         #endregion Public Methods & Functions
 
+        #region Private Methods
+        private bool HasRegistryEntry(string path, string name)
+        {
+            RegistryKey key;
+            return this.TryGetRegistryEntry(path, name, out key);
+        }
+
+        private bool TryGetRegistryEntry(string path, string name, out RegistryKey key)
+        {
+            key = Registry.CurrentUser.OpenSubKey(path, true);
+            return (key != null && key.GetValue(name) != null);
+        }
+
+        private void CheckWindowsRegistryAutoStart()
+        {
+            RegistryKey key;
+            AssemblyTitleAttribute attribute;
+            Assembly.GetEntryAssembly().TryGetCustomAttribute<AssemblyTitleAttribute>(out attribute);
+            bool hasKey = this.TryGetRegistryEntry(Settings.RegistryStartPath, attribute.Title, out key);
+            bool autoStartWithWindows = this.AutoStartWithWindows;
+            if ((!autoStartWithWindows && hasKey)
+                || (autoStartWithWindows && !hasKey))
+            {
+                if (autoStartWithWindows && !hasKey)
+                {
+                    key.SetValue(attribute.Title, string.Format("\"{0}\"", Assembly.GetEntryAssembly().Location));
+                }
+                else
+                {
+                    key.DeleteValue(attribute.Title);
+                }
+            }
+            this.registryChecked = true;
+            return;
+        }
+        #endregion Private Methods
         #region Internal Static Methods & Functions
 
         internal static void Save(Settings settings)
@@ -197,7 +252,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             var task = System.Threading.Tasks.Task.Run<Settings>(() =>
             {
-
+                Settings returnValue = null;
                 System.IO.Stream stream = null;
                 try
                 {
@@ -221,28 +276,36 @@ namespace theDiary.Tools.HideMyWindow
                         if (Settings.Notification != null)
                             Settings.Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loading));
 
-                        Settings returnValue = (Settings)xs.Deserialize(fileStream);
+                        returnValue = (Settings) xs.Deserialize(fileStream);
                         Program.IsConfigured = (returnValue.Hotkey.Count != 0);
-                        return returnValue;
                     }
                 }
                 catch
                 {
                     if (Settings.FailedToLoad)
-                        return new Settings();
-
-                    Settings.FailedToLoad = true;
-                    if (System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(StorageFileName))
-                        System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().DeleteFile(StorageFileName);
-                    return Settings.Load();
+                    {
+                        returnValue = new Settings();
+                    }
+                    else
+                    {
+                        Settings.FailedToLoad = true;
+                        if (System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(StorageFileName))
+                            System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().DeleteFile(StorageFileName);
+                        returnValue = Settings.Load();
+                    }
                 }
                 finally
                 {
                     if (stream != null)
                         stream.Dispose();
+                    if (returnValue != null)
+                        returnValue.CheckWindowsRegistryAutoStart();
+
                     if (Settings.Notification != null)
                         Settings.Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loaded));
                 }
+
+                return returnValue;
             });
             System.Threading.Tasks.Task.WaitAll(task);
             if (Settings.Notification != null)

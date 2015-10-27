@@ -25,7 +25,7 @@ namespace theDiary.Tools.HideMyWindow
 
             this.Icon = icon;
         }
-        #endregion
+        #endregion Public Constructors
 
         #region Public Properties
         public Icon Icon
@@ -40,6 +40,6 @@ namespace theDiary.Tools.HideMyWindow
                 return this.Icon != null;
             }
         }
-        #endregion
+        #endregion Public Properties
     }
 }

@@ -37,6 +37,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.startWithWindows = new System.Windows.Forms.CheckBox();
             this.glowPanel1 = new theDiary.Tools.HideMyWindow.GlowPanel();
             this.password = new theDiary.Tools.HideMyWindow.PasswordTextBox();
             this.clearPassword = new System.Windows.Forms.CheckBox();
@@ -136,6 +137,7 @@
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.startWithWindows);
             this.tabGeneral.Controls.Add(this.glowPanel1);
             this.tabGeneral.Controls.Add(this.clearPassword);
             this.tabGeneral.Controls.Add(this.requirePasswordOnShow);
@@ -152,6 +154,18 @@
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
+            // 
+            // startWithWindows
+            // 
+            this.startWithWindows.AccessibleDescription = "Hide My Window will start up when logging into Windows.";
+            this.startWithWindows.AutoSize = true;
+            this.startWithWindows.Location = new System.Drawing.Point(8, 186);
+            this.startWithWindows.Name = "startWithWindows";
+            this.startWithWindows.Size = new System.Drawing.Size(119, 18);
+            this.startWithWindows.TabIndex = 9;
+            this.startWithWindows.Text = "Start with Windows";
+            this.startWithWindows.UseCompatibleTextRendering = true;
+            this.startWithWindows.UseVisualStyleBackColor = true;
             // 
             // glowPanel1
             // 
@@ -375,5 +389,6 @@
         private HotKeyMimicTextBox hotKeyMimicTextBox4;
         private HotKeyMimicTextBox hotKeyMimicTextBox3;
         private HotKeyMimicTextBox hotKeyMimicTextBox2;
+        private System.Windows.Forms.CheckBox startWithWindows;
     }
 }

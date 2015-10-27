@@ -48,7 +48,6 @@ namespace theDiary.Tools.HideMyWindow
                 this.DialogResult = DialogResult.Cancel;
                 this.Close();
             }
-
         }
     }
 }

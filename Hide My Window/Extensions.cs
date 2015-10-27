@@ -1,4 +1,7 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace theDiary.Tools.HideMyWindow
@@ -20,6 +23,31 @@ namespace theDiary.Tools.HideMyWindow
                 sb.Append(b.ToString("X2"));
 
             return sb.ToString();
+        }
+
+        public static bool TryGetCustomAttribute<TAttribute>(this ICustomAttributeProvider provider, bool inherited, out TAttribute attribute)
+            where TAttribute : Attribute
+        {
+            attribute = provider.GetCustomAttribute<TAttribute>(inherited);
+            return attribute != null;
+        }
+
+        public static bool TryGetCustomAttribute<TAttribute>(this ICustomAttributeProvider provider, out TAttribute attribute)
+            where TAttribute : Attribute
+        {
+            return provider.TryGetCustomAttribute<TAttribute>(true, out attribute);
+        }
+
+        public static TAttribute GetCustomAttribute<TAttribute>(this ICustomAttributeProvider provder, bool inherited = true)
+                where TAttribute : Attribute
+        {
+            return provder.GetCustomAttributes(typeof(TAttribute), inherited).Cast<TAttribute>().FirstOrDefault();
+        }
+
+        public static TAttribute GetCustomAttribute<TAttribute>(this object instance, bool inherited = true)
+            where TAttribute : Attribute
+        {
+            return instance.GetType().GetCustomAttribute<TAttribute>(inherited);
         }
     }
 }

@@ -6,61 +6,49 @@ namespace theDiary.Tools.HideMyWindow
 {
     public class WindowInfo
     {
-        #region Constructors
-
         private WindowInfo(IntPtr wHnd)
         {
             this.Handle = wHnd;
             this.OriginalState = 0;
             this.applicationProcess = ExternalReferences.GetWindowProcess(this.Handle);
-            
         }
 
-        #endregion Constructors
-
-        #region Private Declarations
-        
         private string title;
         private bool isPinned;
         private readonly object syncObject = new object();
-        private volatile Process applicationProcess;        
+        private volatile Process applicationProcess;
         private UnlockWindowDelegate unlockWindowHandler;
 
-        #endregion Private Declarations
-
-        #region Public Events
         /// <summary>
-        /// The event that is raised when the underlying application for a <see cref="WindowInfo"/> instance is exited, or terminated.
+        /// The event that is raised when the underlying application for a <see cref="WindowInfo"/>
+        /// instance is exited, or terminated.
         /// </summary>
         public event ApplicationExited ApplicationExited;
 
         /// <summary>
-        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as pinned.
+        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as pinned. 
         /// </summary>
         public event WindowEventHandler Pinned;
 
         /// <summary>
-        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as unpinned.
+        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as unpinned. 
         /// </summary>
         public event WindowEventHandler Unpinned;
 
         /// <summary>
-        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as protected.
+        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as protected. 
         /// </summary>
         public event WindowEventHandler Protected;
 
         /// <summary>
-        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as been unprotected.
+        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as been unprotected. 
         /// </summary>
         public event WindowEventHandler Unprotected;
 
         /// <summary>
-        /// The event that is raised when the title for a <see cref="WindowInfo"/> instance is changed.
+        /// The event that is raised when the title for a <see cref="WindowInfo"/> instance is changed. 
         /// </summary>
         public event WindowEventHandler TitleChanged;
-        #endregion Public Events
-
-        #region Public Read-Only Properties
 
         internal string Key
         {
@@ -95,8 +83,6 @@ namespace theDiary.Tools.HideMyWindow
                 return this.OriginalState == 0;
             }
         }
-
-       
 
         public bool CanShow
         {
@@ -191,10 +177,6 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        #endregion Public Read-Only Properties
-
-        #region Public Methods & Functions
-
         public void Lock(UnlockWindowDelegate handler)
         {
             if (handler == null)
@@ -244,9 +226,9 @@ namespace theDiary.Tools.HideMyWindow
         public override bool Equals(object obj)
         {
             if (obj is WindowInfo)
-                return ((WindowInfo)obj).Handle.Equals(this.Handle);
+                return ((WindowInfo) obj).Handle.Equals(this.Handle);
             if (obj.GetType() == typeof(IntPtr))
-                return ((IntPtr)obj) == this.Handle;
+                return ((IntPtr) obj) == this.Handle;
 
             return false;
         }
@@ -255,10 +237,6 @@ namespace theDiary.Tools.HideMyWindow
         {
             return this.Handle.GetHashCode();
         }
-
-        #endregion Public Methods & Functions
-
-        #region Private Methods & Functions
 
         private void LoadApplicationProcess()
         {
@@ -281,13 +259,12 @@ namespace theDiary.Tools.HideMyWindow
             this.ApplicationProcess.Exited -= this.applicationProcess_Exited;
         }
 
-        #endregion Private Methods & Functions
         internal void NotifyApplicationExited()
         {
             if (this.ApplicationExited != null)
                 this.ApplicationExited(this, new WindowInfoEventArgs(this));
         }
-        #region Public Static Methods & Functions
+
         public static WindowInfo Find(long handle)
         {
             return WindowInfo.FindByHandle(new IntPtr(handle));
@@ -296,7 +273,5 @@ namespace theDiary.Tools.HideMyWindow
         {
             return Runtime.Instance.FindWindow(handle) ?? new WindowInfo(handle);
         }
-
-        #endregion Public Static Methods & Functions
     }
 }

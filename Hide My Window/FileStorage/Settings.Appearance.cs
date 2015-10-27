@@ -14,18 +14,18 @@ namespace theDiary.Tools.HideMyWindow
         #region Private Declarations
         private string applicationIconPath = null;
         private Icon applicationIcon;
-        #endregion
+        #endregion Private Declarations
 
         #region Private Constant Declarations
         private static readonly Icon DefaultApplicationIcon = new Icon(typeof(Settings).Assembly.GetManifestResourceStream("theDiary.Tools.HideMyWindow.Resources.application.ico"));
-        #endregion
+        #endregion Private Constant Declarations
 
         #region Public Events
         public event EventHandler<IconEventArgs> ApplicationIconChanged;
 
         public event MessageBoxHandler ConfirmIconOverride;
-        #endregion
-        
+        #endregion Public Events
+
         public Icon ApplicationIcon
         {
             get
@@ -80,7 +80,5 @@ namespace theDiary.Tools.HideMyWindow
                 this.ApplicationIconPath = iconPath;
             }
         }
-        
     }
-    
 }

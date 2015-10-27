@@ -17,14 +17,15 @@ namespace theDiary.Tools.HideMyWindow
             this.requirePasswordOnShow.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "RequirePasswordOnShow"));
             this.requirePasswordOnShow.DataBindings.Add(new Binding("Enabled", Runtime.Instance.Settings, "PasswordIsSet"));
             this.clearPassword.CheckedChanged += (s, e) => this.glowPanel1.Enabled = !this.clearPassword.Checked;
-
+            this.startWithWindows.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "AutoStartWithWindows"));
             this.hotKeyMimicTextBox1.HotKey = Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.HideCurrentWindow);
             this.hotKeyMimicTextBox2.HotKey = Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.UnhideLastWindow);
             this.hotKeyMimicTextBox3.HotKey = Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.HideAllWindows);
             this.hotKeyMimicTextBox4.HotKey = Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.UnhideAllWindows);
             this.hotKeyMimicTextBox1.HotKeyChanged += (s, e) =>
             {
-                if (!Runtime.Instance.Settings.Hotkey.Contains(this.hotKeyMimicTextBox1.HotKey)){
+                if (!Runtime.Instance.Settings.Hotkey.Contains(this.hotKeyMimicTextBox1.HotKey))
+                {
                     Runtime.Instance.Settings.Hotkey.Add(this.hotKeyMimicTextBox1.HotKey);
                 }
                 else
@@ -123,8 +124,6 @@ namespace theDiary.Tools.HideMyWindow
 
                 this.InitializeToolTips(control.Controls);
             }
-
-
         }
         private void tabControl_Selected(object sender, TabControlEventArgs e)
         {
@@ -141,7 +140,7 @@ namespace theDiary.Tools.HideMyWindow
         }
         private void ShowTooltip(object sender, EventArgs e)
         {
-            this.tooltipLabel.Text = ((Control)sender).AccessibleDescription;
+            this.tooltipLabel.Text = ((Control) sender).AccessibleDescription;
         }
     }
 }

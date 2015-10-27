@@ -100,7 +100,7 @@ namespace theDiary.Tools.HideMyWindow
                 int x = 6;
                 for (int i = 1; i < x; i++)
                 {
-                    using (Pen pen = new Pen(Color.FromArgb(((int)shadowFeather - ((shadowFeather / x) * i)), shadowColor), ((float)i * (shadowBlur))))
+                    using (Pen pen = new Pen(Color.FromArgb(((int) shadowFeather - ((shadowFeather / x) * i)), shadowColor), ((float) i * (shadowBlur))))
                     {
                         pen.LineJoin = LineJoin.Round;
                         e.Graphics.DrawPath(pen, shadowpath);
@@ -126,7 +126,7 @@ namespace theDiary.Tools.HideMyWindow
                 //Draw multiple rectangles with increasing thickness and transparency
                 for (int i = 1; i < glowSteps; i = i + 2)
                 {
-                    int aGlow = ((int)glowFeather - ((glowFeather / glowSteps) * i));
+                    int aGlow = ((int) glowFeather - ((glowFeather / glowSteps) * i));
                     using (Pen pen = new Pen(System.Drawing.Color.FromArgb(aGlow, this.effectColor), i))
                     {
                         pen.LineJoin = LineJoin.Round;
@@ -152,7 +152,7 @@ namespace theDiary.Tools.HideMyWindow
                     if (!control.Focused)
                         continue;
 
-                    bool doGlow = ((control.GetType().GetProperty("ReadOnly") == null) || !(bool)control.GetType().GetProperty("ReadOnly").GetValue(control));
+                    bool doGlow = ((control.GetType().GetProperty("ReadOnly") == null) || !(bool) control.GetType().GetProperty("ReadOnly").GetValue(control));
 
                     if (!doGlow)
                         continue;

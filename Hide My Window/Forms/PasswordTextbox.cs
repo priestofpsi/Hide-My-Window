@@ -3,15 +3,14 @@
     public class PasswordTextBox
         : WatermarkTextBox
     {
-
         #region Constructors
         /// <summary>
-        /// Initializes a new instances of the <see cref="PasswordTextBox"/> control.
+        /// Initializes a new instances of the <see cref="PasswordTextBox"/> control. 
         /// </summary>
         public PasswordTextBox()
         {
         }
-        #endregion
+        #endregion Constructors
 
         #region Public Properties
         public string Password
@@ -35,6 +34,6 @@
             get;
             set;
         }
-        #endregion
+        #endregion Public Properties
     }
 }

@@ -46,7 +46,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                return Runtime.Instance.FindWindow((IntPtr)this.Tag);
+                return Runtime.Instance.FindWindow((IntPtr) this.Tag);
             }
         }
 

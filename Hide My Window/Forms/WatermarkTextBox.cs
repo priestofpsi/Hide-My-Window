@@ -39,7 +39,7 @@ namespace theDiary.Tools.HideMyWindow
         #region Private Methods
 
         /// <summary>
-        /// Initializes watermark properties and adds CtextBox events
+        /// Initializes watermark properties and adds CtextBox events 
         /// </summary>
         private void Initialize()
         {
@@ -61,7 +61,7 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         /// <summary>
-        /// Removes the watermark if it should
+        /// Removes the watermark if it should 
         /// </summary>
         private void RemoveWaterMark()
         {
@@ -73,7 +73,7 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         /// <summary>
-        /// Draws the watermark if the text length is 0
+        /// Draws the watermark if the text length is 0 
         /// </summary>
         private void DrawWaterMark()
         {

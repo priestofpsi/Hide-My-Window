@@ -27,7 +27,7 @@ namespace theDiary.Tools.HideMyWindow
         private EffectTarget target = EffectTarget.Controls;
         private int glowSize = 7;
         private int featherEffect = 50;
-        #endregion
+        #endregion Private Declarations
 
         [Category("Appearance")]
         [Description("Get or Set the thickness of the Glow")]
@@ -141,7 +141,6 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        
         private void DrawGlow(Control control, PaintEventArgs e)
         {
             if (!this.Enabled || (control != null && !control.Enabled))
@@ -161,7 +160,7 @@ namespace theDiary.Tools.HideMyWindow
                 //Draw multiple rectangles with increasing thickness and transparency
                 for (int i = 1; i < glowSteps; i = i + 2)
                 {
-                    int aGlow = ((int)glowFeather - ((glowFeather / glowSteps) * i));
+                    int aGlow = ((int) glowFeather - ((glowFeather / glowSteps) * i));
                     using (Pen pen = new Pen(System.Drawing.Color.FromArgb(aGlow, this.effectColor), i))
                     {
                         pen.LineJoin = LineJoin.Round;
@@ -189,7 +188,6 @@ namespace theDiary.Tools.HideMyWindow
             {
                 foreach (Control control in this.Controls)
                 {
-                    
                     if ((this.Trigger & EffectTrigger.AlwaysOn) != 0)
                     {
                         this.DrawGlow(control, e);
@@ -219,7 +217,7 @@ namespace theDiary.Tools.HideMyWindow
 
         private void Control_Redraw(object sender, EventArgs e)
         {
-            ((Control)sender).Invalidate();
+            ((Control) sender).Invalidate();
             this.Invalidate();
         }
 
@@ -228,24 +226,22 @@ namespace theDiary.Tools.HideMyWindow
             if (this.EffectEnabled)
             {
                 if (this.Target == EffectTarget.Controls && (this.Trigger & EffectTrigger.Hover) != 0)
-                    if (((Control)sender).ClientRectangle.Contains(((Control)sender).PointToClient(Control.MousePosition)))
-                        this.DrawGlow((Control)sender, e);
+                    if (((Control) sender).ClientRectangle.Contains(((Control) sender).PointToClient(Control.MousePosition)))
+                        this.DrawGlow((Control) sender, e);
             }
         }
         private void Control_PaintOnHover(object sender, PaintEventArgs e)
-        {            
+        {
             if (this.EffectEnabled)
             {
                 if (this.Target == EffectTarget.Controls && (this.Trigger & EffectTrigger.Hover) != 0)
-                    if (((Control)sender).ClientRectangle.Contains(((Control)sender).PointToClient(Control.MousePosition)))
-                        this.DrawGlow((Control)sender, e);
+                    if (((Control) sender).ClientRectangle.Contains(((Control) sender).PointToClient(Control.MousePosition)))
+                        this.DrawGlow((Control) sender, e);
             }
         }
 
         private void Control_MouseEnter(object sender, EventArgs e)
         {
-            
-            
         }
     }
 

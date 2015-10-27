@@ -67,7 +67,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             uint processId;
             uint callResult = ExternalReferences.GetWindowThreadProcessId(hWnd, out processId);
-            Process returnValue = Process.GetProcessById((int)processId);
+            Process returnValue = Process.GetProcessById((int) processId);
             //returnValue.EnableRaisingEvents = true;
 
             return returnValue;
