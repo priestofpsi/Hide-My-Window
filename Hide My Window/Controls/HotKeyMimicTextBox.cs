@@ -1,34 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
 {
     public partial class HotKeyMimicTextBox : UserControl
     {
+        #region Constructors
+
         public HotKeyMimicTextBox()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
+
+        #endregion
+
+        #region Declarations
+
+        private bool _firstFocus = true;
 
         private Hotkey hotkey;
         private Hotkey originalHotkey;
-        private bool _firstFocus = true;
 
-        public event EventHandler HotKeyChanged;
+        #endregion
+
+        #region Properties
 
         public Hotkey HotKey
         {
-            get
-            {
-                return this.hotkey;
-            }
+            get { return this.hotkey; }
             set
             {
                 this.hotkey = value;
@@ -39,6 +38,12 @@ namespace theDiary.Tools.HideMyWindow
                 this.txtHotKey_Leave(this, new EventArgs());
             }
         }
+
+        #endregion
+
+        #region Methods & Functions
+
+        public event EventHandler HotKeyChanged;
 
         private void txtHotKey_KeyUp(object sender, KeyEventArgs e)
         {
@@ -68,10 +73,10 @@ namespace theDiary.Tools.HideMyWindow
 
         private void txtHotKey_Enter(object sender, EventArgs e)
         {
-            if (_firstFocus)
+            if (this._firstFocus)
             {
-                txtHotKey.Text = "";
-                _firstFocus = false;
+                this.txtHotKey.Text = "";
+                this._firstFocus = false;
             }
         }
 
@@ -81,5 +86,7 @@ namespace theDiary.Tools.HideMyWindow
             if (this.txtHotKey.Text == "None")
                 this.txtHotKey.Text = "Mimic Hot Key In Here";
         }
+
+        #endregion
     }
 }

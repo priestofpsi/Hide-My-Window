@@ -1,7 +1,6 @@
 ﻿namespace theDiary.Tools.HideMyWindow
 {
     public enum WindowCommand
-           : int
     {
         HideWindow = 0,
 
@@ -25,6 +24,6 @@
 
         ForceMinimize = 11,
 
-        Restore = 9,
+        Restore = 9
     }
 }

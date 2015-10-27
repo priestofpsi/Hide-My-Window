@@ -6,8 +6,9 @@ namespace theDiary.Tools.HideMyWindow
     public class WindowListViewItem
         : ListViewItem
     {
+        #region Constructors
+
         public WindowListViewItem(WindowInfo window)
-            : base()
         {
             this.Text = window.Title;
             this.Name = window.Key;
@@ -15,20 +16,33 @@ namespace theDiary.Tools.HideMyWindow
             this.SubItems.Add(new ListViewSubItem(this, window.IsPasswordProtected ? "Yes" : "No")
             {
                 Tag = window.IsPasswordProtected,
-                Name = "IsPasswordProtected",
+                Name = "IsPasswordProtected"
             });
             this.SubItems.Add(new ListViewSubItem(this, window.IsPinned ? "Yes" : "No")
             {
                 Tag = window.IsPinned,
-                Name = "IsPinned",
+                Name = "IsPinned"
             });
-            this.SubItems.Add(new ListViewSubItem()
+            this.SubItems.Add(new ListViewSubItem
             {
                 Text = window.ApplicationPathName,
-                Name = "ApplicationPathName",
+                Name = "ApplicationPathName"
             });
             this.Tag = window.Handle;
         }
+
+        #endregion
+
+        #region Properties
+
+        public WindowInfo Window
+        {
+            get { return Runtime.Instance.FindWindow((IntPtr) this.Tag); }
+        }
+
+        #endregion
+
+        #region Methods & Functions
 
         public override int GetHashCode()
         {
@@ -42,17 +56,11 @@ namespace theDiary.Tools.HideMyWindow
             this.SubItems["ApplicationPathName"].Text = this.Window.ApplicationPathName;
         }
 
-        public WindowInfo Window
-        {
-            get
-            {
-                return Runtime.Instance.FindWindow((IntPtr) this.Tag);
-            }
-        }
-
         public static implicit operator WindowInfo(WindowListViewItem item)
         {
             return item.Window;
         }
+
+        #endregion
     }
 }

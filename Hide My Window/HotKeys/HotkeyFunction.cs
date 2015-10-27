@@ -5,6 +5,6 @@
         HideCurrentWindow,
         HideAllWindows,
         UnhideLastWindow,
-        UnhideAllWindows,
+        UnhideAllWindows
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
@@ -11,10 +7,12 @@ namespace theDiary.Tools.HideMyWindow
     public class FileEventArgs
         : EventArgs
     {
+        #region Constructors
+
         public FileEventArgs()
-            : base()
         {
         }
+
         public FileEventArgs(string fileName)
             : this()
         {
@@ -28,14 +26,13 @@ namespace theDiary.Tools.HideMyWindow
             this.Event = @event;
         }
 
-        public string FileName
-        {
-            get; private set;
-        }
-        public FileEventTypes Event
-        {
-            get; private set;
-        }
+        #endregion
+
+        #region Properties
+
+        public string FileName { get; private set; }
+
+        public FileEventTypes Event { get; }
 
         public string EventText
         {
@@ -47,6 +44,8 @@ namespace theDiary.Tools.HideMyWindow
                 return this.Event.ToString();
             }
         }
+
+        #endregion
     }
 
     public enum FileEventTypes
@@ -66,6 +65,6 @@ namespace theDiary.Tools.HideMyWindow
         Saved,
 
         Deleting,
-        Deleted,
+        Deleted
     }
 }

@@ -6,12 +6,11 @@ namespace theDiary.Tools.HideMyWindow
 {
     public partial class Runtime
     {
+        #region Constructors
+
         public Runtime()
         {
-            this.WindowHidden += (s, e) =>
-            {
-                Runtime.Instance.Store.Add(e.Window.Handle);
-            };
+            this.WindowHidden += (s, e) => { Runtime.Instance.Store.Add(e.Window.Handle); };
 
             this.WindowShown += (s, e) =>
             {
@@ -20,13 +19,18 @@ namespace theDiary.Tools.HideMyWindow
             };
         }
 
+        #endregion
+
+        #region Declarations
+
+        private readonly Dictionary<IntPtr, WindowInfo> hiddenWindows = new Dictionary<IntPtr, WindowInfo>();
+
         private Settings settings;
         private HiddenWindowStore store;
-        private Dictionary<IntPtr, WindowInfo> hiddenWindows = new Dictionary<IntPtr, WindowInfo>();
 
-        public event EventHandler<WindowEventArgs> WindowHidden;
+        #endregion
 
-        public event EventHandler<WindowEventArgs> WindowShown;
+        #region Properties
 
         public Settings Settings
         {
@@ -37,10 +41,7 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.settings;
             }
-            internal set
-            {
-                this.settings = value;
-            }
+            internal set { this.settings = value; }
         }
 
         public HiddenWindowStore Store
@@ -54,20 +55,25 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
+        public int Count
+        {
+            get { return this.hiddenWindows.Count; }
+        }
+
+        #endregion
+
+        #region Methods & Functions
+
+        public event EventHandler<WindowEventArgs> WindowHidden;
+
+        public event EventHandler<WindowEventArgs> WindowShown;
+
         public WindowInfo LastWindow()
         {
             if (this.hiddenWindows.Count == 0)
                 return null;
 
             return this.hiddenWindows.Last().Value;
-        }
-
-        public int Count
-        {
-            get
-            {
-                return this.hiddenWindows.Count;
-            }
         }
 
         internal void AddHiddenWindow(WindowInfo window)
@@ -111,5 +117,7 @@ namespace theDiary.Tools.HideMyWindow
 
             return null;
         }
+
+        #endregion
     }
 }

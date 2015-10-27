@@ -1,27 +1,29 @@
 ﻿using System;
-
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
 {
     internal static class Program
     {
-        #region Internal Static Declarations
+        #region Constant Declarations
 
         internal static MainForm MainForm;
         internal static bool IsConfigured;
-        #endregion Internal Static Declarations
+
+        #endregion
+
+        #region Methods & Functions
 
         /// <summary>
-        /// The main entry point for the application. 
+        ///     The main entry point for the application.
         /// </summary>
         [STAThread]
         private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.ApplicationExit += Application_ApplicationExit;
-            Program.MainForm = new HideMyWindow.MainForm();
+            Application.ApplicationExit += Program.Application_ApplicationExit;
+            Program.MainForm = new MainForm();
             Application.Run(Program.MainForm);
         }
 
@@ -31,5 +33,7 @@ namespace theDiary.Tools.HideMyWindow
                 Program.MainForm.UnhideAllWindows(sender, e);
             Settings.Save(Runtime.Instance.Settings);
         }
+
+        #endregion
     }
 }

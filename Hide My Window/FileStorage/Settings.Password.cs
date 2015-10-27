@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
@@ -10,41 +9,41 @@ namespace theDiary.Tools.HideMyWindow
     public class PasswordSettings
         : IXmlSerializable
     {
-        public bool RequirePasswordOnShow
-        {
-            get; set;
-        }
+        #region Declarations
 
         private string password;
 
+        #endregion
+
+        #region Properties
+
+        public bool RequirePasswordOnShow { get; set; }
+
         public bool HasPassword
         {
-            get
-            {
-                return !string.IsNullOrEmpty(this.password);
-            }
+            get { return !string.IsNullOrEmpty(this.password); }
         }
 
         public string Password
         {
-            get
-            {
-                return this.password;
-            }
-            set
-            {
-                this.SetPassword(value);
-            }
+            get { return this.password; }
+            set { this.SetPassword(value); }
         }
+
+        #endregion
+
+        #region Methods & Functions
 
         public bool CheckPassword(string password)
         {
             if (!this.HasPassword && string.IsNullOrEmpty(password))
                 return true;
 
-            using (var hash = MD5.Create())
+            using (MD5 hash = MD5.Create())
             {
-                return this.Password.Equals(GetHashString(hash.ComputeHash(Encoding.UTF8.GetBytes(password))));
+                return
+                    this.Password.Equals(
+                        PasswordSettings.GetHashString(hash.ComputeHash(Encoding.UTF8.GetBytes(password))));
             }
         }
 
@@ -56,9 +55,9 @@ namespace theDiary.Tools.HideMyWindow
             }
             else
             {
-                using (var hash = MD5.Create())
+                using (MD5 hash = MD5.Create())
                 {
-                    this.password = GetHashString(hash.ComputeHash(Encoding.UTF8.GetBytes(password)));
+                    this.password = PasswordSettings.GetHashString(hash.ComputeHash(Encoding.UTF8.GetBytes(password)));
                 }
             }
         }
@@ -71,6 +70,10 @@ namespace theDiary.Tools.HideMyWindow
 
             return sb.ToString();
         }
+
+        #endregion
+
+        #region Interface Implementations
 
         XmlSchema IXmlSerializable.GetSchema()
         {
@@ -99,8 +102,6 @@ namespace theDiary.Tools.HideMyWindow
             writer.WriteElementString("Password", this.password);
         }
 
-        public PasswordSettings()
-        {
-        }
+        #endregion
     }
 }

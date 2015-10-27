@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
@@ -11,9 +7,9 @@ namespace theDiary.Tools.HideMyWindow
         : EventArgs
 
     {
-        #region Public Constructors
+        #region Constructors
+
         public IconEventArgs()
-            : base()
         {
         }
 
@@ -25,21 +21,18 @@ namespace theDiary.Tools.HideMyWindow
 
             this.Icon = icon;
         }
-        #endregion Public Constructors
 
-        #region Public Properties
-        public Icon Icon
-        {
-            get; set;
-        }
+        #endregion
+
+        #region Properties
+
+        public Icon Icon { get; set; }
 
         public bool HasIcon
         {
-            get
-            {
-                return this.Icon != null;
-            }
+            get { return this.Icon != null; }
         }
-        #endregion Public Properties
+
+        #endregion
     }
 }

@@ -6,6 +6,8 @@ namespace theDiary.Tools.HideMyWindow
 {
     public class WindowInfo
     {
+        #region Constructors
+
         private WindowInfo(IntPtr wHnd)
         {
             this.Handle = wHnd;
@@ -13,99 +15,53 @@ namespace theDiary.Tools.HideMyWindow
             this.applicationProcess = ExternalReferences.GetWindowProcess(this.Handle);
         }
 
-        private string title;
-        private bool isPinned;
+        #endregion
+
+        #region Declarations
+
         private readonly object syncObject = new object();
         private volatile Process applicationProcess;
+        private bool isPinned;
+
+        private string title;
         private UnlockWindowDelegate unlockWindowHandler;
 
-        /// <summary>
-        /// The event that is raised when the underlying application for a <see cref="WindowInfo"/>
-        /// instance is exited, or terminated.
-        /// </summary>
-        public event ApplicationExited ApplicationExited;
+        #endregion
 
-        /// <summary>
-        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as pinned. 
-        /// </summary>
-        public event WindowEventHandler Pinned;
-
-        /// <summary>
-        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as unpinned. 
-        /// </summary>
-        public event WindowEventHandler Unpinned;
-
-        /// <summary>
-        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as protected. 
-        /// </summary>
-        public event WindowEventHandler Protected;
-
-        /// <summary>
-        /// The event that is raised when a <see cref="WindowInfo"/> instance is flagged as been unprotected. 
-        /// </summary>
-        public event WindowEventHandler Unprotected;
-
-        /// <summary>
-        /// The event that is raised when the title for a <see cref="WindowInfo"/> instance is changed. 
-        /// </summary>
-        public event WindowEventHandler TitleChanged;
+        #region Properties
 
         internal string Key
         {
-            get
-            {
-                return this.Handle.ToString();
-            }
+            get { return this.Handle.ToString(); }
         }
 
-        public IntPtr Handle
-        {
-            get; internal set;
-        }
+        public IntPtr Handle { get; internal set; }
 
-        public long OriginalState
-        {
-            get; internal set;
-        }
+        public long OriginalState { get; internal set; }
 
         public IntPtr CurrentState
         {
-            get
-            {
-                return ExternalReferences.CurrentState(this.Handle);
-            }
+            get { return ExternalReferences.CurrentState(this.Handle); }
         }
 
         public bool CanHide
         {
-            get
-            {
-                return this.OriginalState == 0;
-            }
+            get { return this.OriginalState == 0; }
         }
 
         public bool CanShow
         {
-            get
-            {
-                return this.OriginalState != 0;
-            }
+            get { return this.OriginalState != 0; }
         }
 
         public bool IsPasswordProtected
         {
-            get
-            {
-                return this.unlockWindowHandler != null;
-            }
+            get { return this.unlockWindowHandler != null; }
         }
 
         public bool IsPinned
         {
-            get
-            {
-                return this.isPinned;
-            }
+            get { return this.isPinned; }
             set
             {
                 if (this.isPinned == value)
@@ -142,7 +98,7 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        internal protected Process ApplicationProcess
+        protected internal Process ApplicationProcess
         {
             get
             {
@@ -155,27 +111,53 @@ namespace theDiary.Tools.HideMyWindow
 
         public string ApplicationPathName
         {
-            get
-            {
-                return this.ApplicationProcess.MainModule.FileName;
-            }
+            get { return this.ApplicationProcess.MainModule.FileName; }
         }
 
         public int ApplicationId
         {
-            get
-            {
-                return this.ApplicationProcess.Id;
-            }
+            get { return this.ApplicationProcess.Id; }
         }
 
         public Icon ApplicationIcon
         {
-            get
-            {
-                return this.ApplicationProcess.GetApplicationIcon();
-            }
+            get { return this.ApplicationProcess.GetApplicationIcon(); }
         }
+
+        #endregion
+
+        #region Methods & Functions
+
+        /// <summary>
+        ///     The event that is raised when the underlying application for a <see cref="WindowInfo" />
+        ///     instance is exited, or terminated.
+        /// </summary>
+        public event ApplicationExited ApplicationExited;
+
+        /// <summary>
+        ///     The event that is raised when a <see cref="WindowInfo" /> instance is flagged as pinned.
+        /// </summary>
+        public event WindowEventHandler Pinned;
+
+        /// <summary>
+        ///     The event that is raised when a <see cref="WindowInfo" /> instance is flagged as unpinned.
+        /// </summary>
+        public event WindowEventHandler Unpinned;
+
+        /// <summary>
+        ///     The event that is raised when a <see cref="WindowInfo" /> instance is flagged as protected.
+        /// </summary>
+        public event WindowEventHandler Protected;
+
+        /// <summary>
+        ///     The event that is raised when a <see cref="WindowInfo" /> instance is flagged as been unprotected.
+        /// </summary>
+        public event WindowEventHandler Unprotected;
+
+        /// <summary>
+        ///     The event that is raised when the title for a <see cref="WindowInfo" /> instance is changed.
+        /// </summary>
+        public event WindowEventHandler TitleChanged;
 
         public void Lock(UnlockWindowDelegate handler)
         {
@@ -227,7 +209,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             if (obj is WindowInfo)
                 return ((WindowInfo) obj).Handle.Equals(this.Handle);
-            if (obj.GetType() == typeof(IntPtr))
+            if (obj.GetType() == typeof (IntPtr))
                 return ((IntPtr) obj) == this.Handle;
 
             return false;
@@ -269,9 +251,12 @@ namespace theDiary.Tools.HideMyWindow
         {
             return WindowInfo.FindByHandle(new IntPtr(handle));
         }
+
         public static WindowInfo FindByHandle(IntPtr handle)
         {
             return Runtime.Instance.FindWindow(handle) ?? new WindowInfo(handle);
         }
+
+        #endregion
     }
 }

@@ -10,6 +10,6 @@
 
         TopRight,
 
-        TopLeft,
+        TopLeft
     }
 }

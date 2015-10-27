@@ -1,6 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.IO.IsolatedStorage;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Microsoft.Win32;
@@ -16,36 +17,33 @@ namespace theDiary.Tools.HideMyWindow
             this.Hotkey = new HotKeyBindingList();
         }
 
-        #endregion Constructors
+        #endregion
 
-        #region Private Declarations
+        #region Constant Declarations
 
-        private FormState lastState;
-        private bool autoStartWithWindows = false;
-        private bool registryChecked = false;
-
-        #endregion Private Declarations
-
-        #region Internal Constant & Static Declarations
-
-        [XmlIgnore]
-        internal const string StorageFileName = "Settings.xml";
+        [XmlIgnore] internal const string StorageFileName = "Settings.xml";
 
         private const string RegistryStartPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
 
-        private static bool FailedToLoad = false;
+        private static bool failedToLoad;
 
-        #endregion Internal Constant & Static Declarations
+        #endregion
 
-        public static event FileEventHandler Notification;
+        #region Declarations
 
-        #region Public Properties
+        private bool autoStartWithWindows;
+
+        [XmlElement] public HotKeyBindingList Hotkey;
+
+        private FormState lastState;
+
+        #endregion
+
+        #region Properties
+
         public bool AutoStartWithWindows
         {
-            get
-            {
-                return this.autoStartWithWindows;
-            }
+            get { return this.autoStartWithWindows; }
             set
             {
                 if (this.autoStartWithWindows == value)
@@ -55,58 +53,26 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        [XmlElement]
-        public HotKeyBindingList Hotkey;
-
-        public Hotkey GetHotKeyByFunction(HotkeyFunction function)
-        {
-            foreach (var key in this.Hotkey)
-                if (key.Function == function)
-                    return key;
-
-            return new HideMyWindow.Hotkey() { Function = function };
-        }
         [XmlAttribute]
-        public View CurrentView
-        {
-            get; set;
-        }
+        public View CurrentView { get; set; }
 
         [XmlAttribute]
-        public bool HideStatusbar
-        {
-            get; set;
-        }
+        public bool HideStatusbar { get; set; }
 
         [XmlAttribute]
-        public bool StartInTaskBar
-        {
-            get; set;
-        }
+        public bool StartInTaskBar { get; set; }
 
         [XmlAttribute]
-        public bool MinimizeToTaskBar
-        {
-            get; set;
-        }
+        public bool MinimizeToTaskBar { get; set; }
 
         [XmlAttribute]
-        public bool CloseToTaskBar
-        {
-            get; set;
-        }
+        public bool CloseToTaskBar { get; set; }
 
         [XmlAttribute]
-        public bool RestoreWindowsOnExit
-        {
-            get; set;
-        }
+        public bool RestoreWindowsOnExit { get; set; }
 
         [XmlAttribute]
-        public bool ConfirmApplicationExit
-        {
-            get; set;
-        }
+        public bool ConfirmApplicationExit { get; set; }
 
         [XmlElement]
         public FormState LastState
@@ -118,31 +84,20 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.lastState;
             }
-            set
-            {
-                this.lastState = value;
-            }
+            set { this.lastState = value; }
         }
 
         [XmlElement]
-        public string Password
-        {
-            get; set;
-        }
+        public string Password { get; set; }
 
         [XmlIgnore]
         public bool PasswordIsSet
         {
-            get
-            {
-                return !string.IsNullOrWhiteSpace(this.Password);
-            }
+            get { return !string.IsNullOrWhiteSpace(this.Password); }
         }
+
         [XmlElement]
-        public bool RequirePasswordOnShow
-        {
-            get; set;
-        }
+        public bool RequirePasswordOnShow { get; set; }
 
         [XmlIgnore]
         public string HashedPassword
@@ -161,20 +116,25 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         [XmlAttribute]
-        public bool SmallToolbarIcons
-        {
-            get; set;
-        }
+        public bool SmallToolbarIcons { get; set; }
 
         [XmlAttribute]
-        public bool HideToolbarText
+        public bool HideToolbarText { get; set; }
+
+        #endregion
+
+        #region Methods & Functions
+
+        public static event FileEventHandler Notification;
+
+        public Hotkey GetHotKeyByFunction(HotkeyFunction function)
         {
-            get; set;
+            foreach (Hotkey key in this.Hotkey)
+                if (key.Function == function)
+                    return key;
+
+            return new Hotkey {Function = function};
         }
-
-        #endregion Public Properties
-
-        #region Public Methods & Functions
 
         public void Save()
         {
@@ -186,16 +146,13 @@ namespace theDiary.Tools.HideMyWindow
             Runtime.Instance.Settings = Settings.Load();
         }
 
-        #endregion Public Methods & Functions
-
-        #region Private Methods
         private bool HasRegistryEntry(string path, string name)
         {
             RegistryKey key;
-            return this.TryGetRegistryEntry(path, name, out key);
+            return Settings.TryGetRegistryEntry(path, name, out key);
         }
 
-        private bool TryGetRegistryEntry(string path, string name, out RegistryKey key)
+        private static bool TryGetRegistryEntry(string path, string name, out RegistryKey key)
         {
             key = Registry.CurrentUser.OpenSubKey(path, true);
             return (key != null && key.GetValue(name) != null);
@@ -205,13 +162,13 @@ namespace theDiary.Tools.HideMyWindow
         {
             RegistryKey key;
             AssemblyTitleAttribute attribute;
-            Assembly.GetEntryAssembly().TryGetCustomAttribute<AssemblyTitleAttribute>(out attribute);
-            bool hasKey = this.TryGetRegistryEntry(Settings.RegistryStartPath, attribute.Title, out key);
+            Assembly.GetEntryAssembly().TryGetCustomAttribute(out attribute);
+            bool hasKey = Settings.TryGetRegistryEntry(Settings.RegistryStartPath, attribute.Title, out key);
             bool autoStartWithWindows = this.AutoStartWithWindows;
             if ((!autoStartWithWindows && hasKey)
                 || (autoStartWithWindows && !hasKey))
             {
-                if (autoStartWithWindows && !hasKey)
+                if (autoStartWithWindows)
                 {
                     key.SetValue(attribute.Title, string.Format("\"{0}\"", Assembly.GetEntryAssembly().Location));
                 }
@@ -220,61 +177,60 @@ namespace theDiary.Tools.HideMyWindow
                     key.DeleteValue(attribute.Title);
                 }
             }
-            this.registryChecked = true;
-            return;
         }
-        #endregion Private Methods
-        #region Internal Static Methods & Functions
 
         internal static void Save(Settings settings)
         {
-            var task = System.Threading.Tasks.Task.Run(() =>
+            Task task = Task.Run(() =>
             {
                 if (settings == null)
                     settings = Settings.Load();
-                if (Settings.Notification != null)
-                    Settings.Notification(settings, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Saving));
-                using (System.IO.Stream stream = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().OpenFile(Settings.StorageFileName, FileMode.OpenOrCreate, FileAccess.Write))
+                if (Notification != null)
+                    Notification(settings, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Saving));
+                using (
+                    Stream stream = IsolatedStorageFile.GetUserStoreForAssembly()
+                        .OpenFile(Settings.StorageFileName, FileMode.OpenOrCreate, FileAccess.Write))
                 {
-                    var xs = new XmlSerializer(typeof(Settings));
-                    using (var tw = new StreamWriter(stream))
+                    XmlSerializer xs = new XmlSerializer(typeof (Settings));
+                    using (StreamWriter tw = new StreamWriter(stream))
                         xs.Serialize(tw, settings);
                 }
-                if (Settings.Notification != null)
-                    Settings.Notification(settings, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Saving));
+                if (Notification != null)
+                    Notification(settings, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Saving));
             });
-            System.Threading.Tasks.Task.WaitAll(task);
-            if (Settings.Notification != null)
-                Settings.Notification(null, new FileEventArgs(Settings.StorageFileName));
+            Task.WaitAll(task);
+            if (Notification != null)
+                Notification(null, new FileEventArgs(Settings.StorageFileName));
         }
 
         internal static Settings Load()
         {
-            var task = System.Threading.Tasks.Task.Run<Settings>(() =>
+            Task<Settings> task = Task.Run(() =>
             {
                 Settings returnValue = null;
-                System.IO.Stream stream = null;
+                Stream stream = null;
                 try
                 {
-                    if (Settings.Notification != null)
-                        Settings.Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Opening));
-                    if (System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(StorageFileName))
-                        stream = System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().OpenFile(StorageFileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    if (Notification != null)
+                        Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Opening));
+                    if (IsolatedStorageFile.GetUserStoreForAssembly().FileExists(Settings.StorageFileName))
+                        stream = IsolatedStorageFile.GetUserStoreForAssembly()
+                            .OpenFile(Settings.StorageFileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
 
                     Program.IsConfigured = (stream != null);
                     if (stream == null)
                     {
-                        if (Settings.Notification != null)
-                            Settings.Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Creating));
-                        stream = new FileStream(StorageFileName, FileMode.OpenOrCreate);
-                        if (Settings.Notification != null)
-                            Settings.Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Created));
+                        if (Notification != null)
+                            Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Creating));
+                        stream = new FileStream(Settings.StorageFileName, FileMode.OpenOrCreate);
+                        if (Notification != null)
+                            Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Created));
                     }
-                    var xs = new XmlSerializer(typeof(Settings));
-                    using (var fileStream = new StreamReader(stream))
+                    XmlSerializer xs = new XmlSerializer(typeof (Settings));
+                    using (StreamReader fileStream = new StreamReader(stream))
                     {
-                        if (Settings.Notification != null)
-                            Settings.Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loading));
+                        if (Notification != null)
+                            Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loading));
 
                         returnValue = (Settings) xs.Deserialize(fileStream);
                         Program.IsConfigured = (returnValue.Hotkey.Count != 0);
@@ -282,15 +238,15 @@ namespace theDiary.Tools.HideMyWindow
                 }
                 catch
                 {
-                    if (Settings.FailedToLoad)
+                    if (Settings.failedToLoad)
                     {
                         returnValue = new Settings();
                     }
                     else
                     {
-                        Settings.FailedToLoad = true;
-                        if (System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().FileExists(StorageFileName))
-                            System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly().DeleteFile(StorageFileName);
+                        Settings.failedToLoad = true;
+                        if (IsolatedStorageFile.GetUserStoreForAssembly().FileExists(Settings.StorageFileName))
+                            IsolatedStorageFile.GetUserStoreForAssembly().DeleteFile(Settings.StorageFileName);
                         returnValue = Settings.Load();
                     }
                 }
@@ -301,18 +257,18 @@ namespace theDiary.Tools.HideMyWindow
                     if (returnValue != null)
                         returnValue.CheckWindowsRegistryAutoStart();
 
-                    if (Settings.Notification != null)
-                        Settings.Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loaded));
+                    if (Notification != null)
+                        Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loaded));
                 }
 
                 return returnValue;
             });
-            System.Threading.Tasks.Task.WaitAll(task);
-            if (Settings.Notification != null)
-                Settings.Notification(null, new FileEventArgs(Settings.StorageFileName));
+            Task.WaitAll(task);
+            if (Notification != null)
+                Notification(null, new FileEventArgs(Settings.StorageFileName));
             return task.Result;
         }
 
-        #endregion Internal Static Methods & Functions
+        #endregion
     }
 }

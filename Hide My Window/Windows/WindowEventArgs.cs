@@ -5,10 +5,11 @@ namespace theDiary.Tools.HideMyWindow
     public delegate void WindowEventHandler(object sender, WindowEventArgs e);
 
     public class WindowEventArgs
-           : EventArgs
+        : EventArgs
     {
+        #region Constructors
+
         public WindowEventArgs()
-            : base()
         {
         }
 
@@ -21,10 +22,12 @@ namespace theDiary.Tools.HideMyWindow
             this.Window = window;
         }
 
-        public WindowInfo Window
-        {
-            get;
-            protected set;
-        }
+        #endregion
+
+        #region Properties
+
+        public WindowInfo Window { get; protected set; }
+
+        #endregion
     }
 }

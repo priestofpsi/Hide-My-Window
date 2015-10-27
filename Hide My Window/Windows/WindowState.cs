@@ -6,6 +6,6 @@
 
         Hidden = 1,
 
-        Protected = 2,
+        Protected = 2
     }
 }

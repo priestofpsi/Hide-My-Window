@@ -10,6 +10,6 @@ namespace theDiary.Tools.HideMyWindow
         Control = 2,
         Shift = 4,
         Win = 8,
-        All = Alt | Control | Shift | Win
+        All = HotModifierKeys.Alt | HotModifierKeys.Control | HotModifierKeys.Shift | HotModifierKeys.Win
     }
 }

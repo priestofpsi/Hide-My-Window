@@ -6,15 +6,20 @@ namespace theDiary.Tools.HideMyWindow
     public class HiddenWindowsListView
         : ListView
     {
+        #region Constructors
+
         public HiddenWindowsListView()
-            : base()
         {
             //this.LabelEdit = true;
             //this.OwnerDraw = true;
-            this.DrawItem += HiddenWindowsListView_DrawItem;
-            this.DrawColumnHeader += HiddenWindowsListView_DrawColumnHeader;
-            this.DrawSubItem += new DrawListViewSubItemEventHandler(HiddenWindowsListView_DrawSubItem);
+            this.DrawItem += this.HiddenWindowsListView_DrawItem;
+            this.DrawColumnHeader += this.HiddenWindowsListView_DrawColumnHeader;
+            this.DrawSubItem += this.HiddenWindowsListView_DrawSubItem;
         }
+
+        #endregion
+
+        #region Methods & Functions
 
         private void HiddenWindowsListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
         {
@@ -59,20 +64,27 @@ namespace theDiary.Tools.HideMyWindow
             WindowInfo currentItem = (e.Item as WindowListViewItem).Window;
             switch (this.View)
             {
-                case System.Windows.Forms.View.LargeIcon:
+                case View.LargeIcon:
                     e.DrawDefault = false;
                     e.DrawBackground();
                     Rectangle itemBounds = new Rectangle(e.Bounds.Location, new Size(e.Bounds.Width, 65));
                     //if (e.Item.Selected)
                     //    e.Graphics.FillRectangle(SystemColors.Highlight.ToBrush(), e.Bounds);
 
-                    var iconBounds = e.Graphics.AddImage(e.Bounds, currentItem.ApplicationIcon, null, (e.Item.Selected) ? 16 : 18);
-                    e.Graphics.AddImage(e.Bounds, (currentItem.IsPasswordProtected) ? ActionResource.lockwindow_small : ActionResource.unlockwindow_small, ImagePosition.TopLeft);
+                    Rectangle iconBounds = e.Graphics.AddImage(e.Bounds, currentItem.ApplicationIcon, null,
+                        (e.Item.Selected) ? 16 : 18);
+                    e.Graphics.AddImage(e.Bounds,
+                        (currentItem.IsPasswordProtected)
+                            ? ActionResource.lockwindow_small
+                            : ActionResource.unlockwindow_small, ImagePosition.TopLeft);
                     if (currentItem.IsPinned)
                         e.Graphics.AddImage(e.Bounds, ActionResource.tack_small, ImagePosition.TopRight);
                     //e.DrawText(TextFormatFlags.Bottom | TextFormatFlags.EndEllipsis | TextFormatFlags.HorizontalCenter);
-                    Rectangle rec = new Rectangle(e.Bounds.X + 2, e.Bounds.Y + 2, e.Bounds.Width - 4, e.Bounds.Height - 4);
-                    TextRenderer.DrawText(e.Graphics, e.Item.Text, e.Item.Font, rec, e.Item.ForeColor, TextFormatFlags.Bottom | TextFormatFlags.Left | TextFormatFlags.EndEllipsis | TextFormatFlags.ExpandTabs | TextFormatFlags.SingleLine);
+                    Rectangle rec = new Rectangle(e.Bounds.X + 2, e.Bounds.Y + 2, e.Bounds.Width - 4,
+                        e.Bounds.Height - 4);
+                    TextRenderer.DrawText(e.Graphics, e.Item.Text, e.Item.Font, rec, e.Item.ForeColor,
+                        TextFormatFlags.Bottom | TextFormatFlags.Left | TextFormatFlags.EndEllipsis |
+                        TextFormatFlags.ExpandTabs | TextFormatFlags.SingleLine);
                     //e.DrawFocusRectangle();
                     break;
 
@@ -91,5 +103,7 @@ namespace theDiary.Tools.HideMyWindow
                 e.Item.SubItems[2].Text = currentItem.IsPinned ? "Yes" : "No";
             }
         }
+
+        #endregion
     }
 }

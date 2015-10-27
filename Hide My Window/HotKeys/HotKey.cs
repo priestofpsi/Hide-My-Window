@@ -7,12 +7,26 @@ namespace theDiary.Tools.HideMyWindow
     public sealed class Hotkey
         : IDisposable
     {
+        #region Declarations
+
+        [XmlAttribute] public HotkeyFunction Function;
+
+        [XmlAttribute] public Keys HotKey;
+
+        [XmlIgnore] internal short ID;
+
+        [XmlAttribute] public HotModifierKeys ModifierKeys;
+
+        #endregion
+
+        #region Properties
+
         [XmlIgnore]
         public string HotKeyString
         {
             get
             {
-                var keystring = "";
+                string keystring = "";
                 if ((this.ModifierKeys & HotModifierKeys.Alt) > 0)
                     keystring += "Alt+";
                 if ((this.ModifierKeys & HotModifierKeys.Control) > 0)
@@ -21,23 +35,11 @@ namespace theDiary.Tools.HideMyWindow
                     keystring += "Shift+";
                 if ((this.ModifierKeys & HotModifierKeys.Win) > 0)
                     keystring += "Win+";
-                keystring += this.Key.ToString();
+                keystring += this.Key;
 
                 return keystring;
             }
         }
-
-        [XmlAttribute]
-        public HotkeyFunction Function;
-
-        [XmlAttribute]
-        public HotModifierKeys ModifierKeys;
-
-        [XmlAttribute]
-        public Keys HotKey;
-
-        [XmlIgnore]
-        internal short ID;
 
         [XmlIgnore]
         public string Key
@@ -49,81 +51,47 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.HotKey.ToString();
             }
-            set
-            {
-                this.HotKey = (Keys) Enum.Parse(typeof(Keys), value);
-            }
+            set { this.HotKey = (Keys) Enum.Parse(typeof (Keys), value); }
         }
 
         [XmlIgnore]
         public string HKFunction
         {
-            get
-            {
-                return this.Function.ToString();
-            }
-            set
-            {
-                this.Function = (HotkeyFunction) Enum.Parse(typeof(HotkeyFunction), value);
-            }
+            get { return this.Function.ToString(); }
+            set { this.Function = (HotkeyFunction) Enum.Parse(typeof (HotkeyFunction), value); }
         }
 
         [XmlIgnore]
         public bool Control
         {
-            get
-            {
-                return this.ModifierKeys.HasFlag(HotModifierKeys.Control);
-            }
-            set
-            {
-                this.ModHotFlag(value, HotModifierKeys.Control);
-            }
+            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Control); }
+            set { this.ModHotFlag(value, HotModifierKeys.Control); }
         }
 
         [XmlIgnore]
         public bool Alt
         {
-            get
-            {
-                return this.ModifierKeys.HasFlag(HotModifierKeys.Alt);
-            }
-            set
-            {
-                this.ModHotFlag(value, HotModifierKeys.Alt);
-            }
+            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Alt); }
+            set { this.ModHotFlag(value, HotModifierKeys.Alt); }
         }
 
         [XmlIgnore]
         public bool Shift
         {
-            get
-            {
-                return this.ModifierKeys.HasFlag(HotModifierKeys.Shift);
-            }
-            set
-            {
-                this.ModHotFlag(value, HotModifierKeys.Shift);
-            }
+            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Shift); }
+            set { this.ModHotFlag(value, HotModifierKeys.Shift); }
         }
 
         [XmlIgnore]
         public bool Win
         {
-            get
-            {
-                return this.ModifierKeys.HasFlag(HotModifierKeys.Win);
-            }
-            set
-            {
-                this.ModHotFlag(value, HotModifierKeys.Win);
-            }
+            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Win); }
+            set { this.ModHotFlag(value, HotModifierKeys.Win); }
         }
 
-        public void Dispose()
-        {
-            this.Dispose(true);
-        }
+        #endregion
+
+        #region Methods & Functions
 
         private void Dispose(bool disposing)
         {
@@ -155,17 +123,28 @@ namespace theDiary.Tools.HideMyWindow
 
         internal void Unregister()
         {
-            ExternalReferences.UnregisterGlobalHotKey(ID);
+            ExternalReferences.UnregisterGlobalHotKey(this.ID);
         }
 
         public override int GetHashCode()
         {
             return this.Function.GetHashCode()
-                | this.HotKey.GetHashCode()
-                | this.Shift.GetHashCode()
-                | this.Win.GetHashCode()
-                | this.Alt.GetHashCode()
-                | this.Control.GetHashCode();
+                   | this.HotKey.GetHashCode()
+                   | this.Shift.GetHashCode()
+                   | this.Win.GetHashCode()
+                   | this.Alt.GetHashCode()
+                   | this.Control.GetHashCode();
         }
+
+        #endregion
+
+        #region Interface Implementations
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+        }
+
+        #endregion
     }
 }

@@ -7,8 +7,9 @@ namespace theDiary.Tools.HideMyWindow
     public class WindowInfoEventArgs
         : EventArgs
     {
+        #region Constructors
+
         public WindowInfoEventArgs()
-            : base()
         {
         }
 
@@ -19,22 +20,16 @@ namespace theDiary.Tools.HideMyWindow
             this.State = window.CanShow ? WindowStates.Hidden : WindowStates.Normal;
         }
 
-        public IntPtr Handle
-        {
-            get;
-            private set;
-        }
+        #endregion
 
-        public int ProcessId
-        {
-            get;
-            private set;
-        }
+        #region Properties
 
-        public WindowStates State
-        {
-            get;
-            private set;
-        }
+        public IntPtr Handle { get; private set; }
+
+        public int ProcessId { get; private set; }
+
+        public WindowStates State { get; private set; }
+
+        #endregion
     }
 }

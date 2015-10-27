@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
 {
     public partial class UnlockForm : Form
     {
+        #region Constructors
+
         public UnlockForm()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public UnlockForm(string title)
@@ -24,13 +18,18 @@ namespace theDiary.Tools.HideMyWindow
             this.Text = string.Format("Unlock - {0}", title);
         }
 
+        #endregion
+
+        #region Properties
+
         public bool PasswordMatched
         {
-            get
-            {
-                return this.passwordTextBox1.Password.GetMD5Hash().Equals(Runtime.Instance.Settings.Password);
-            }
+            get { return this.passwordTextBox1.Password.GetMD5Hash().Equals(Runtime.Instance.Settings.Password); }
         }
+
+        #endregion
+
+        #region Methods & Functions
 
         private static string GetHashString(byte[] value)
         {
@@ -49,5 +48,7 @@ namespace theDiary.Tools.HideMyWindow
                 this.Close();
             }
         }
+
+        #endregion
     }
 }
