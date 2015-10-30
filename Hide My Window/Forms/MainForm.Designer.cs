@@ -37,6 +37,7 @@ namespace theDiary.Tools.HideMyWindow
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.ItemsCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.labelNotifications = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -88,7 +89,6 @@ namespace theDiary.Tools.HideMyWindow
             this.unprotectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.labelNotifications = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -144,10 +144,15 @@ namespace theDiary.Tools.HideMyWindow
             // statusLabel
             // 
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(214, 17);
+            this.statusLabel.Size = new System.Drawing.Size(363, 17);
             this.statusLabel.Spring = true;
             this.statusLabel.Text = "0 items selected";
             this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labelNotifications
+            // 
+            this.labelNotifications.Name = "labelNotifications";
+            this.labelNotifications.Size = new System.Drawing.Size(0, 17);
             // 
             // toolStripStatusLabel3
             // 
@@ -222,7 +227,7 @@ namespace theDiary.Tools.HideMyWindow
             this.viewList,
             this.viewTiles});
             this.viewToggle.Name = "viewToggle";
-            this.viewToggle.Size = new System.Drawing.Size(127, 22);
+            this.viewToggle.Size = new System.Drawing.Size(152, 22);
             this.viewToggle.Text = "&View";
             this.viewToggle.DropDownOpening += new System.EventHandler(this.viewToggle_DropDownOpening);
             // 
@@ -274,7 +279,7 @@ namespace theDiary.Tools.HideMyWindow
             this.largeToolbarIcons,
             this.smallToolbarIcons});
             this.toolbarToolStripMenuItem.Name = "toolbarToolStripMenuItem";
-            this.toolbarToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+            this.toolbarToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.toolbarToolStripMenuItem.Text = "&Toolbar";
             this.toolbarToolStripMenuItem.DropDownOpening += new System.EventHandler(this.toolbarToggle_DropDownOpening);
             // 
@@ -311,20 +316,20 @@ namespace theDiary.Tools.HideMyWindow
             this.statusbarToggle.CheckOnClick = true;
             this.statusbarToggle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.statusbarToggle.Name = "statusbarToggle";
-            this.statusbarToggle.Size = new System.Drawing.Size(127, 22);
+            this.statusbarToggle.Size = new System.Drawing.Size(152, 22);
             this.statusbarToggle.Text = "&Statusbar";
             this.statusbarToggle.Click += new System.EventHandler(this.statusbarToggle_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(124, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
             // 
             // openConfigurationForm
             // 
             this.openConfigurationForm.Image = ((System.Drawing.Image)(resources.GetObject("openConfigurationForm.Image")));
             this.openConfigurationForm.Name = "openConfigurationForm";
-            this.openConfigurationForm.Size = new System.Drawing.Size(127, 22);
+            this.openConfigurationForm.Size = new System.Drawing.Size(152, 22);
             this.openConfigurationForm.Text = "&Configure";
             this.openConfigurationForm.Click += new System.EventHandler(this.openConfigurationForm_Click);
             // 
@@ -339,7 +344,7 @@ namespace theDiary.Tools.HideMyWindow
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -594,11 +599,6 @@ namespace theDiary.Tools.HideMyWindow
             this.renameToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.renameToolStripMenuItem.Text = "&Rename";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
-            // 
-            // labelNotifications
-            // 
-            this.labelNotifications.Name = "labelNotifications";
-            this.labelNotifications.Size = new System.Drawing.Size(0, 17);
             // 
             // MainForm
             // 

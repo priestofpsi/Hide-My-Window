@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Windows.Automation;
 
 namespace theDiary.Tools.HideMyWindow
 {
     public class WindowInfo
     {
         #region Constructors
+        private WindowInfo(AutomationElement automationElement)
+            : this(new IntPtr(automationElement.Current.NativeWindowHandle))
+        {
+            this.automationElement = automationElement;
+        }
 
         private WindowInfo(IntPtr wHnd)
         {
@@ -25,43 +31,79 @@ namespace theDiary.Tools.HideMyWindow
 
         private string title;
         private UnlockWindowDelegate unlockWindowHandler;
+        private AutomationElement automationElement = null;
 
         #endregion
 
         #region Properties
 
-        internal string Key
+        public AutomationElement AutomationElement
         {
-            get { return this.Handle.ToString(); }
+            get
+            {
+                if (this.automationElement == null)
+                    this.automationElement = AutomationElement.FromHandle(this.Handle);
+
+                return this.automationElement;
+            }
         }
 
-        public IntPtr Handle { get; internal set; }
+        internal string Key
+        {
+            get
+            {
+                return this.Handle.ToString();
+            }
+        }
 
-        public long OriginalState { get; internal set; }
+        public IntPtr Handle
+        {
+            get; internal set;
+        }
+
+        public long OriginalState
+        {
+            get; internal set;
+        }
 
         public IntPtr CurrentState
         {
-            get { return ExternalReferences.CurrentState(this.Handle); }
+            get
+            {
+                return ExternalReferences.CurrentState(this.Handle);
+            }
         }
 
         public bool CanHide
         {
-            get { return this.OriginalState == 0; }
+            get
+            {
+                return this.OriginalState == 0;
+            }
         }
 
         public bool CanShow
         {
-            get { return this.OriginalState != 0; }
+            get
+            {
+                return this.OriginalState != 0;
+            }
         }
 
         public bool IsPasswordProtected
         {
-            get { return this.unlockWindowHandler != null; }
+            get
+            {
+                return this.unlockWindowHandler != null;
+            }
         }
 
         public bool IsPinned
         {
-            get { return this.isPinned; }
+            get
+            {
+                return this.isPinned;
+            }
             set
             {
                 if (this.isPinned == value)
@@ -111,17 +153,26 @@ namespace theDiary.Tools.HideMyWindow
 
         public string ApplicationPathName
         {
-            get { return this.ApplicationProcess.MainModule.FileName; }
+            get
+            {
+                return this.ApplicationProcess.MainModule.FileName;
+            }
         }
 
         public int ApplicationId
         {
-            get { return this.ApplicationProcess.Id; }
+            get
+            {
+                return this.ApplicationProcess.Id;
+            }
         }
 
         public Icon ApplicationIcon
         {
-            get { return this.ApplicationProcess.GetApplicationIcon(); }
+            get
+            {
+                return this.ApplicationProcess.GetApplicationIcon();
+            }
         }
 
         #endregion
@@ -209,7 +260,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             if (obj is WindowInfo)
                 return ((WindowInfo) obj).Handle.Equals(this.Handle);
-            if (obj.GetType() == typeof (IntPtr))
+            if (obj.GetType() == typeof(IntPtr))
                 return ((IntPtr) obj) == this.Handle;
 
             return false;

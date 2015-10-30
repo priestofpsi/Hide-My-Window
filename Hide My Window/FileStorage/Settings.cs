@@ -11,7 +11,9 @@ namespace theDiary.Tools.HideMyWindow
     public partial class Settings
     {
         #region Constructors
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Settings"/> class.
+        /// </summary>
         public Settings()
         {
             this.Hotkey = new HotKeyBindingList();
@@ -21,26 +23,43 @@ namespace theDiary.Tools.HideMyWindow
 
         #region Constant Declarations
 
-        [XmlIgnore] internal const string StorageFileName = "Settings.xml";
+        private const string StorageFileName = "Settings.xml";
 
         private const string RegistryStartPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
 
-        private static bool failedToLoad;
+        private static bool failedToLoad = false;
 
         #endregion
 
-        #region Declarations
+        #region Private Declarations
 
         private bool autoStartWithWindows;
-
-        [XmlElement] public HotKeyBindingList Hotkey;
-
         private FormState lastState;
-
+        public HotKeyBindingList hotkeys;
         #endregion
 
-        #region Properties
+        public static event FileEventHandler FileNotification;
 
+        /// <summary>
+        /// The event that is raised
+        /// </summary>
+        public event NotificationEventHandler Notification;
+
+        #region Properties
+        [XmlElement]
+        public HotKeyBindingList Hotkey
+        {
+            get
+            {
+                return this.hotkeys;
+            }
+            set
+            {
+                this.hotkeys = value;
+            }
+        }
+
+        [XmlAttribute]
         public bool AutoStartWithWindows
         {
             get { return this.autoStartWithWindows; }
@@ -87,8 +106,6 @@ namespace theDiary.Tools.HideMyWindow
             set { this.lastState = value; }
         }
 
-        [XmlElement]
-        public string Password { get; set; }
 
         [XmlIgnore]
         public bool PasswordIsSet
@@ -98,6 +115,19 @@ namespace theDiary.Tools.HideMyWindow
 
         [XmlElement]
         public bool RequirePasswordOnShow { get; set; }
+
+
+        [XmlElement]
+        public string Password
+        {
+            get; set;
+        }
+
+        [XmlAttribute]
+        public bool SmallToolbarIcons { get; set; }
+
+        [XmlAttribute]
+        public bool HideToolbarText { get; set; }
 
         [XmlIgnore]
         public string HashedPassword
@@ -114,19 +144,9 @@ namespace theDiary.Tools.HideMyWindow
                 }
             }
         }
-
-        [XmlAttribute]
-        public bool SmallToolbarIcons { get; set; }
-
-        [XmlAttribute]
-        public bool HideToolbarText { get; set; }
-
         #endregion
 
         #region Methods & Functions
-
-        public static event FileEventHandler Notification;
-
         public Hotkey GetHotKeyByFunction(HotkeyFunction function)
         {
             foreach (Hotkey key in this.Hotkey)
@@ -138,12 +158,24 @@ namespace theDiary.Tools.HideMyWindow
 
         public void Save()
         {
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Saving"));
+
             Settings.Save(Runtime.Instance.Settings);
+
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Saved"));
         }
 
         public void Reset()
         {
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Resetting"));
+
             Runtime.Instance.Settings = Settings.Load();
+
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Reset"));
         }
 
         private bool HasRegistryEntry(string path, string name)
@@ -185,8 +217,8 @@ namespace theDiary.Tools.HideMyWindow
             {
                 if (settings == null)
                     settings = Settings.Load();
-                if (Notification != null)
-                    Notification(settings, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Saving));
+                if (FileNotification != null)
+                    FileNotification(settings, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Saving));
                 using (
                     Stream stream = IsolatedStorageFile.GetUserStoreForAssembly()
                         .OpenFile(Settings.StorageFileName, FileMode.OpenOrCreate, FileAccess.Write))
@@ -195,12 +227,12 @@ namespace theDiary.Tools.HideMyWindow
                     using (StreamWriter tw = new StreamWriter(stream))
                         xs.Serialize(tw, settings);
                 }
-                if (Notification != null)
-                    Notification(settings, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Saving));
+                if (FileNotification != null)
+                    FileNotification(settings, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Saving));
             });
             Task.WaitAll(task);
-            if (Notification != null)
-                Notification(null, new FileEventArgs(Settings.StorageFileName));
+            if (FileNotification != null)
+                FileNotification(null, new FileEventArgs(Settings.StorageFileName));
         }
 
         internal static Settings Load()
@@ -211,8 +243,8 @@ namespace theDiary.Tools.HideMyWindow
                 Stream stream = null;
                 try
                 {
-                    if (Notification != null)
-                        Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Opening));
+                    if (Settings.FileNotification != null)
+                        Settings.FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Opening));
                     if (IsolatedStorageFile.GetUserStoreForAssembly().FileExists(Settings.StorageFileName))
                         stream = IsolatedStorageFile.GetUserStoreForAssembly()
                             .OpenFile(Settings.StorageFileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -220,17 +252,17 @@ namespace theDiary.Tools.HideMyWindow
                     Program.IsConfigured = (stream != null);
                     if (stream == null)
                     {
-                        if (Notification != null)
-                            Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Creating));
+                        if (Settings.FileNotification != null)
+                            Settings.FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Creating));
                         stream = new FileStream(Settings.StorageFileName, FileMode.OpenOrCreate);
-                        if (Notification != null)
-                            Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Created));
+                        if (Settings.FileNotification != null)
+                            Settings.FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Created));
                     }
                     XmlSerializer xs = new XmlSerializer(typeof (Settings));
                     using (StreamReader fileStream = new StreamReader(stream))
                     {
-                        if (Notification != null)
-                            Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loading));
+                        if (Settings.FileNotification != null)
+                            Settings.FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loading));
 
                         returnValue = (Settings) xs.Deserialize(fileStream);
                         Program.IsConfigured = (returnValue.Hotkey.Count != 0);
@@ -257,15 +289,15 @@ namespace theDiary.Tools.HideMyWindow
                     if (returnValue != null)
                         returnValue.CheckWindowsRegistryAutoStart();
 
-                    if (Notification != null)
-                        Notification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loaded));
+                    if (Settings.FileNotification != null)
+                        Settings.FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loaded));
                 }
 
                 return returnValue;
             });
             Task.WaitAll(task);
-            if (Notification != null)
-                Notification(null, new FileEventArgs(Settings.StorageFileName));
+            if (FileNotification != null)
+                FileNotification(null, new FileEventArgs(Settings.StorageFileName));
             return task.Result;
         }
 

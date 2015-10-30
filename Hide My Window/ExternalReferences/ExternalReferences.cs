@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Windows.Automation;
 
 namespace theDiary.Tools.HideMyWindow
 {
     internal static partial class ExternalReferences
     {
         #region Methods & Functions
-
         internal static IntPtr CurrentState(IntPtr handle)
         {
             return ExternalReferences.GetWindowLongPtr64(handle, ExternalReferences.GWL_STYLE);

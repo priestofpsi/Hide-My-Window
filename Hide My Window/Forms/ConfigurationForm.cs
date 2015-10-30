@@ -176,5 +176,37 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         #endregion
+
+        private Updater updater;
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using (this.updater = new Updater())
+            {
+                updater.Notification +=
+                    (s, ne) =>
+                        this.listBox1.Items.Add(string.Format("[{0}]\t{1}", ne.NotificationDate, ne.Message));
+                updater.Updating +=
+                    (s, ne) =>
+                    {
+
+                        this.listBox1.Items.Add(string.Format("[{0}]\t{1}", ne.NotificationDate, ne.Message));
+                        if (ne.Completed)
+                        {
+                            if (ne.Success)
+                            {
+                                this.listBox1.Items.Add(string.Format("[{0}]\t{1} Updates available.",
+                                    ne.NotificationDate, ne.Count));
+                            }
+                            else
+                            {
+                                this.listBox1.Items.Add(string.Format("[{0}]\tError: {1}", ne.NotificationDate,
+                                    ne.Error.Message));
+                            }
+                        }
+                    };
+
+                this.updater.GetAvailableUpdates();
+            }
+        }
     }
 }

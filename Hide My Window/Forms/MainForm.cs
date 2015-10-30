@@ -17,7 +17,7 @@ namespace theDiary.Tools.HideMyWindow
             this.InitializeFormHandlers();
             this.InitializeFormFromSettings();
             this.Icon = Runtime.Instance.Settings.ApplicationIcon;
-            Settings.Notification += (s, e) => this.labelNotifications.Text = e.EventText;
+            Settings.FileNotification += (s, e) => this.labelNotifications.Text = e.EventText;
             HiddenWindowStore.Notification += (s, e) => this.labelNotifications.Text = e.EventText;
             Runtime.Instance.Settings.ApplicationIconChanged += (s, e) =>
             {

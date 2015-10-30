@@ -23,7 +23,6 @@ namespace theDiary.Tools.HideMyWindow
         #region Declarations
 
         private EffectType effectType = EffectType.Glow;
-
         private Color effectColor = SystemColors.ButtonShadow;
         private bool glowOn;
 

@@ -52,6 +52,9 @@
             this.hotKeyMimicTextBox3 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
             this.hotKeyMimicTextBox2 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
             this.hotKeyMimicTextBox1 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
+            this.tpUpdate = new System.Windows.Forms.TabPage();
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -60,6 +63,7 @@
             this.tabGeneral.SuspendLayout();
             this.glowPanel1.SuspendLayout();
             this.tabHotKeys.SuspendLayout();
+            this.tpUpdate.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -127,6 +131,7 @@
             // 
             this.tabControl.Controls.Add(this.tabGeneral);
             this.tabControl.Controls.Add(this.tabHotKeys);
+            this.tabControl.Controls.Add(this.tpUpdate);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(5, 5);
             this.tabControl.Name = "tabControl";
@@ -336,6 +341,36 @@
             this.hotKeyMimicTextBox1.Size = new System.Drawing.Size(285, 23);
             this.hotKeyMimicTextBox1.TabIndex = 1;
             // 
+            // tpUpdate
+            // 
+            this.tpUpdate.Controls.Add(this.button1);
+            this.tpUpdate.Controls.Add(this.listBox1);
+            this.tpUpdate.Location = new System.Drawing.Point(4, 22);
+            this.tpUpdate.Name = "tpUpdate";
+            this.tpUpdate.Padding = new System.Windows.Forms.Padding(3);
+            this.tpUpdate.Size = new System.Drawing.Size(609, 292);
+            this.tpUpdate.TabIndex = 2;
+            this.tpUpdate.Text = "Update";
+            this.tpUpdate.UseVisualStyleBackColor = true;
+            // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Location = new System.Drawing.Point(6, 6);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(597, 251);
+            this.listBox1.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(528, 263);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // ConfigurationForm
             // 
             this.AcceptButton = this.save;
@@ -362,6 +397,7 @@
             this.glowPanel1.PerformLayout();
             this.tabHotKeys.ResumeLayout(false);
             this.tabHotKeys.PerformLayout();
+            this.tpUpdate.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -390,5 +426,8 @@
         private HotKeyMimicTextBox hotKeyMimicTextBox3;
         private HotKeyMimicTextBox hotKeyMimicTextBox2;
         private System.Windows.Forms.CheckBox startWithWindows;
+        private System.Windows.Forms.TabPage tpUpdate;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ListBox listBox1;
     }
 }

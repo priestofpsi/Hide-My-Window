@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Automation;
 
 namespace theDiary.Tools.HideMyWindow
 {
@@ -17,14 +18,21 @@ namespace theDiary.Tools.HideMyWindow
                 if (!e.Window.IsPinned)
                     Runtime.instance.Store.Remove(e.Window.Handle);
             };
+            Automation.AddAutomationEventHandler(WindowPattern.WindowOpenedEvent, AutomationElement.RootElement, TreeScope.Children,
+(sender, e) =>
+{
+var element = sender as AutomationElement;
+    
+});
+
         }
 
+        public event WindowEventHandler ApplicationOpened;
         #endregion
 
         #region Declarations
 
         private readonly Dictionary<IntPtr, WindowInfo> hiddenWindows = new Dictionary<IntPtr, WindowInfo>();
-
         private Settings settings;
         private HiddenWindowStore store;
 
