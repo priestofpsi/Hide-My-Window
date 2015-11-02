@@ -14,6 +14,8 @@ namespace theDiary.Tools.HideMyWindow
         {
             this.InitializeComponent();
             ExternalReferences.UnregisterAll();
+            this.pinnedHideWhenMinimized.DataBindings.Add(new Binding("Checked",
+                Runtime.Instance.Settings.PinnedSettings, "HideOnMinimize"));
             this.minimizeToTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings,
                 "MinimizeToTaskBar"));
             this.closeToTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "CloseToTaskBar"));

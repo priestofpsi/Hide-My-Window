@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigurationForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -48,6 +47,9 @@
             this.restoreWindowsOnExit = new System.Windows.Forms.CheckBox();
             this.closeToTaskbar = new System.Windows.Forms.CheckBox();
             this.minimizeToTaskbar = new System.Windows.Forms.CheckBox();
+            this.tabBehaviour = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.pinnedHideWhenMinimized = new System.Windows.Forms.CheckBox();
             this.tabHotKeys = new System.Windows.Forms.TabPage();
             this.hotKeyMimicTextBox4 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
             this.hotKeyMimicTextBox3 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
@@ -56,8 +58,6 @@
             this.tpUpdate = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
-            this.tabBehaviour = new System.Windows.Forms.TabPage();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -65,6 +65,8 @@
             this.tabControl.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.glowPanel1.SuspendLayout();
+            this.tabBehaviour.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.tabHotKeys.SuspendLayout();
             this.tpUpdate.SuspendLayout();
             this.SuspendLayout();
@@ -137,7 +139,6 @@
             this.tabControl.Controls.Add(this.tabHotKeys);
             this.tabControl.Controls.Add(this.tpUpdate);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.ImageList = this.imageList1;
             this.tabControl.Location = new System.Drawing.Point(5, 5);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -158,10 +159,10 @@
             this.tabGeneral.Controls.Add(this.minimizeToTaskbar);
             this.tabGeneral.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabGeneral.ImageIndex = 0;
-            this.tabGeneral.Location = new System.Drawing.Point(4, 23);
+            this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Name = "tabGeneral";
             this.tabGeneral.Padding = new System.Windows.Forms.Padding(5);
-            this.tabGeneral.Size = new System.Drawing.Size(609, 291);
+            this.tabGeneral.Size = new System.Drawing.Size(609, 292);
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
@@ -190,7 +191,6 @@
             this.glowPanel1.Padding = new System.Windows.Forms.Padding(5);
             this.glowPanel1.Size = new System.Drawing.Size(201, 30);
             this.glowPanel1.TabIndex = 8;
-            this.glowPanel1.Trigger = theDiary.Tools.HideMyWindow.EffectTrigger.AlwaysOn;
             // 
             // password
             // 
@@ -289,6 +289,43 @@
             this.minimizeToTaskbar.UseCompatibleTextRendering = true;
             this.minimizeToTaskbar.UseVisualStyleBackColor = true;
             // 
+            // tabBehaviour
+            // 
+            this.tabBehaviour.Controls.Add(this.groupBox1);
+            this.tabBehaviour.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tabBehaviour.Location = new System.Drawing.Point(4, 22);
+            this.tabBehaviour.Name = "tabBehaviour";
+            this.tabBehaviour.Size = new System.Drawing.Size(609, 292);
+            this.tabBehaviour.TabIndex = 3;
+            this.tabBehaviour.Text = "Behaviour";
+            this.tabBehaviour.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.pinnedHideWhenMinimized);
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(3, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(603, 45);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Pinned Windows";
+            // 
+            // pinnedHideWhenMinimized
+            // 
+            this.pinnedHideWhenMinimized.AccessibleDescription = "Pinned windows will automatically hide when minimized.";
+            this.pinnedHideWhenMinimized.AutoSize = true;
+            this.pinnedHideWhenMinimized.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pinnedHideWhenMinimized.Location = new System.Drawing.Point(6, 19);
+            this.pinnedHideWhenMinimized.Name = "pinnedHideWhenMinimized";
+            this.pinnedHideWhenMinimized.Size = new System.Drawing.Size(131, 18);
+            this.pinnedHideWhenMinimized.TabIndex = 1;
+            this.pinnedHideWhenMinimized.Text = "Hide when Minimized";
+            this.pinnedHideWhenMinimized.UseCompatibleTextRendering = true;
+            this.pinnedHideWhenMinimized.UseVisualStyleBackColor = true;
+            // 
             // tabHotKeys
             // 
             this.tabHotKeys.Controls.Add(this.hotKeyMimicTextBox4);
@@ -377,22 +414,6 @@
             this.listBox1.Size = new System.Drawing.Size(597, 251);
             this.listBox1.TabIndex = 0;
             // 
-            // tabBehaviour
-            // 
-            this.tabBehaviour.Location = new System.Drawing.Point(4, 22);
-            this.tabBehaviour.Name = "tabBehaviour";
-            this.tabBehaviour.Size = new System.Drawing.Size(609, 292);
-            this.tabBehaviour.TabIndex = 3;
-            this.tabBehaviour.Text = "Behaviour";
-            this.tabBehaviour.UseVisualStyleBackColor = true;
-            // 
-            // imageList1
-            // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "Ball (Red).ico");
-            this.imageList1.Images.SetKeyName(1, "Ball (Green).ico");
-            // 
             // ConfigurationForm
             // 
             this.AcceptButton = this.save;
@@ -417,6 +438,9 @@
             this.tabGeneral.PerformLayout();
             this.glowPanel1.ResumeLayout(false);
             this.glowPanel1.PerformLayout();
+            this.tabBehaviour.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.tabHotKeys.ResumeLayout(false);
             this.tabHotKeys.PerformLayout();
             this.tpUpdate.ResumeLayout(false);
@@ -452,6 +476,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.TabPage tabBehaviour;
-        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox pinnedHideWhenMinimized;
     }
 }
