@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
@@ -126,6 +128,8 @@ namespace theDiary.Tools.HideMyWindow
 
         private bool hotkeysChanged;
 
+        private Updater updater;
+
         #endregion
 
         #region Properties
@@ -172,20 +176,16 @@ namespace theDiary.Tools.HideMyWindow
             this.tooltipLabel.Text = ((Control) sender).AccessibleDescription;
         }
 
-        #endregion
-
-        private Updater updater;
         private void button1_Click(object sender, EventArgs e)
         {
             using (this.updater = new Updater())
             {
-                updater.Notification +=
+                this.updater.Notification +=
                     (s, ne) =>
                         this.listBox1.Items.Add(string.Format("[{0}]\t{1}", ne.NotificationDate, ne.Message));
-                updater.Updating +=
+                this.updater.Updating +=
                     (s, ne) =>
                     {
-
                         this.listBox1.Items.Add(string.Format("[{0}]\t{1}", ne.NotificationDate, ne.Message));
                         if (ne.Completed)
                         {
@@ -205,5 +205,7 @@ namespace theDiary.Tools.HideMyWindow
                 this.updater.GetAvailableUpdates();
             }
         }
+
+        #endregion
     }
 }

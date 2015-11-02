@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Windows.Automation;
 
 namespace theDiary.Tools.HideMyWindow
 {
     internal static partial class ExternalReferences
     {
         #region Methods & Functions
+
         internal static IntPtr CurrentState(IntPtr handle)
         {
             return ExternalReferences.GetWindowLongPtr64(handle, ExternalReferences.GWL_STYLE);
@@ -69,7 +70,7 @@ namespace theDiary.Tools.HideMyWindow
 
             try
             {
-                short newID = (short) Runtime.Instance.randomizer.Next((int) short.MinValue, (int) short.MaxValue);
+                short newID = (short) Runtime.Instance.randomizer.Next(short.MinValue, short.MaxValue);
                 if (
                     !ExternalReferences.RegisterHotKey(ExternalReferences.MainHandle, newID, (uint) modifierKeys,
                         (uint) hotKey))

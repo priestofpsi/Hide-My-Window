@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace theDiary.Tools.HideMyWindow
@@ -69,7 +67,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             get { return this[window.Handle]; }
         }
-        
+
         #endregion
 
         #region Methods & Functions
@@ -122,11 +120,9 @@ namespace theDiary.Tools.HideMyWindow
             {
                 returnValue = this.items.FirstOrDefault(item => item.Handle == handle);
                 WindowInfo window = WindowInfo.Find(handle);
-                
             }
             else
             {
-
                 WindowInfo window = WindowInfo.Find(handle);
                 returnValue = new WindowsStoreItem(window);
                 this.items.Add(returnValue);
@@ -152,7 +148,7 @@ namespace theDiary.Tools.HideMyWindow
             }
             return returnValue;
         }
-        
+
         public void ForEach(Action<long> action)
         {
             this.items.ForEach(item => action(item.HandleValue));
@@ -167,7 +163,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             this.items.ForEach(item => action(item.Handle));
         }
-    
+
         #endregion
 
         #region Interface Implementations
@@ -224,7 +220,7 @@ namespace theDiary.Tools.HideMyWindow
             item.RegisterHandlers(WindowInfo.Find(item.Handle));
             if (this.items.Contains(item))
                 return;
-            
+
             this.items.Add(item);
         }
 

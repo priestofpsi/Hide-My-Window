@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Octokit;
 
 namespace theDiary.Tools.HideMyWindow
@@ -43,12 +41,12 @@ namespace theDiary.Tools.HideMyWindow
         #endregion
 
         #region Methods & Functions
+
         public event NotificationEventHandler Notification;
         public event ClientUpdatesEventHandler Updating;
 
         public async void GetAvailableUpdates()
         {
-            
             try
             {
                 if (this.Notification != null)
@@ -73,8 +71,8 @@ namespace theDiary.Tools.HideMyWindow
                     this.Notification(this, new NotificationEventArgs("Finished checking for available updates."));
             }
         }
-    
-        
+
+
         private GitHubClient InitializeClient()
         {
             GitHubClient returnValue = null;
@@ -118,11 +116,9 @@ namespace theDiary.Tools.HideMyWindow
         #endregion
     }
 
-    
 
     public delegate void ClientUpdatesEventHandler(object sender, ClientUpdatesEventArg e);
 
-    
 
     public class ClientUpdatesEventArg
         : NotificationEventArgs

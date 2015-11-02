@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -255,10 +256,9 @@ namespace theDiary.Tools.HideMyWindow
             {
                 this.DoInvoke(() =>
                 {
-                
-                this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>()
-                    .ToList()
-                    .ForEach(item => item.Window.Toggle());
+                    this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>()
+                        .ToList()
+                        .ForEach(item => item.Window.Toggle());
                 });
                 this.hiddenWindows_SelectedIndexChanged(sender, e);
             });
@@ -269,8 +269,8 @@ namespace theDiary.Tools.HideMyWindow
             Task task = Task.Run(() =>
             {
                 this.hiddenWindows.Items.Cast<WindowListViewItem>()
-                .ToList()
-                .ForEach(item => item.Window.Show());
+                    .ToList()
+                    .ForEach(item => item.Window.Show());
                 this.hiddenWindows_SelectedIndexChanged(sender, e);
             });
         }

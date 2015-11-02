@@ -1,6 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
@@ -22,8 +25,9 @@ namespace theDiary.Tools.HideMyWindow
 
         #region Declarations
 
-        private EffectType effectType = EffectType.Glow;
         private Color effectColor = SystemColors.ButtonShadow;
+
+        private EffectType effectType = EffectType.Glow;
         private bool glowOn;
 
         #endregion

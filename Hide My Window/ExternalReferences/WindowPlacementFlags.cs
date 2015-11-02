@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
@@ -14,6 +12,5 @@ namespace theDiary.Tools.HideMyWindow
         RestoreToMaximize = 0x0002,
 
         SetMinimizedPostion = 0x0001
-
     }
 }

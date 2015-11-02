@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,22 +10,31 @@ namespace theDiary.Tools.HideMyWindow
     public sealed class WindowInfoManager
         : IEnumerable<WindowInfo>
     {
+        #region Constructors
+
         public WindowInfoManager()
         {
             WindowInfoManager.Instance = this;
         }
 
+        #endregion
+
+        #region Constant Declarations
+
         private static volatile WindowInfoManager Instance;
         private static readonly object syncObject = new object();
         private static volatile Dictionary<IntPtr, WindowInfo> items = new Dictionary<IntPtr, WindowInfo>();
-        private Task checkApplicationProcessesTask = null;
-        #region Private Declarations
 
         #endregion
 
-        public event WindowEventHandler Registered;
-        public event WindowEventHandler UnRegistered;
+        #region Declarations
+
+        private Task checkApplicationProcessesTask;
+
+        #endregion
+
         #region Properties
+
         private Dictionary<IntPtr, WindowInfo> Items
         {
             get
@@ -37,14 +45,11 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         /// <summary>
-        /// Gets the number of <see cref="WindowInfo"/> instances contained in the <see cref="WindowInfoManager"/>.
+        ///     Gets the number of <see cref="WindowInfo" /> instances contained in the <see cref="WindowInfoManager" />.
         /// </summary>
         public int Count
         {
-            get
-            {
-                return this.Items.Count;
-            }
+            get { return this.Items.Count; }
         }
 
         public WindowInfo this[IntPtr handle]
@@ -58,16 +63,12 @@ namespace theDiary.Tools.HideMyWindow
 
                     return null;
                 }
-
             }
         }
 
         private bool CanCheckProcesses
         {
-            get
-            {
-                return this.Count > 0;
-            }
+            get { return this.Count > 0; }
         }
 
         private bool Running
@@ -78,24 +79,35 @@ namespace theDiary.Tools.HideMyWindow
                        && this.checkApplicationProcessesTask.Status == TaskStatus.Running;
             }
         }
+
         #endregion
 
-        #region Public Methods & Functions
+        #region Methods & Functions
+
+        public event WindowEventHandler Registered;
+        public event WindowEventHandler UnRegistered;
+
         /// <summary>
-        /// Indicates if the <see cref="WindowInfoManager"/> contains the specified <paramref name="window"/> instance.
+        ///     Indicates if the <see cref="WindowInfoManager" /> contains the specified <paramref name="window" /> instance.
         /// </summary>
-        /// <param name="window">The <see cref="WindowInfo"/> instance to check for.</param>
-        /// <returns><c>True</c> if the <see cref="WindowInfoManager"/> contains the <paramref name="window"/>, otherwise <c>False</c>.</returns>
+        /// <param name="window">The <see cref="WindowInfo" /> instance to check for.</param>
+        /// <returns>
+        ///     <c>True</c> if the <see cref="WindowInfoManager" /> contains the <paramref name="window" />, otherwise
+        ///     <c>False</c>.
+        /// </returns>
         public bool Exists(WindowInfo window)
         {
             return this.Items.ContainsKey(window.Handle);
         }
 
         /// <summary>
-        /// Indicates if the <see cref="WindowInfoManager"/> contains the specified <paramref name="windowHandle"/>.
+        ///     Indicates if the <see cref="WindowInfoManager" /> contains the specified <paramref name="windowHandle" />.
         /// </summary>
-        /// <param name="windowHandle">A <see cref="IntPtr"/> reference to the handle to check for.</param>
-        /// <returns><c>True</c> if the <see cref="WindowInfoManager"/> contains the <paramref name="windowHandle"/>, otherwise <c>False</c>.</returns>
+        /// <param name="windowHandle">A <see cref="IntPtr" /> reference to the handle to check for.</param>
+        /// <returns>
+        ///     <c>True</c> if the <see cref="WindowInfoManager" /> contains the <paramref name="windowHandle" />, otherwise
+        ///     <c>False</c>.
+        /// </returns>
         public bool Exists(IntPtr windowHandle)
         {
             return this.Items.ContainsKey(windowHandle);
@@ -124,7 +136,6 @@ namespace theDiary.Tools.HideMyWindow
         {
             try
             {
-
                 lock (WindowInfoManager.syncObject)
                 {
                     if (!window.IsValid || WindowInfoManager.items.ContainsKey(window.Handle))
@@ -133,10 +144,10 @@ namespace theDiary.Tools.HideMyWindow
                     WindowInfoManager.items.Add(window.Handle, window);
                     //Task task = Task.Run(() =>
                     //{
-                        window.Shown += this.Window_Shown;
-                        Runtime.Instance.Store.Add(window.Handle);
-                        if (this.Registered != null)
-                            this.Registered(this, new WindowInfoEventArgs(window));
+                    window.Shown += this.Window_Shown;
+                    Runtime.Instance.Store.Add(window.Handle);
+                    if (this.Registered != null)
+                        this.Registered(this, new WindowInfoEventArgs(window));
                     //});
                     return true;
                 }
@@ -163,12 +174,12 @@ namespace theDiary.Tools.HideMyWindow
                     {
                         //Task task = Task.Run(() =>
                         //{
-                            window.Shown -= this.Window_Shown;
-                            Runtime.Instance.Store.Remove(window.Handle);
-                            if (this.UnRegistered != null)
-                                this.UnRegistered(this, new WindowInfoEventArgs(window));
+                        window.Shown -= this.Window_Shown;
+                        Runtime.Instance.Store.Remove(window.Handle);
+                        if (this.UnRegistered != null)
+                            this.UnRegistered(this, new WindowInfoEventArgs(window));
                         //});
-                        
+
                         return true;
                     }
                     return false;
@@ -180,16 +191,6 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        public IEnumerator<WindowInfo> GetEnumerator()
-        {
-            return this.Items.Values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.Items.Values.GetEnumerator();
-        }
-        #endregion
         private void Window_Shown(object sender, WindowInfoEventArgs e)
         {
             if (!e.Window.IsPinned)
@@ -224,5 +225,21 @@ namespace theDiary.Tools.HideMyWindow
         {
             return WindowInfoManager.Instance[handle];
         }
+
+        #endregion
+
+        #region Interface Implementations
+
+        public IEnumerator<WindowInfo> GetEnumerator()
+        {
+            return this.Items.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.Items.Values.GetEnumerator();
+        }
+
+        #endregion
     }
 }

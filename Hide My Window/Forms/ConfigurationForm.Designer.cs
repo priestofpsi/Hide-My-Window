@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigurationForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -53,8 +54,10 @@
             this.hotKeyMimicTextBox2 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
             this.hotKeyMimicTextBox1 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
             this.tpUpdate = new System.Windows.Forms.TabPage();
-            this.listBox1 = new System.Windows.Forms.ListBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.tabBehaviour = new System.Windows.Forms.TabPage();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -130,9 +133,11 @@
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabGeneral);
+            this.tabControl.Controls.Add(this.tabBehaviour);
             this.tabControl.Controls.Add(this.tabHotKeys);
             this.tabControl.Controls.Add(this.tpUpdate);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.ImageList = this.imageList1;
             this.tabControl.Location = new System.Drawing.Point(5, 5);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -152,10 +157,11 @@
             this.tabGeneral.Controls.Add(this.closeToTaskbar);
             this.tabGeneral.Controls.Add(this.minimizeToTaskbar);
             this.tabGeneral.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tabGeneral.Location = new System.Drawing.Point(4, 22);
+            this.tabGeneral.ImageIndex = 0;
+            this.tabGeneral.Location = new System.Drawing.Point(4, 23);
             this.tabGeneral.Name = "tabGeneral";
             this.tabGeneral.Padding = new System.Windows.Forms.Padding(5);
-            this.tabGeneral.Size = new System.Drawing.Size(609, 292);
+            this.tabGeneral.Size = new System.Drawing.Size(609, 291);
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
@@ -164,7 +170,7 @@
             // 
             this.startWithWindows.AccessibleDescription = "Hide My Window will start up when logging into Windows.";
             this.startWithWindows.AutoSize = true;
-            this.startWithWindows.Location = new System.Drawing.Point(8, 186);
+            this.startWithWindows.Location = new System.Drawing.Point(8, 152);
             this.startWithWindows.Name = "startWithWindows";
             this.startWithWindows.Size = new System.Drawing.Size(119, 18);
             this.startWithWindows.TabIndex = 9;
@@ -179,7 +185,7 @@
             this.glowPanel1.EffectEnabled = true;
             this.glowPanel1.FeatherEffect = 100;
             this.glowPanel1.GlowThickness = 5;
-            this.glowPanel1.Location = new System.Drawing.Point(5, 150);
+            this.glowPanel1.Location = new System.Drawing.Point(8, 176);
             this.glowPanel1.Name = "glowPanel1";
             this.glowPanel1.Padding = new System.Windows.Forms.Padding(5);
             this.glowPanel1.Size = new System.Drawing.Size(201, 30);
@@ -205,7 +211,7 @@
             // clearPassword
             // 
             this.clearPassword.AutoSize = true;
-            this.clearPassword.Location = new System.Drawing.Point(208, 155);
+            this.clearPassword.Location = new System.Drawing.Point(216, 181);
             this.clearPassword.Name = "clearPassword";
             this.clearPassword.Size = new System.Drawing.Size(99, 17);
             this.clearPassword.TabIndex = 7;
@@ -353,14 +359,6 @@
             this.tpUpdate.Text = "Update";
             this.tpUpdate.UseVisualStyleBackColor = true;
             // 
-            // listBox1
-            // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(6, 6);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(597, 251);
-            this.listBox1.TabIndex = 0;
-            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(528, 263);
@@ -370,6 +368,30 @@
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Location = new System.Drawing.Point(6, 6);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(597, 251);
+            this.listBox1.TabIndex = 0;
+            // 
+            // tabBehaviour
+            // 
+            this.tabBehaviour.Location = new System.Drawing.Point(4, 22);
+            this.tabBehaviour.Name = "tabBehaviour";
+            this.tabBehaviour.Size = new System.Drawing.Size(609, 292);
+            this.tabBehaviour.TabIndex = 3;
+            this.tabBehaviour.Text = "Behaviour";
+            this.tabBehaviour.UseVisualStyleBackColor = true;
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "Ball (Red).ico");
+            this.imageList1.Images.SetKeyName(1, "Ball (Green).ico");
             // 
             // ConfigurationForm
             // 
@@ -429,5 +451,7 @@
         private System.Windows.Forms.TabPage tpUpdate;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.TabPage tabBehaviour;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }

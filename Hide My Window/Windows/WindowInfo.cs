@@ -18,17 +18,16 @@ namespace theDiary.Tools.HideMyWindow
 
         private WindowInfo(IntPtr wHnd)
         {
-
-            this.applicationProcess = ExternalReferences.GetWindowProcess(wHnd);
-            if (this.applicationProcess.Id == 0)
+            this.ApplicationProcess = ExternalReferences.GetWindowProcess(wHnd);
+            if (this.ApplicationProcess.Id == 0)
                 return;
 
             this.Handle = wHnd;
             this.OriginalState = 0;
-            this.automationElement = AutomationElement.FromHandle(this.Handle);
+            this.AutomationElement = AutomationElement.FromHandle(this.Handle);
             this.Pinned += this.AddAutomationEvents;
             this.Unpinned += this.RemoveAutomationEvents;
-            this.applicationProcess.Exited += this.ApplicationProcessExited;
+            this.ApplicationProcess.Exited += this.ApplicationProcessExited;
         }
 
         #endregion
@@ -36,9 +35,9 @@ namespace theDiary.Tools.HideMyWindow
         #region Declarations
 
         private readonly object syncObject = new object();
-        private readonly Process applicationProcess;
-        private readonly AutomationElement automationElement;
-        private bool hasAutomationEvents = false;
+        private bool hasAutomationEvents;
+
+        private bool hasHiddenRegistered;
         private bool isPinned;
         private string title;
         private UnlockWindowDelegate unlockWindowHandler;
@@ -46,32 +45,15 @@ namespace theDiary.Tools.HideMyWindow
         #endregion
 
         #region Properties
+
         internal string Key
         {
-            get
-            {
-                return this.Handle.ToString();
-            }
+            get { return this.Handle.ToString(); }
         }
 
-        protected internal Process ApplicationProcess
-        {
-            get
-            {
-                //if (this.applicationProcess == null)
-                //    this.LoadApplicationProcess();
+        protected internal Process ApplicationProcess { get; }
 
-                return this.applicationProcess;
-            }
-        }
-
-        public AutomationElement AutomationElement
-        {
-            get
-            {
-                return this.automationElement;
-            }
-        }
+        public AutomationElement AutomationElement { get; }
 
         public IntPtr Handle { get; internal set; }
 
@@ -87,7 +69,7 @@ namespace theDiary.Tools.HideMyWindow
             get
             {
                 return (!this.Handle.Equals(Program.MainForm.Handle)
-                              && this.OriginalState == 0);
+                        && this.OriginalState == 0);
             }
         }
 
@@ -147,9 +129,10 @@ namespace theDiary.Tools.HideMyWindow
                     this.TitleChanged(this, new WindowInfoEventArgs(this));
             }
         }
+
         public bool IsValid
         {
-            get { return this.applicationProcess.Id != 0 && this.Handle != IntPtr.Zero; }
+            get { return this.ApplicationProcess.Id != 0 && this.Handle != IntPtr.Zero; }
         }
 
 
@@ -171,7 +154,7 @@ namespace theDiary.Tools.HideMyWindow
         #endregion
 
         #region Methods & Functions
-        #region Public Methods & Functions
+
         public void Lock(UnlockWindowDelegate handler)
         {
             if (handler == null)
@@ -216,7 +199,7 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         /// <summary>
-        /// The method used to hide a Window associated to a <see cref="WindowInfo"/> instance.
+        ///     The method used to hide a Window associated to a <see cref="WindowInfo" /> instance.
         /// </summary>
         /// <returns><c>True</c> if the window was hidden, otherwise <c>False</c>.</returns>
         public bool Hide()
@@ -237,7 +220,7 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         /// <summary>
-        /// The method used to show a Window associated to a <see cref="WindowInfo"/> instance.
+        ///     The method used to show a Window associated to a <see cref="WindowInfo" /> instance.
         /// </summary>
         /// <returns><c>True</c> if the window was shown, otherwise <c>False</c>.</returns>
         public bool Show()
@@ -279,9 +262,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             return this.Handle.GetHashCode();
         }
-        #endregion
 
-#region Private Methods & Functions
         private void LoadApplicationProcess()
         {
             /*lock (this.syncObject)
@@ -299,13 +280,13 @@ namespace theDiary.Tools.HideMyWindow
         {
             if (this.ApplicationExited != null)
                 this.ApplicationExited(sender, new WindowInfoEventArgs(this));
-            
+
             this.ApplicationProcess.Exited -= this.ApplicationProcessExited;
         }
 
         private void RemoveAutomationEvents(object sender, WindowInfoEventArgs e)
         {
-            lock(this.syncObject)
+            lock (this.syncObject)
             {
                 if (!this.hasAutomationEvents && !Runtime.Instance.Settings.PinnedSettings.HideOnMinimize)
                     return;
@@ -355,7 +336,6 @@ namespace theDiary.Tools.HideMyWindow
             if ((WindowVisualState) e.NewValue == WindowVisualState.Minimized)
                 this.Hide();
         }
-        #endregion
 
         internal void NotifyApplicationExited()
         {
@@ -386,15 +366,12 @@ namespace theDiary.Tools.HideMyWindow
             return returnValue;
         }
 
-        private bool hasHiddenRegistered;
-
-        #region Public Static Methods & Functions
         public static WindowInfo Find(IntPtr handle)
         {
             WindowInfo returnValue = WindowInfoManager.Find(handle) ?? new WindowInfo(handle);
             if (!returnValue.hasHiddenRegistered)
             {
-                returnValue.Hidden += ReturnValue_Hidden;
+                returnValue.Hidden += WindowInfo.ReturnValue_Hidden;
                 returnValue.hasHiddenRegistered = true;
             }
             return returnValue;
@@ -408,7 +385,7 @@ namespace theDiary.Tools.HideMyWindow
         public static WindowInfo Find(WindowsStoreItem storeItem)
         {
             WindowInfo returnValue = WindowInfo.Find(storeItem.Handle);
-           
+
             returnValue.OriginalState = storeItem.LastState;
             returnValue.isPinned = storeItem.IsPinned;
 
@@ -416,14 +393,14 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         /// <summary>
-        /// Gets the window that currently is focused.
+        ///     Gets the window that currently is focused.
         /// </summary>
-        /// <returns>A <see cref="WindowInfo"/> instance of the currently focused window.</returns>
+        /// <returns>A <see cref="WindowInfo" /> instance of the currently focused window.</returns>
         public static WindowInfo CurrentWindow()
         {
             return WindowInfo.Find(ExternalReferences.GetForegroundWindow());
         }
-        #endregion
+
         #endregion
     }
 }

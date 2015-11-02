@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
@@ -11,10 +10,16 @@ namespace theDiary.Tools.HideMyWindow
 {
     public static class IIsolatedStorageFileExtensions
     {
+        #region Constant Declarations
+
         private static volatile Dictionary<Type, string> isolatedStorageFileNames = new Dictionary<Type, string>();
         private static volatile Dictionary<Type, bool> failedToLoad = new Dictionary<Type, bool>();
         private static readonly object syncObject = new object();
         private static readonly IsolatedStorageFile IsolatedStore = IsolatedStorageFile.GetUserStoreForAssembly();
+
+        #endregion
+
+        #region Methods & Functions
 
         private static Stream OpenFile<T>(this T container, FileMode mode, FileAccess access, FileShare share)
             where T : class, IIsolatedStorageFile, new()
@@ -25,13 +30,15 @@ namespace theDiary.Tools.HideMyWindow
             return returnValue;
         }
 
-        private static bool OpenFile<T>(this T container, FileMode mode, FileAccess access, FileShare share, out Stream stream)
+        private static bool OpenFile<T>(this T container, FileMode mode, FileAccess access, FileShare share,
+            out Stream stream)
             where T : class, IIsolatedStorageFile, new()
         {
             bool wasCreated = false;
             if (container.Exists())
             {
-                stream = IIsolatedStorageFileExtensions.IsolatedStore.OpenFile(container.GetFileName(), mode, access, share);
+                stream = IIsolatedStorageFileExtensions.IsolatedStore.OpenFile(container.GetFileName(), mode, access,
+                    share);
             }
             else
             {
@@ -72,7 +79,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             lock (IIsolatedStorageFileExtensions.syncObject)
             {
-                Type type = typeof(T);
+                Type type = typeof (T);
                 if (!IIsolatedStorageFileExtensions.failedToLoad.ContainsKey(type))
                     IIsolatedStorageFileExtensions.failedToLoad.Add(type, false);
 
@@ -88,14 +95,14 @@ namespace theDiary.Tools.HideMyWindow
         {
             lock (IIsolatedStorageFileExtensions.syncObject)
             {
-                Type type = typeof(T);
+                Type type = typeof (T);
                 if (!IIsolatedStorageFileExtensions.isolatedStorageFileNames.ContainsKey(type))
-                    IIsolatedStorageFileExtensions.isolatedStorageFileNames.Add(type, System.Activator.CreateInstance<T>().GetStorageFileName());
+                    IIsolatedStorageFileExtensions.isolatedStorageFileNames.Add(type,
+                        Activator.CreateInstance<T>().GetStorageFileName());
 
                 return IIsolatedStorageFileExtensions.isolatedStorageFileNames[type];
             }
         }
-
 
 
         public static void SaveFile<T>(this T container)
@@ -110,7 +117,7 @@ namespace theDiary.Tools.HideMyWindow
                 using (
                     Stream stream = container.OpenFile(FileMode.OpenOrCreate, FileAccess.Write))
                 {
-                    XmlSerializer xs = new XmlSerializer(typeof(T));
+                    XmlSerializer xs = new XmlSerializer(typeof (T));
                     using (StreamWriter tw = new StreamWriter(stream))
                         xs.Serialize(tw, container);
                 }
@@ -135,9 +142,9 @@ namespace theDiary.Tools.HideMyWindow
                 string fileName = container.GetFileName();
                 bool isNew = false;
                 try
-                {   
+                {
                     isNew = container.OpenFile(FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite, out stream);
-                    XmlSerializer xs = new XmlSerializer(typeof(T));
+                    XmlSerializer xs = new XmlSerializer(typeof (T));
                     using (StreamReader fileStream = new StreamReader(stream))
                         returnValue = (T) xs.Deserialize(fileStream);
                 }
@@ -145,7 +152,7 @@ namespace theDiary.Tools.HideMyWindow
                 {
                     if (container.FailedToLoad())
                     {
-                        returnValue = System.Activator.CreateInstance<T>();
+                        returnValue = Activator.CreateInstance<T>();
                     }
                     else
                     {
@@ -168,25 +175,32 @@ namespace theDiary.Tools.HideMyWindow
             return loadResult.Result;
         }
 
+        #endregion
+
+        #region Child Classes
+
         private class LoadFileResult<T>
             where T : class, IIsolatedStorageFile, new()
         {
+            #region Constructors
+
             public LoadFileResult(T result, bool wasCreated)
             {
                 this.Result = result;
                 this.WasCreated = wasCreated;
             }
-            public T Result
-            {
-                get;
-                private set;
-            }
 
-            public bool WasCreated
-            {
-                get;
-                private set;
-            }
+            #endregion
+
+            #region Properties
+
+            public T Result { get; }
+
+            public bool WasCreated { get; }
+
+            #endregion
         }
+
+        #endregion
     }
 }

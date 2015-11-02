@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace theDiary.Tools.HideMyWindow
 {
@@ -6,8 +8,9 @@ namespace theDiary.Tools.HideMyWindow
         : EventArgs
     {
         #region Constructors
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="WindowInfoEventArgs"/> class.
+        ///     Initializes a new instance of the <see cref="WindowInfoEventArgs" /> class.
         /// </summary>
         public WindowInfoEventArgs()
         {
@@ -30,27 +33,17 @@ namespace theDiary.Tools.HideMyWindow
         public IntPtr Handle
         {
             get { return this.Window.Handle; }
-
         }
 
         public int ProcessId
         {
-            get
-            {
-                return this.Window.ApplicationId;
-            }
+            get { return this.Window.ApplicationId; }
         }
 
-        public WindowStates State
-        {
-            get; private set;
-        }
+        public WindowStates State { get; }
 
-        public WindowInfo Window
-        {
-            get;
-            private set;
-        }
+        public WindowInfo Window { get; }
+
         #endregion
     }
 }

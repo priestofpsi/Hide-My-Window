@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
@@ -34,8 +36,14 @@ namespace theDiary.Tools.HideMyWindow
 
         #endregion
 
+        #region Declarations
+
         private IntPtr windowHandle;
+
+        #endregion
+
         #region Properties
+
         public IntPtr WindowHandle
         {
             get
@@ -46,6 +54,7 @@ namespace theDiary.Tools.HideMyWindow
                 return this.windowHandle;
             }
         }
+
         public WindowInfo Window
         {
             get { return WindowInfo.Find(this.WindowHandle); }

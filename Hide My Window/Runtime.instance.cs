@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Automation;
 
 namespace theDiary.Tools.HideMyWindow
 {
@@ -9,19 +8,15 @@ namespace theDiary.Tools.HideMyWindow
     {
         #region Constructors
 
-        public Runtime()
-        {
-           
-        }
-
-        public event WindowEventHandler ApplicationOpened;
         #endregion
 
         #region Declarations
 
-        private volatile WindowInfoManager windowManager = new WindowInfoManager();
+        internal Random randomizer = new Random();
         private Settings settings;
         private HiddenWindowStore store;
+
+        private volatile WindowInfoManager windowManager = new WindowInfoManager();
 
         #endregion
 
@@ -36,10 +31,7 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.settings;
             }
-            internal set
-            {
-                this.settings = value;
-            }
+            internal set { this.settings = value; }
         }
 
         public HiddenWindowStore Store
@@ -51,20 +43,20 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.store;
             }
-            internal set
-            {
-                this.store = value;
-            }
+            internal set { this.store = value; }
         }
 
         public WindowInfoManager WindowManager
         {
-            get
-            {
-                return this.windowManager;
-            }
+            get { return this.windowManager; }
         }
+
         #endregion
-        internal Random randomizer = new Random();
+
+        #region Methods & Functions
+
+        public event WindowEventHandler ApplicationOpened;
+
+        #endregion
     }
 }

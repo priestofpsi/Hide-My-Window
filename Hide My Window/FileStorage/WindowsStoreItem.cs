@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -34,6 +33,8 @@ namespace theDiary.Tools.HideMyWindow
         #endregion
 
         #region Declarations
+
+        private bool handlersRegistered;
 
         private WindowStates state;
 
@@ -92,6 +93,26 @@ namespace theDiary.Tools.HideMyWindow
 
         public event EventHandler StateChanged;
 
+        public void RegisterHandlers(WindowInfo window = null)
+        {
+            if (window == null)
+                window = WindowInfo.Find(this.Handle);
+
+            if (!Runtime.Instance.WindowManager.Exists(window) || this.handlersRegistered)
+                return;
+
+            window.OriginalState = this.LastState;
+            window.IsPinned = this.IsPinned;
+            window.Hidden += (s, e) => { this.State |= WindowStates.Hidden; };
+            window.Shown += (s, e) => { this.State &= ~WindowStates.Hidden; };
+            window.Pinned += (s, e) => { this.State |= WindowStates.Pinned; };
+            window.Unpinned += (s, e) => { this.State &= ~WindowStates.Pinned; };
+            window.Locked += (s, e) => { this.State |= WindowStates.Protected; };
+            window.Unlocked += (s, e) => { this.State &= ~WindowStates.Protected; };
+            this.StateChanged += (s, e) => { HiddenWindowStore.Save(Runtime.Instance.Store); };
+            this.handlersRegistered = true;
+        }
+
         #endregion
 
         #region Interface Implementations
@@ -103,48 +124,7 @@ namespace theDiary.Tools.HideMyWindow
 
             return this.HandleValue == other.HandleValue;
         }
-        private bool handlersRegistered = false;
-        public void RegisterHandlers(WindowInfo window = null)
-        {
-            if (window == null)
-                window = WindowInfo.Find(this.Handle);
 
-            if (!Runtime.Instance.WindowManager.Exists(window) || this.handlersRegistered)
-                return;
-
-            window.OriginalState = this.LastState;
-            window.IsPinned = this.IsPinned;
-            window.Hidden += (s, e) =>
-            {
-                this.State |= WindowStates.Hidden;
-            };
-            window.Shown += (s, e) =>
-            {
-                this.State &= ~WindowStates.Hidden;
-            };
-            window.Pinned += (s, e) =>
-            {
-                this.State |= WindowStates.Pinned;
-            };
-            window.Unpinned += (s, e) =>
-            {
-                this.State &= ~WindowStates.Pinned;
-            };
-            window.Locked += (s, e) =>
-            {
-                this.State |= WindowStates.Protected;
-            };
-            window.Unlocked += (s, e) =>
-            {
-                this.State &= ~WindowStates.Protected;
-                
-            };
-            this.StateChanged += (s, e) =>
-            {
-                HiddenWindowStore.Save(Runtime.Instance.Store);
-            };
-            this.handlersRegistered = true;
-        }
         #endregion
     }
 }

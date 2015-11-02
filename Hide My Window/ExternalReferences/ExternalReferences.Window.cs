@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -8,21 +10,6 @@ namespace theDiary.Tools.HideMyWindow
 {
     internal static partial class ExternalReferences
     {
-        private static WindowPlacement GetPlacement(IntPtr hwnd)
-        {
-            WindowPlacement placement = new WindowPlacement();
-            placement.length = Marshal.SizeOf(placement);
-            GetWindowPlacement(hwnd, ref placement);
-            return placement;
-        }
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetWindowPlacement(
-            IntPtr hWnd, ref WindowPlacement lpwndpl);
-
-        
-
         #region Constant Declarations
 
         internal const int GWL_STYLE = -16,
@@ -38,6 +25,33 @@ namespace theDiary.Tools.HideMyWindow
         #endregion
 
         #region Methods & Functions
+
+        private static WindowPlacement GetPlacement(IntPtr hwnd)
+        {
+            WindowPlacement placement = new WindowPlacement();
+            placement.length = Marshal.SizeOf(placement);
+            ExternalReferences.GetWindowPlacement(hwnd, ref placement);
+            return placement;
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetWindowPlacement(
+            IntPtr hWnd, ref WindowPlacement lpwndpl);
+
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        public static void ShowToFront(string windowName)
+        {
+            IntPtr firstInstance = ExternalReferences.FindWindow(null, windowName);
+            ExternalReferences.ShowWindow(firstInstance, 1);
+            ExternalReferences.SetForegroundWindow(firstInstance);
+        }
 
         [DllImport("user32.dll", SetLastError = true, EntryPoint = "SetWindowLong")]
         [SuppressMessage("Microsoft.Portability", "CA1901:PInvokeDeclarationsShouldBePortable", MessageId = "return",

@@ -28,7 +28,7 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         /// <summary>
-        /// Protected initialize
+        ///     Protected initialize
         /// </summary>
         /// <param name="message"></param>
         /// <param name="notificationDate"></param>

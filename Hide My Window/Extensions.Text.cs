@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -346,43 +347,44 @@ namespace System
 
         #endregion
 
-        //    Regex regex = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)", RegexOptions.Compiled);
-        //{
-
-        //public static string AsReadable5(this string text)
-
         //}
-        // removed.Replace(m.Groups[2].Value, String.Empty); });
-        // return removed.Replace(m.Groups[1].Value, String.Empty) + " " +
-
-        // return regex.Replace(text, delegate(Match m) { Regex removed = new Regex(@"[_\-\.]+");
-        //    List<string> result = new List<string>();
-        //    Regex regex = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)");
+        //    return readableRegEx2.Replace(text, (m) => string.Format("{0} {1}", replace2(m.Groups[1]), replace2(m.Groups[2])));
         //{
-
-        //public static string AsReadable6(this string text)
-        //    Regex removed = new Regex(@"[_\-\.]+", RegexOptions.Compiled);
-        //    Func<Group, string> replace = (g) => removed.Replace(g.Value, string.Empty);
-        //    return regex.Replace(text, (m) => string.Format("{0} {1}", replace(m.Groups[1]), replace(m.Groups[2])));
-        //}
-
-        //public static string AsReadable4(this string text)
-        //{
-        //    Regex regex = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)");
-        //    Regex removed = new Regex(@"[_\-\.]+");
-        //    Func<Group, string> replace = (g) => removed.Replace(g.Value, string.Empty);
-        //    return regex.Replace(text, (m) => string.Format("{0} {1}", replace(m.Groups[1]), replace(m.Groups[2])));
-        //}
-
-        //public static string AsReadable2(this string text)
-        //{
-        //    return readableRegEx.Replace(text, (m) => string.Format("{0} {1}", replace(m.Groups[1]), replace(m.Groups[2])));
-        //}
 
         //public static string AsReadable3(this string text)
-        //{
-        //    return readableRegEx2.Replace(text, (m) => string.Format("{0} {1}", replace2(m.Groups[1]), replace2(m.Groups[2])));
         //}
+        //    return readableRegEx.Replace(text, (m) => string.Format("{0} {1}", replace(m.Groups[1]), replace(m.Groups[2])));
+        //{
+
+        //public static string AsReadable2(this string text)
+        //}
+        //    return regex.Replace(text, (m) => string.Format("{0} {1}", replace(m.Groups[1]), replace(m.Groups[2])));
+        //    Func<Group, string> replace = (g) => removed.Replace(g.Value, string.Empty);
+        //    Regex removed = new Regex(@"[_\-\.]+");
+        //    Regex regex = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)");
+        //{
+
+        //public static string AsReadable4(this string text)
+        //}
+        //    return regex.Replace(text, (m) => string.Format("{0} {1}", replace(m.Groups[1]), replace(m.Groups[2])));
+        //    Func<Group, string> replace = (g) => removed.Replace(g.Value, string.Empty);
+        //    Regex removed = new Regex(@"[_\-\.]+", RegexOptions.Compiled);
+
+        //public static string AsReadable6(this string text)
+        //{
+        //    Regex regex = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)");
+        //    List<string> result = new List<string>();
+
+        // return regex.Replace(text, delegate(Match m) { Regex removed = new Regex(@"[_\-\.]+");
+        // return removed.Replace(m.Groups[1].Value, String.Empty) + " " +
+        // removed.Replace(m.Groups[2].Value, String.Empty); });
+
+        //}
+
+        //public static string AsReadable5(this string text)
+        //{
+
+        //    Regex regex = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)", RegexOptions.Compiled);
     }
 
     /// <summary>

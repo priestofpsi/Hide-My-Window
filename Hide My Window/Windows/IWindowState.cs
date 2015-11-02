@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
     public interface IWindowStateProvider
     {
+        #region Methods & Functions
+
         IntPtr GetWindowHandle();
 
         WindowStates GetState();
 
         event WindowStateChangedEventHandler StateChanged;
+
+        #endregion
     }
 
     public delegate void WindowStateChangedEventHandler(IWindowStateProvider provider, WindowStateEventArgs e);
@@ -20,21 +22,22 @@ namespace theDiary.Tools.HideMyWindow
     public class WindowStateEventArgs
         : EventArgs
     {
+        #region Constructors
+
         public WindowStateEventArgs(IWindowStateProvider provider)
-            : base()
         {
             this.Handle = provider.GetWindowHandle();
             this.State = provider.GetState();
         }
-        public IntPtr Handle
-        {
-            get; private set;
-        }
-        public WindowStates State
-        {
-            get;
-            private set;
-        }
-    }
 
+        #endregion
+
+        #region Properties
+
+        public IntPtr Handle { get; private set; }
+
+        public WindowStates State { get; private set; }
+
+        #endregion
+    }
 }

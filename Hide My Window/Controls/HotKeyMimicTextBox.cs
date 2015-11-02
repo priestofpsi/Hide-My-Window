@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
@@ -31,6 +33,8 @@ namespace theDiary.Tools.HideMyWindow
             set
             {
                 this.hotkey = value;
+                if (this.originalHotkey == null)
+                    this.originalHotkey = value;
                 if (this.hotkey == null)
                     return;
 
@@ -73,18 +77,23 @@ namespace theDiary.Tools.HideMyWindow
 
         private void txtHotKey_Enter(object sender, EventArgs e)
         {
-            if (this._firstFocus)
-            {
-                this.txtHotKey.Text = "";
-                this._firstFocus = false;
-            }
+            if (!this._firstFocus)
+                return;
+
+            this.txtHotKey.Text = "";
+            this._firstFocus = false;
         }
 
         private void txtHotKey_Leave(object sender, EventArgs e)
         {
-            this.txtHotKey.Text = this.hotkey.HotKeyString;
-            if (this.txtHotKey.Text == "None")
+            if (this.hotkey == null || this.hotkey.IsEmpty)
+            {
                 this.txtHotKey.Text = "Mimic Hot Key In Here";
+            }
+            else
+            {
+                this.txtHotKey.Text = this.hotkey.HotKeyString;
+            }
         }
 
         #endregion

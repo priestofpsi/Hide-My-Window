@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -20,6 +22,15 @@ namespace theDiary.Tools.HideMyWindow
         #endregion
 
         #region Properties
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return string.IsNullOrEmpty(this.Key)
+                       && this.ModifierKeys == 0;
+            }
+        }
 
         [XmlIgnore]
         public string HotKeyString
