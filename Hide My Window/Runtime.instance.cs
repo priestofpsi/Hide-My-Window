@@ -11,20 +11,7 @@ namespace theDiary.Tools.HideMyWindow
 
         public Runtime()
         {
-            this.WindowHidden += (s, e) => { Runtime.Instance.Store.Add(e.Window.Handle); };
-
-            this.WindowShown += (s, e) =>
-            {
-                if (!e.Window.IsPinned)
-                    Runtime.instance.Store.Remove(e.Window.Handle);
-            };
-            Automation.AddAutomationEventHandler(WindowPattern.WindowOpenedEvent, AutomationElement.RootElement, TreeScope.Children,
-(sender, e) =>
-{
-var element = sender as AutomationElement;
-    
-});
-
+           
         }
 
         public event WindowEventHandler ApplicationOpened;
@@ -32,7 +19,7 @@ var element = sender as AutomationElement;
 
         #region Declarations
 
-        private readonly Dictionary<IntPtr, WindowInfo> hiddenWindows = new Dictionary<IntPtr, WindowInfo>();
+        private volatile WindowInfoManager windowManager = new WindowInfoManager();
         private Settings settings;
         private HiddenWindowStore store;
 
@@ -49,7 +36,10 @@ var element = sender as AutomationElement;
 
                 return this.settings;
             }
-            internal set { this.settings = value; }
+            internal set
+            {
+                this.settings = value;
+            }
         }
 
         public HiddenWindowStore Store
@@ -61,71 +51,20 @@ var element = sender as AutomationElement;
 
                 return this.store;
             }
-        }
-
-        public int Count
-        {
-            get { return this.hiddenWindows.Count; }
-        }
-
-        #endregion
-
-        #region Methods & Functions
-
-        public event EventHandler<WindowEventArgs> WindowHidden;
-
-        public event EventHandler<WindowEventArgs> WindowShown;
-
-        public WindowInfo LastWindow()
-        {
-            if (this.hiddenWindows.Count == 0)
-                return null;
-
-            return this.hiddenWindows.Last().Value;
-        }
-
-        internal void AddHiddenWindow(WindowInfo window)
-        {
-            if (window.Equals(Program.MainForm.Handle)
-                || !window.Hide())
-                return;
-            if (!this.hiddenWindows.ContainsKey(window.Handle))
-                this.hiddenWindows.Add(window.Handle, window);
-
-            if (this.WindowHidden != null)
-                this.WindowHidden(this, new WindowEventArgs(window));
-        }
-
-        internal void ToggleHiddenWindow(WindowInfo window)
-        {
-            if (window.CanShow)
+            internal set
             {
-                this.RemoveHiddenWindow(window);
-            }
-            else if (window.CanHide)
-            {
-                this.AddHiddenWindow(window);
+                this.store = value;
             }
         }
 
-        internal void RemoveHiddenWindow(WindowInfo window)
+        public WindowInfoManager WindowManager
         {
-            if (!this.hiddenWindows.ContainsKey(window.Handle))
-                this.hiddenWindows.Add(window.Handle, window);
-            window.Show();
-
-            if (this.WindowShown != null)
-                this.WindowShown(this, new WindowEventArgs(window));
+            get
+            {
+                return this.windowManager;
+            }
         }
-
-        internal WindowInfo FindWindow(IntPtr handle)
-        {
-            if (this.hiddenWindows.ContainsKey(handle))
-                return this.hiddenWindows[handle];
-
-            return null;
-        }
-
         #endregion
+        internal Random randomizer = new Random();
     }
 }

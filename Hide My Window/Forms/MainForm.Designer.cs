@@ -227,7 +227,7 @@ namespace theDiary.Tools.HideMyWindow
             this.viewList,
             this.viewTiles});
             this.viewToggle.Name = "viewToggle";
-            this.viewToggle.Size = new System.Drawing.Size(152, 22);
+            this.viewToggle.Size = new System.Drawing.Size(127, 22);
             this.viewToggle.Text = "&View";
             this.viewToggle.DropDownOpening += new System.EventHandler(this.viewToggle_DropDownOpening);
             // 
@@ -279,7 +279,7 @@ namespace theDiary.Tools.HideMyWindow
             this.largeToolbarIcons,
             this.smallToolbarIcons});
             this.toolbarToolStripMenuItem.Name = "toolbarToolStripMenuItem";
-            this.toolbarToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.toolbarToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.toolbarToolStripMenuItem.Text = "&Toolbar";
             this.toolbarToolStripMenuItem.DropDownOpening += new System.EventHandler(this.toolbarToggle_DropDownOpening);
             // 
@@ -316,20 +316,20 @@ namespace theDiary.Tools.HideMyWindow
             this.statusbarToggle.CheckOnClick = true;
             this.statusbarToggle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.statusbarToggle.Name = "statusbarToggle";
-            this.statusbarToggle.Size = new System.Drawing.Size(152, 22);
+            this.statusbarToggle.Size = new System.Drawing.Size(127, 22);
             this.statusbarToggle.Text = "&Statusbar";
             this.statusbarToggle.Click += new System.EventHandler(this.statusbarToggle_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(124, 6);
             // 
             // openConfigurationForm
             // 
             this.openConfigurationForm.Image = ((System.Drawing.Image)(resources.GetObject("openConfigurationForm.Image")));
             this.openConfigurationForm.Name = "openConfigurationForm";
-            this.openConfigurationForm.Size = new System.Drawing.Size(152, 22);
+            this.openConfigurationForm.Size = new System.Drawing.Size(127, 22);
             this.openConfigurationForm.Text = "&Configure";
             this.openConfigurationForm.Click += new System.EventHandler(this.openConfigurationForm_Click);
             // 
@@ -344,7 +344,7 @@ namespace theDiary.Tools.HideMyWindow
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -394,6 +394,7 @@ namespace theDiary.Tools.HideMyWindow
             this.hideWindow.Text = "Hide Window";
             this.hideWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.hideWindow.Visible = false;
+            this.hideWindow.Click += new System.EventHandler(this.ToggleHiddenWindows);
             // 
             // showWindow
             // 

@@ -1,7 +1,7 @@
-﻿using System.IO;
-using System.IO.IsolatedStorage;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Microsoft.Win32;
@@ -9,10 +9,12 @@ using Microsoft.Win32;
 namespace theDiary.Tools.HideMyWindow
 {
     public partial class Settings
+        : IIsolatedStorageFile
     {
         #region Constructors
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="Settings"/> class.
+        ///     Initializes a new instance of the <see cref="Settings" /> class.
         /// </summary>
         public Settings()
         {
@@ -31,32 +33,23 @@ namespace theDiary.Tools.HideMyWindow
 
         #endregion
 
-        #region Private Declarations
+        #region Declarations
 
         private bool autoStartWithWindows;
-        private FormState lastState;
         public HotKeyBindingList hotkeys;
+        private FormState lastState;
+
+        private PinnedApplicationSettings pinnedSettings;
+
         #endregion
 
-        public static event FileEventHandler FileNotification;
-
-        /// <summary>
-        /// The event that is raised
-        /// </summary>
-        public event NotificationEventHandler Notification;
-
         #region Properties
+
         [XmlElement]
         public HotKeyBindingList Hotkey
         {
-            get
-            {
-                return this.hotkeys;
-            }
-            set
-            {
-                this.hotkeys = value;
-            }
+            get { return this.hotkeys; }
+            set { this.hotkeys = value; }
         }
 
         [XmlAttribute]
@@ -93,6 +86,7 @@ namespace theDiary.Tools.HideMyWindow
         [XmlAttribute]
         public bool ConfirmApplicationExit { get; set; }
 
+
         [XmlElement]
         public FormState LastState
         {
@@ -118,10 +112,7 @@ namespace theDiary.Tools.HideMyWindow
 
 
         [XmlElement]
-        public string Password
-        {
-            get; set;
-        }
+        public string Password { get; set; }
 
         [XmlAttribute]
         public bool SmallToolbarIcons { get; set; }
@@ -144,9 +135,25 @@ namespace theDiary.Tools.HideMyWindow
                 }
             }
         }
+
+        [XmlElement]
+        public PinnedApplicationSettings PinnedSettings
+        {
+            get
+            {
+                if (this.pinnedSettings == null)
+                    this.pinnedSettings = new PinnedApplicationSettings();
+                return this.pinnedSettings;
+            }
+            set { this.pinnedSettings = value; }
+        }
+
         #endregion
 
         #region Methods & Functions
+
+        public static event FileEventHandler FileNotification;
+
         public Hotkey GetHotKeyByFunction(HotkeyFunction function)
         {
             foreach (Hotkey key in this.Hotkey)
@@ -154,28 +161,6 @@ namespace theDiary.Tools.HideMyWindow
                     return key;
 
             return new Hotkey {Function = function};
-        }
-
-        public void Save()
-        {
-            if (this.Notification != null)
-                this.Notification(this, new NotificationEventArgs("Saving"));
-
-            Settings.Save(Runtime.Instance.Settings);
-
-            if (this.Notification != null)
-                this.Notification(this, new NotificationEventArgs("Saved"));
-        }
-
-        public void Reset()
-        {
-            if (this.Notification != null)
-                this.Notification(this, new NotificationEventArgs("Resetting"));
-
-            Runtime.Instance.Settings = Settings.Load();
-
-            if (this.Notification != null)
-                this.Notification(this, new NotificationEventArgs("Reset"));
         }
 
         private bool HasRegistryEntry(string path, string name)
@@ -213,92 +198,95 @@ namespace theDiary.Tools.HideMyWindow
 
         internal static void Save(Settings settings)
         {
-            Task task = Task.Run(() =>
-            {
-                if (settings == null)
-                    settings = Settings.Load();
-                if (FileNotification != null)
-                    FileNotification(settings, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Saving));
-                using (
-                    Stream stream = IsolatedStorageFile.GetUserStoreForAssembly()
-                        .OpenFile(Settings.StorageFileName, FileMode.OpenOrCreate, FileAccess.Write))
-                {
-                    XmlSerializer xs = new XmlSerializer(typeof (Settings));
-                    using (StreamWriter tw = new StreamWriter(stream))
-                        xs.Serialize(tw, settings);
-                }
-                if (FileNotification != null)
-                    FileNotification(settings, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Saving));
-            });
-            Task.WaitAll(task);
+            if (FileNotification != null)
+                FileNotification(settings, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Saving));
+            settings.SaveFile();
             if (FileNotification != null)
                 FileNotification(null, new FileEventArgs(Settings.StorageFileName));
         }
 
         internal static Settings Load()
         {
-            Task<Settings> task = Task.Run(() =>
-            {
-                Settings returnValue = null;
-                Stream stream = null;
-                try
-                {
-                    if (Settings.FileNotification != null)
-                        Settings.FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Opening));
-                    if (IsolatedStorageFile.GetUserStoreForAssembly().FileExists(Settings.StorageFileName))
-                        stream = IsolatedStorageFile.GetUserStoreForAssembly()
-                            .OpenFile(Settings.StorageFileName, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-
-                    Program.IsConfigured = (stream != null);
-                    if (stream == null)
-                    {
-                        if (Settings.FileNotification != null)
-                            Settings.FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Creating));
-                        stream = new FileStream(Settings.StorageFileName, FileMode.OpenOrCreate);
-                        if (Settings.FileNotification != null)
-                            Settings.FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Created));
-                    }
-                    XmlSerializer xs = new XmlSerializer(typeof (Settings));
-                    using (StreamReader fileStream = new StreamReader(stream))
-                    {
-                        if (Settings.FileNotification != null)
-                            Settings.FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loading));
-
-                        returnValue = (Settings) xs.Deserialize(fileStream);
-                        Program.IsConfigured = (returnValue.Hotkey.Count != 0);
-                    }
-                }
-                catch
-                {
-                    if (Settings.failedToLoad)
-                    {
-                        returnValue = new Settings();
-                    }
-                    else
-                    {
-                        Settings.failedToLoad = true;
-                        if (IsolatedStorageFile.GetUserStoreForAssembly().FileExists(Settings.StorageFileName))
-                            IsolatedStorageFile.GetUserStoreForAssembly().DeleteFile(Settings.StorageFileName);
-                        returnValue = Settings.Load();
-                    }
-                }
-                finally
-                {
-                    if (stream != null)
-                        stream.Dispose();
-                    if (returnValue != null)
-                        returnValue.CheckWindowsRegistryAutoStart();
-
-                    if (Settings.FileNotification != null)
-                        Settings.FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loaded));
-                }
-
-                return returnValue;
-            });
-            Task.WaitAll(task);
             if (FileNotification != null)
-                FileNotification(null, new FileEventArgs(Settings.StorageFileName));
-            return task.Result;
+                FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Opening));
+            Settings returnValue = null;
+            bool wasCreated;
+            returnValue = returnValue.LoadFile(out wasCreated);
+            Program.IsConfigured = (wasCreated || returnValue.Hotkey.Count != 0);
+            if (FileNotification != null)
+                FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loaded));
+            return returnValue;
+        }
+
+        #endregion
+
+        #region Interface Implementations
+
+        /// <summary>
+        ///     The event that is raised
+        /// </summary>
+        public event NotificationEventHandler Notification;
+
+        public void Save()
+        {
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Saving"));
+
+            this.SaveFile();
+
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Saved"));
+        }
+
+        public void Reset()
+        {
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Resetting"));
+
+            Runtime.Instance.Settings = this.LoadFile();
+
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Reset"));
+        }
+
+        string IIsolatedStorageFile.GetStorageFileName()
+        {
+            return Settings.StorageFileName;
+        }
+
+        #endregion
+
+        #region Child Classes
+
+        public class PinnedApplicationSettings
+        {
+            #region Constructors
+
+            public PinnedApplicationSettings()
+            {
+                this.HideOnMinimize = true;
+            }
+
+            #endregion
+
+            #region Properties
+
+            [XmlAttribute]
+            public bool HideOnMinimize { get; set; }
+
+            [XmlAttribute]
+            public bool AddIconOverlay { get; set; }
+
+            [XmlAttribute]
+            public bool ModifyWindowTitle { get; set; }
+
+            [XmlAttribute]
+            public string PrefixWindowText { get; set; }
+
+            [XmlAttribute]
+            public string SufixWindowText { get; set; }
+
+            #endregion
         }
 
         #endregion

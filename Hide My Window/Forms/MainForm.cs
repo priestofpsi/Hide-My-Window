@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Permissions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
@@ -18,7 +19,7 @@ namespace theDiary.Tools.HideMyWindow
             this.InitializeFormFromSettings();
             this.Icon = Runtime.Instance.Settings.ApplicationIcon;
             Settings.FileNotification += (s, e) => this.labelNotifications.Text = e.EventText;
-            HiddenWindowStore.Notification += (s, e) => this.labelNotifications.Text = e.EventText;
+            HiddenWindowStore.FileNotification += (s, e) => this.labelNotifications.Text = e.EventText;
             Runtime.Instance.Settings.ApplicationIconChanged += (s, e) =>
             {
                 this.Icon = e.Icon;
@@ -250,17 +251,28 @@ namespace theDiary.Tools.HideMyWindow
 
         private void ToggleHiddenWindows(object sender, EventArgs e)
         {
-            this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>()
-                .ToList()
-                .ForEach(item => Runtime.Instance.ToggleHiddenWindow(item));
-            this.hiddenWindows_SelectedIndexChanged(sender, e);
+            Task task = Task.Run(() =>
+            {
+                this.DoInvoke(() =>
+                {
+                
+                this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>()
+                    .ToList()
+                    .ForEach(item => item.Window.Toggle());
+                });
+                this.hiddenWindows_SelectedIndexChanged(sender, e);
+            });
         }
 
         internal void UnhideAllWindows(object sender, EventArgs e)
         {
-            this.hiddenWindows.Items.Cast<WindowListViewItem>()
+            Task task = Task.Run(() =>
+            {
+                this.hiddenWindows.Items.Cast<WindowListViewItem>()
                 .ToList()
-                .ForEach(item => Runtime.Instance.RemoveHiddenWindow(item));
+                .ForEach(item => item.Window.Show());
+                this.hiddenWindows_SelectedIndexChanged(sender, e);
+            });
         }
 
         private void ExitApplication(object sender, EventArgs e)
@@ -379,19 +391,30 @@ namespace theDiary.Tools.HideMyWindow
 
             this.Shown += (s, e) =>
             {
-                Runtime.Instance.Store.ForEach(item => Runtime.Instance.AddHiddenWindow(WindowInfo.Find(item)));
+                Runtime.Instance.Store.All(item =>
+                {
+                    WindowInfo window = WindowInfo.Find(item);
+                    if (window.IsValid && Runtime.Instance.WindowManager.Register(item.Handle))
+                    {
+                        if (item.IsPasswordProtected)
+                            window.Lock(this.UnlockWindow);
+                        if (item.IsHidden)
+                            window.Hide();
+                        item.RegisterHandlers(window);
+                    }
+                });
                 this.hiddenWindows_SelectedIndexChanged(s, e);
                 this.SetToolbarText();
 
                 if (!Program.IsConfigured)
                     this.openConfigurationForm_Click(this, EventArgs.Empty);
             };
-            Runtime.Instance.WindowHidden += this.Store_Added;
-            Runtime.Instance.WindowShown += this.Store_Removed;
+            Runtime.Instance.WindowManager.Registered += this.Store_Added;
+            Runtime.Instance.WindowManager.UnRegistered += this.Store_Removed;
             this.initializing = FormInitState.Initialized;
         }
 
-        private void Store_Removed(object sender, WindowEventArgs e)
+        private void Store_Removed(object sender, WindowInfoEventArgs e)
         {
             this.DoInvoke(() =>
             {
@@ -403,7 +426,7 @@ namespace theDiary.Tools.HideMyWindow
             });
         }
 
-        private void Store_Added(object sender, WindowEventArgs e)
+        private void Store_Added(object sender, WindowInfoEventArgs e)
         {
             this.DoInvoke(() =>
             {
@@ -430,7 +453,7 @@ namespace theDiary.Tools.HideMyWindow
                 string key = e.Handle.ToInt64().ToString();
                 if (this.hiddenWindows.Items.ContainsKey(key))
                 {
-                    WindowInfo.FindByHandle(e.Handle).ApplicationExited -= this.RemoveClosedApplication;
+                    WindowInfo.Find(e.Handle).ApplicationExited -= this.RemoveClosedApplication;
                     this.hiddenWindows.Items.RemoveByKey(key);
                 }
             });
@@ -455,16 +478,14 @@ namespace theDiary.Tools.HideMyWindow
             switch (hkid.Function)
             {
                 case HotkeyFunction.HideCurrentWindow:
-                    WindowInfo currentWindow = ExternalReferences.GetActiveWindow();
-                    Runtime.Instance.AddHiddenWindow(currentWindow);
+                    WindowInfo currentWindow = WindowInfo.CurrentWindow();
+                    currentWindow.Hide();
                     break;
 
                 case HotkeyFunction.UnhideLastWindow:
-                    if (Runtime.Instance.Count == 0)
-                        return;
-
-                    WindowInfo lastWindow = Runtime.Instance.LastWindow();
-                    Runtime.Instance.RemoveHiddenWindow(lastWindow);
+                    WindowInfo lastWindow;
+                    if (Runtime.Instance.WindowManager.TryGetLastWindow(out lastWindow))
+                        lastWindow.Show();
                     break;
             }
         }

@@ -8,6 +8,21 @@ namespace theDiary.Tools.HideMyWindow
 {
     internal static partial class ExternalReferences
     {
+        private static WindowPlacement GetPlacement(IntPtr hwnd)
+        {
+            WindowPlacement placement = new WindowPlacement();
+            placement.length = Marshal.SizeOf(placement);
+            GetWindowPlacement(hwnd, ref placement);
+            return placement;
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetWindowPlacement(
+            IntPtr hWnd, ref WindowPlacement lpwndpl);
+
+        
+
         #region Constant Declarations
 
         internal const int GWL_STYLE = -16,
@@ -52,7 +67,7 @@ namespace theDiary.Tools.HideMyWindow
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
+        internal static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
@@ -62,12 +77,6 @@ namespace theDiary.Tools.HideMyWindow
 
         [DllImport("user32.dll", EntryPoint = "GetWindowTextLength", SetLastError = true)]
         private static extern int GetWindowTextLength(IntPtr hwnd);
-
-        internal static WindowInfo GetActiveWindow()
-        {
-            IntPtr windowHandle = ExternalReferences.GetForegroundWindow();
-            return WindowInfo.FindByHandle(windowHandle);
-        }
 
         internal static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
         {

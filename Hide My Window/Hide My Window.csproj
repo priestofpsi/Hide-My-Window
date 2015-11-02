@@ -106,7 +106,11 @@
     </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="Extensions.Text.cs" />
+    <Compile Include="ExternalReferences\ShowWindowCommands.cs" />
+    <Compile Include="ExternalReferences\WindowPlacement.cs" />
+    <Compile Include="ExternalReferences\WindowPlacementFlags.cs" />
     <Compile Include="FileStorage\IIsolatedStorageFile.Extensions.cs" />
+    <Compile Include="FileStorage\WindowsStoreItem.cs" />
     <Compile Include="Forms\HiddenWindowsListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -167,11 +171,14 @@
     <Compile Include="FileStorage\Settings.FormState.cs" />
     <Compile Include="FileStorage\Settings.Password.cs" />
     <Compile Include="Updater\Updater.cs" />
-    <Compile Include="Windows\WindowCommand.cs" />
+    <Compile Include="Windows\WindowInfoManager.cs" />
+    <Compile Include="Windows\IWindowState.cs" />
     <Compile Include="Windows\WindowEventArgs.cs" />
     <Compile Include="Windows\WindowInfo.cs" />
-    <Compile Include="Windows\WindowInfoEventArgs.cs" />
-    <Compile Include="Windows\WindowState.cs" />
+    <Compile Include="Windows\WindowInfo.Delegates.cs" />
+    <Compile Include="Windows\WindowInfo.EventArgs.cs" />
+    <Compile Include="Windows\WindowInfo.Events.cs" />
+    <Compile Include="Windows\WindowStates.cs" />
     <EmbeddedResource Include="ActionResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ActionResource.Designer.cs</LastGenOutput>

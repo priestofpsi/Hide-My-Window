@@ -21,6 +21,4 @@ namespace theDiary.Tools.HideMyWindow
 
         void Reset();
     }
-
-    
 }

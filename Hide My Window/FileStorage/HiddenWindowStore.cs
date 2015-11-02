@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +9,8 @@ using System.Xml.Serialization;
 namespace theDiary.Tools.HideMyWindow
 {
     public class HiddenWindowStore
-        : IList<long>
+        : IIsolatedStorageFile,
+            IList<WindowsStoreItem>
     {
         #region Constructors
 
@@ -27,13 +26,11 @@ namespace theDiary.Tools.HideMyWindow
 
         [XmlIgnore] internal static string StorageFileName = "WindowStore.xml";
 
-        private static bool FailedToLoad;
-
         #endregion
 
         #region Declarations
 
-        private readonly List<long> items = new List<long>();
+        private readonly List<WindowsStoreItem> items = new List<WindowsStoreItem>();
 
         private bool running;
 
@@ -41,17 +38,17 @@ namespace theDiary.Tools.HideMyWindow
 
         #region Properties
 
-        int ICollection<long>.Count
+        public int Count
         {
             get { return this.items.Count; }
         }
 
-        bool ICollection<long>.IsReadOnly
+        bool ICollection<WindowsStoreItem>.IsReadOnly
         {
             get { return false; }
         }
 
-        long IList<long>.this[int index]
+        public WindowsStoreItem this[int index]
         {
             get { return this.items[index]; }
 
@@ -63,212 +60,177 @@ namespace theDiary.Tools.HideMyWindow
             get { return this.items.ToArray().Length > 0; }
         }
 
+        public WindowsStoreItem this[IntPtr handle]
+        {
+            get { return this.items.FirstOrDefault(item => item.Handle == handle); }
+        }
+
+        public WindowsStoreItem this[WindowInfo window]
+        {
+            get { return this[window.Handle]; }
+        }
+        
         #endregion
 
         #region Methods & Functions
 
+        public static event FileEventHandler FileNotification;
+
         private void Items_Removed(object sender, EventArgs e)
         {
             HiddenWindowStore.Save(this);
-            this.CheckWindowProcesses();
         }
 
         private void Items_Added(object sender, EventArgs e)
         {
             HiddenWindowStore.Save(this);
-            this.CheckWindowProcesses();
         }
 
         internal static void Save(HiddenWindowStore store)
         {
-            Task task = Task.Run(() =>
-            {
-                if (store == null)
-                    store = HiddenWindowStore.Load();
-                if (Notification != null)
-                    Notification(store, new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Saving));
+            if (FileNotification != null)
+                FileNotification(store, new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Saving));
 
-                Stream stream = IsolatedStorageFile.GetUserStoreForAssembly()
-                    .OpenFile(HiddenWindowStore.StorageFileName, FileMode.OpenOrCreate, FileAccess.Write);
+            store.SaveFile();
 
-                XmlSerializer xs = new XmlSerializer(typeof (HiddenWindowStore));
-                using (StreamWriter tw = new StreamWriter(stream))
-                    xs.Serialize(tw, store);
-
-                if (Notification != null)
-                    Notification(store, new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Saved));
-            });
-            Task.WaitAll(task);
-            if (Notification != null)
-                Notification(null, new FileEventArgs(HiddenWindowStore.StorageFileName));
+            if (FileNotification != null)
+                FileNotification(store, new FileEventArgs(HiddenWindowStore.StorageFileName));
         }
 
         internal static HiddenWindowStore Load()
         {
-            Task<HiddenWindowStore> task = Task.Run(() =>
-            {
-                HiddenWindowStore returnValue = null;
-                Stream stream = null;
-                try
-                {
-                    if (IsolatedStorageFile.GetUserStoreForAssembly().FileExists(HiddenWindowStore.StorageFileName))
-                        stream = IsolatedStorageFile.GetUserStoreForAssembly()
-                            .OpenFile(HiddenWindowStore.StorageFileName, FileMode.OpenOrCreate);
-                    if (stream == null || stream.Length == 0)
-                    {
-                        returnValue = new HiddenWindowStore();
-                    }
-                    else
-                    {
-                        XmlSerializer xs = new XmlSerializer(typeof (HiddenWindowStore));
-                        using (StreamReader fileStream = new StreamReader(stream))
-                            returnValue = (HiddenWindowStore) xs.Deserialize(fileStream);
-                    }
-                }
-                catch
-                {
-                    if (HiddenWindowStore.FailedToLoad)
-                    {
-                        returnValue = new HiddenWindowStore();
-                    }
-                    else
-                    {
-                        HiddenWindowStore.FailedToLoad = true;
-                        if (IsolatedStorageFile.GetUserStoreForAssembly().FileExists(HiddenWindowStore.StorageFileName))
-                            IsolatedStorageFile.GetUserStoreForAssembly().DeleteFile(HiddenWindowStore.StorageFileName);
-                        returnValue = HiddenWindowStore.Load();
-                    }
-                }
-                finally
-                {
-                    if (stream != null)
-                        stream.Dispose();
-                    if (returnValue != null)
-                        returnValue.CheckWindowProcesses();
-                }
-                return returnValue;
-            });
-            Task.WaitAll(task);
-            if (Notification != null)
-                Notification(null, new FileEventArgs(HiddenWindowStore.StorageFileName));
-            return task.Result;
+            if (FileNotification != null)
+                FileNotification(null, new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Opening));
+            HiddenWindowStore returnValue = null;
+            bool wasCreated;
+            returnValue = returnValue.LoadFile(out wasCreated);
+
+            if (FileNotification != null)
+                FileNotification(null, new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Loaded));
+            return returnValue;
         }
 
-        public static event FileEventHandler Notification;
+        public event WindowEventHandler Added;
 
-        public event EventHandler<WindowEventArgs> Added;
+        public event WindowEventHandler Removed;
 
-        public event EventHandler<WindowEventArgs> Removed;
-
-        public void Add(IntPtr handle)
+        public WindowsStoreItem Add(IntPtr handle)
         {
+            WindowsStoreItem returnValue = null;
             long value = handle.ToInt64();
-            if (this.items.Contains(value))
-                return;
+            if (this.items.Any(item => item.Handle == handle))
+            {
+                returnValue = this.items.FirstOrDefault(item => item.Handle == handle);
+                WindowInfo window = WindowInfo.Find(handle);
+                
+            }
+            else
+            {
 
-            this.items.Add(value);
-            WindowEventArgs e = new WindowEventArgs(WindowInfo.FindByHandle(handle));
-            this.Added(this, e);
+                WindowInfo window = WindowInfo.Find(handle);
+                returnValue = new WindowsStoreItem(window);
+                this.items.Add(returnValue);
+                WindowInfoEventArgs e = new WindowInfoEventArgs(window);
+                this.Added(this, e);
+            }
+            returnValue.RegisterHandlers();
+            return returnValue;
         }
 
         public bool Remove(IntPtr handle)
         {
             long value = handle.ToInt64();
-            bool returnValue = this.items.Remove(value);
+            WindowsStoreItem match = this.items.FirstOrDefault(item => item.Handle == handle);
+            if (match == null)
+                return false;
+            bool returnValue = this.items.Remove(match);
 
             if (returnValue)
             {
-                WindowEventArgs e = new WindowEventArgs(WindowInfo.FindByHandle(handle));
+                WindowInfoEventArgs e = new WindowInfoEventArgs(WindowInfo.Find(handle));
                 this.Removed(this, e);
             }
             return returnValue;
         }
-
-        private void CheckWindowProcesses()
-        {
-            if (this.running)
-                return;
-
-            Task task = Task.Run(() =>
-            {
-                Thread.CurrentThread.Name = "HideMyWindow:CheckWindowProcesses";
-                this.running = true;
-                while (this.CanCheckProcesses)
-                {
-                    this.items.Select(handle => WindowInfo.Find(handle))
-                        .AsParallel()
-                        .ForAll(window => this.CheckWindowProcess(window));
-                    Thread.Sleep(100);
-                }
-
-                this.running = false;
-            });
-        }
-
-        private void CheckWindowProcess(WindowInfo window)
-        {
-            long handle = window.Handle.ToInt64();
-            try
-            {
-                //state.ApplicationProcess.Refresh();
-                if (window.ApplicationProcess.Id == 0)
-                {
-                    this.Remove(new IntPtr(handle));
-                }
-                else if (window.ApplicationProcess.HasExited)
-                {
-                    window.NotifyApplicationExited();
-                    this.Remove(new IntPtr(handle));
-                }
-            }
-            catch
-            {
-                this.Remove(new IntPtr(handle));
-            }
-        }
-
+        
         public void ForEach(Action<long> action)
         {
-            this.items.ForEach(action);
+            this.items.ForEach(item => action(item.HandleValue));
+        }
+
+        public void All(Action<WindowsStoreItem> action)
+        {
+            this.items.ForEach(item => action(item));
         }
 
         public void ForEach(Action<IntPtr> action)
         {
-            this.items.ForEach(item => action(new IntPtr(item)));
+            this.items.ForEach(item => action(item.Handle));
         }
-
+    
         #endregion
 
         #region Interface Implementations
 
-        int IList<long>.IndexOf(long item)
+        public event NotificationEventHandler Notification;
+
+        public void Save()
+        {
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Saving"));
+
+            this.SaveFile();
+
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Saved"));
+        }
+
+        public void Reset()
+        {
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Resetting"));
+
+            Runtime.Instance.Store = this.LoadFile();
+
+            if (this.Notification != null)
+                this.Notification(this, new NotificationEventArgs("Reset"));
+        }
+
+        string IIsolatedStorageFile.GetStorageFileName()
+        {
+            return HiddenWindowStore.StorageFileName;
+        }
+
+        int IList<WindowsStoreItem>.IndexOf(WindowsStoreItem item)
         {
             throw new NotImplementedException();
         }
 
-        void IList<long>.Insert(int index, long item)
+        void IList<WindowsStoreItem>.Insert(int index, WindowsStoreItem item)
         {
             throw new NotImplementedException();
         }
 
-        void IList<long>.RemoveAt(int index)
+        void IList<WindowsStoreItem>.RemoveAt(int index)
         {
-            IntPtr handle = new IntPtr(this.items[index]);
+            IntPtr handle = this.items[index].Handle;
             this.items.RemoveAt(index);
             if (this.Removed != null)
-                this.Removed(this, new WindowEventArgs(WindowInfo.FindByHandle(handle)));
+                this.Removed(this, new WindowInfoEventArgs(WindowInfo.Find(handle)));
         }
 
-        public void Add(long item)
+        public void Add(WindowsStoreItem item)
         {
+            item.RegisterHandlers(WindowInfo.Find(item.Handle));
             if (this.items.Contains(item))
                 return;
+            
             this.items.Add(item);
         }
 
-        void ICollection<long>.Clear()
+        void ICollection<WindowsStoreItem>.Clear()
         {
-            long[] handleVals = this.items.ToArray();
+            long[] handleVals = this.items.Select(item => item.HandleValue).ToArray();
             this.items.Clear();
             if (this.Removed == null)
                 return;
@@ -276,33 +238,33 @@ namespace theDiary.Tools.HideMyWindow
             foreach (long value in handleVals)
             {
                 IntPtr handle = new IntPtr(value);
-                this.Removed(this, new WindowEventArgs(WindowInfo.FindByHandle(handle)));
+                this.Removed(this, new WindowInfoEventArgs(WindowInfo.Find(handle)));
             }
         }
 
-        bool ICollection<long>.Contains(long item)
+        bool ICollection<WindowsStoreItem>.Contains(WindowsStoreItem item)
+        {
+            return this.items.Contains(item);
+        }
+
+        void ICollection<WindowsStoreItem>.CopyTo(WindowsStoreItem[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
 
-        void ICollection<long>.CopyTo(long[] array, int arrayIndex)
+        bool ICollection<WindowsStoreItem>.Remove(WindowsStoreItem item)
         {
-            throw new NotImplementedException();
+            return this.items.Remove(item);
         }
 
-        bool ICollection<long>.Remove(long item)
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerator<long> IEnumerable<long>.GetEnumerator()
+        public IEnumerator<WindowsStoreItem> GetEnumerator()
         {
             return this.items.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return this.items.GetEnumerator();
         }
 
         #endregion

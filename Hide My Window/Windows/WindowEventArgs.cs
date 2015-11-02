@@ -2,7 +2,7 @@
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public delegate void WindowEventHandler(object sender, WindowEventArgs e);
+   /* public delegate void WindowEventHandler(object sender, WindowEventArgs e);
 
     public class WindowEventArgs
         : EventArgs
@@ -29,5 +29,5 @@ namespace theDiary.Tools.HideMyWindow
         public WindowInfo Window { get; protected set; }
 
         #endregion
-    }
+    }*/
 }

@@ -11,6 +11,7 @@ namespace theDiary.Tools.HideMyWindow
         public ConfigurationForm()
         {
             this.InitializeComponent();
+            ExternalReferences.UnregisterAll();
             this.minimizeToTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings,
                 "MinimizeToTaskBar"));
             this.closeToTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "CloseToTaskBar"));
@@ -114,11 +115,7 @@ namespace theDiary.Tools.HideMyWindow
                 {
                     Runtime.Instance.Settings.HashedPassword = this.password.Password;
                 }
-                if (this.hotkeysChanged)
-                {
-                    ExternalReferences.UnregisterAll();
-                    ExternalReferences.RegisterAll();
-                }
+                ExternalReferences.RegisterAll();
             };
             this.InitializeToolTips(null);
         }

@@ -28,16 +28,27 @@ namespace theDiary.Tools.HideMyWindow
                 Text = window.ApplicationPathName,
                 Name = "ApplicationPathName"
             });
+            this.windowHandle = window.Handle;
             this.Tag = window.Handle;
         }
 
         #endregion
 
+        private IntPtr windowHandle;
         #region Properties
+        public IntPtr WindowHandle
+        {
+            get
+            {
+                if (this.windowHandle == IntPtr.Zero)
+                    this.windowHandle = (IntPtr) this.Tag;
 
+                return this.windowHandle;
+            }
+        }
         public WindowInfo Window
         {
-            get { return Runtime.Instance.FindWindow((IntPtr) this.Tag); }
+            get { return WindowInfo.Find(this.WindowHandle); }
         }
 
         #endregion
