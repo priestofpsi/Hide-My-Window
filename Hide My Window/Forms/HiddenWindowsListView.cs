@@ -79,9 +79,9 @@ namespace theDiary.Tools.HideMyWindow
                     e.Graphics.AddImage(e.Bounds,
                         (currentItem.IsPasswordProtected)
                             ? ActionResource.lockwindow_small
-                            : ActionResource.unlockwindow_small, ImagePosition.TopLeft);
+                            : ActionResource.unlockwindow_small, ImageOverlayPosition.TopLeft);
                     if (currentItem.IsPinned)
-                        e.Graphics.AddImage(e.Bounds, ActionResource.tack_small, ImagePosition.TopRight);
+                        e.Graphics.AddImage(e.Bounds, ActionResource.tack_small, ImageOverlayPosition.TopRight);
                     //e.DrawText(TextFormatFlags.Bottom | TextFormatFlags.EndEllipsis | TextFormatFlags.HorizontalCenter);
                     Rectangle rec = new Rectangle(e.Bounds.X + 2, e.Bounds.Y + 2, e.Bounds.Width - 4,
                         e.Bounds.Height - 4);

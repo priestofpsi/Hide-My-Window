@@ -464,6 +464,7 @@ namespace theDiary.Tools.HideMyWindow
             this.unlockWindow.Text = "Unlock";
             this.unlockWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.unlockWindow.ToolTipText = "Removes the Password protection from the selected Window(s)";
+            this.unlockWindow.Click += new System.EventHandler(this.unlockWindow_Click);
             // 
             // actionImageListSmall
             // 

@@ -267,12 +267,15 @@ namespace theDiary.Tools.HideMyWindow
         internal void UnhideAllWindows(object sender, EventArgs e)
         {
             Task task = Task.Run(() =>
-            {
-                this.hiddenWindows.Items.Cast<WindowListViewItem>()
-                    .ToList()
-                    .ForEach(item => item.Window.Show());
-                this.hiddenWindows_SelectedIndexChanged(sender, e);
-            });
+                                 {
+                                     this.DoInvoke(() =>
+                                                   {
+                                                       this.hiddenWindows.Items.Cast<WindowListViewItem>()
+                                                           .ToList()
+                                                           .ForEach(item => item.Window.Show());
+                                                   });
+                                     this.hiddenWindows_SelectedIndexChanged(sender, e);
+                                 });
         }
 
         private void ExitApplication(object sender, EventArgs e)
@@ -351,7 +354,10 @@ namespace theDiary.Tools.HideMyWindow
             ExternalReferences.RegisterAll();
             this.FormClosing += this.Form1_FormClosing;
             this.hiddenWindows.SelectedIndexChanged +=
-                (s, e) => { this.DoInvoke(() => this.show.Enabled = this.hiddenWindows.SelectedItems.Count != 0); };
+                (s, e) =>
+                {
+                    this.DoInvoke(() => this.show.Enabled = this.hiddenWindows.SelectedItems.Count != 0);
+                };
             this.HiddenWindowsChanged += (s, e) =>
             {
                 this.DoInvoke(() =>
@@ -362,7 +368,10 @@ namespace theDiary.Tools.HideMyWindow
                         this.hiddenWindows.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 });
             };
-            this.VisibleChanged += (s, e) => { this.DoInvoke(() => this.notifyIcon.Visible = !this.Visible); };
+            this.VisibleChanged += (s, e) =>
+            {
+                this.DoInvoke(() => this.notifyIcon.Visible = !this.Visible);
+            };
         }
 
         private void DoInvoke(Action action)
@@ -426,15 +435,29 @@ namespace theDiary.Tools.HideMyWindow
             });
         }
 
+        private void SetWindowImageList(WindowInfo window, bool forceUpdate)
+        {
+            string key = window.Key;
+            System.Drawing.Bitmap image = window.ApplicationIcon.ToBitmap();
+            if (forceUpdate)
+            {
+                if (this.imageListSmall.Images.ContainsKey(key))
+                    this.imageListSmall.Images.RemoveByKey(key);
+                if (this.imageListBig.Images.ContainsKey(key))
+                    this.imageListBig.Images.RemoveByKey(key);
+            }
+            if (forceUpdate || !this.imageListSmall.Images.ContainsKey(key))
+                this.imageListSmall.Images.Add(key, image);
+            if (forceUpdate || !this.imageListBig.Images.ContainsKey(key))
+                this.imageListBig.Images.Add(key, image);
+        }
+
         private void Store_Added(object sender, WindowInfoEventArgs e)
         {
             this.DoInvoke(() =>
             {
                 WindowListViewItem item = new WindowListViewItem(e.Window);
-                if (!this.imageListSmall.Images.ContainsKey(e.Window.Key))
-                    this.imageListSmall.Images.Add(e.Window.Key, e.Window.ApplicationIcon.ToBitmap());
-                if (!this.imageListBig.Images.ContainsKey(e.Window.Key))
-                    this.imageListBig.Images.Add(e.Window.Key, e.Window.ApplicationIcon.ToBitmap());
+                this.SetWindowImageList(e.Window, false);
 
                 if (!this.hiddenWindows.Items.ContainsKey(e.Window.Key))
                 {

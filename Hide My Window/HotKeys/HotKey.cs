@@ -9,6 +9,16 @@ namespace theDiary.Tools.HideMyWindow
     public sealed class Hotkey
         : IDisposable
     {
+        public Hotkey()
+        {
+        }
+
+        private Hotkey(HotkeyFunction function, Keys hotKey, HotModifierKeys modifiers)
+        {
+            this.Function = function;
+            this.HotKey = hotKey;
+            this.ModifierKeys = modifiers;
+        }
         #region Declarations
 
         [XmlAttribute] public HotkeyFunction Function;
@@ -149,6 +159,10 @@ namespace theDiary.Tools.HideMyWindow
 
         #endregion
 
+        public static Hotkey DefaultHideCurrentWindow = new Hotkey(HotkeyFunction.HideCurrentWindow, Keys.H,
+            HotModifierKeys.Control | HotModifierKeys.Shift);
+        public static Hotkey DefaultUnhideLastWindow = new Hotkey(HotkeyFunction.UnhideLastWindow, Keys.S,
+            HotModifierKeys.Control | HotModifierKeys.Shift);
         #region Interface Implementations
 
         public void Dispose()

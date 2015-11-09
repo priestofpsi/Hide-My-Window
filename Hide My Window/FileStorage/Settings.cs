@@ -212,6 +212,12 @@ namespace theDiary.Tools.HideMyWindow
             Settings returnValue = null;
             bool wasCreated;
             returnValue = returnValue.LoadFile(out wasCreated);
+            if (returnValue.hotkeys.Count == 0)
+            {
+                returnValue.Hotkey.Add(HideMyWindow.Hotkey.DefaultHideCurrentWindow);
+                returnValue.Hotkey.Add(HideMyWindow.Hotkey.DefaultUnhideLastWindow);
+            }
+                
             Program.IsConfigured = (wasCreated || returnValue.Hotkey.Count != 0);
             if (FileNotification != null)
                 FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loaded));

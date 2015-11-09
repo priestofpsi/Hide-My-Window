@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -11,6 +12,36 @@ namespace theDiary.Tools.HideMyWindow
     internal static partial class ExternalReferences
     {
         #region Constant Declarations
+        internal const int WM_SETICON = 0x80;
+        internal const int ICON_SMALL = 0, ICON_BIG = 1;
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool SetWindowText(IntPtr hwnd, String lpString);
+
+        public static void RestoreWindowText(this WindowInfo window)
+        {
+            ExternalReferences.SetWindowText(window.Handle, window.OriginalTitle);
+        }
+
+        public static void SetWindowText(this WindowInfo window, string text)
+        {
+            ExternalReferences.SetWindowText(window.Handle, text);
+        }
+        public static void SetWindowText(this WindowInfo window, string prefix, string suffix)
+        {
+            ExternalReferences.SetWindowText(window.Handle, string.Format("{0}{2}{1}", prefix, suffix, window.OriginalTitle));
+        }
+
+        public static void SetWindowIcon(this WindowInfo window, Icon icon)
+        {
+            ExternalReferences.SendMessage(window.Handle, ExternalReferences.WM_SETICON,
+                        ExternalReferences.ICON_SMALL, icon.Handle);
+            ExternalReferences.SendMessage(window.Handle, ExternalReferences.WM_SETICON,
+                ExternalReferences.ICON_BIG, icon.Handle);
+        }
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hwnd, int message, int wParam, IntPtr lParam);
 
         internal const int GWL_STYLE = -16,
             GWL_EXSTYLE = -20;
