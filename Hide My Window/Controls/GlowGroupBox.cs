@@ -10,36 +10,33 @@ namespace theDiary.Tools.HideMyWindow
 {
     [ToolboxItem(true)]
     [ToolboxBitmap(typeof (GlowGroupBox), "theDiary.Tools.HideMyWindow")]
-    public class GlowGroupBox
-        : Panel
+    public class GlowGroupBox : Panel
     {
-        #region Constructors
-
+        #region Public Constructors
         public GlowGroupBox()
         {
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
         }
-
         #endregion
 
         #region Declarations
-
         private Color effectColor = SystemColors.ButtonShadow;
 
         private EffectType effectType = EffectType.Glow;
         private bool glowOn;
-
         #endregion
 
         #region Properties
-
         [Category("Appearance")]
         [Description("Get or Set the color of the Glow")]
         [DefaultValue(typeof (Color), "Maroon")]
         public Color EffectColor
         {
-            get { return this.effectColor; }
+            get
+            {
+                return this.effectColor;
+            }
             set
             {
                 if (this.effectColor == value)
@@ -54,7 +51,10 @@ namespace theDiary.Tools.HideMyWindow
         [DefaultValue(false)]
         public bool GlowOn
         {
-            get { return this.glowOn; }
+            get
+            {
+                return this.glowOn;
+            }
             set
             {
                 if (this.glowOn == value)
@@ -69,7 +69,10 @@ namespace theDiary.Tools.HideMyWindow
         [DefaultValue("Glow")]
         public EffectType EffectType
         {
-            get { return this.effectType; }
+            get
+            {
+                return this.effectType;
+            }
             set
             {
                 if (this.effectType == value)
@@ -79,11 +82,9 @@ namespace theDiary.Tools.HideMyWindow
                 this.Invalidate();
             }
         }
-
         #endregion
 
         #region Methods & Functions
-
         private void DrawShadow(Control control, PaintEventArgs e)
         {
             using (GraphicsPath shadowpath = new GraphicsPath())
@@ -94,16 +95,15 @@ namespace theDiary.Tools.HideMyWindow
                 int shadowFeather = 100;
 
                 Rectangle rect = new Rectangle(control.Bounds.X + 4 + shadowOffset.X,
-                    control.Bounds.Y + 4 + shadowOffset.Y,
-                    control.Bounds.Width - 8, control.Bounds.Height - 8);
+                    control.Bounds.Y + 4 + shadowOffset.Y, control.Bounds.Width - 8, control.Bounds.Height - 8);
                 shadowpath.AddRectangle(rect);
 
                 int x = 6;
                 for (int i = 1; i < x; i++)
                 {
                     using (
-                        Pen pen = new Pen(Color.FromArgb((shadowFeather - ((shadowFeather/x)*i)), shadowColor),
-                            ((float) i*(shadowBlur))))
+                        Pen pen = new Pen(Color.FromArgb((shadowFeather - ((shadowFeather / x) * i)), shadowColor),
+                            ((float) i * (shadowBlur))))
                     {
                         pen.LineJoin = LineJoin.Round;
                         e.Graphics.DrawPath(pen, shadowpath);
@@ -121,6 +121,7 @@ namespace theDiary.Tools.HideMyWindow
                 //'Change these to Properties if you want Design Control of the Values
                 int glowSteps = 15;
                 int glowFeather = 50;
+
                 //'Get a Rectangle a little smaller than the control's 'and make a GraphicsPath with it
                 Rectangle rect = new Rectangle(control.Bounds.X, control.Bounds.Y, control.Bounds.Width - 1,
                     control.Bounds.Height - 1);
@@ -130,7 +131,7 @@ namespace theDiary.Tools.HideMyWindow
                 //Draw multiple rectangles with increasing thickness and transparency
                 for (int i = 1; i < glowSteps; i = i + 2)
                 {
-                    int aGlow = (glowFeather - ((glowFeather/glowSteps)*i));
+                    int aGlow = (glowFeather - ((glowFeather / glowSteps) * i));
                     using (Pen pen = new Pen(Color.FromArgb(aGlow, this.effectColor), i))
                     {
                         pen.LineJoin = LineJoin.Round;
@@ -145,7 +146,8 @@ namespace theDiary.Tools.HideMyWindow
             base.OnPaintBackground(e);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            if (this.DesignMode && this.Controls.Count == 0)
+            if (this.DesignMode
+                && this.Controls.Count == 0)
             {
                 TextRenderer.DrawText(e.Graphics, "Drop controls\n\ton the GlowGroupBox",
                     new Font("Arial", 8, FontStyle.Bold), new Point(20, 20), Color.DarkBlue);
@@ -159,24 +161,19 @@ namespace theDiary.Tools.HideMyWindow
                     if (!control.Focused)
                         continue;
 
-                    bool doGlow = ((control.GetType().GetProperty("ReadOnly") == null) ||
-                                   !(bool) control.GetType().GetProperty("ReadOnly").GetValue(control));
+                    bool doGlow = ((control.GetType().GetProperty("ReadOnly") == null)
+                                   || !(bool) control.GetType().GetProperty("ReadOnly").GetValue(control));
 
                     if (!doGlow)
                         continue;
 
                     if (this.EffectType == EffectType.Glow)
-                    {
                         this.DrawGlow(control, e);
-                    }
                     else
-                    {
                         this.DrawShadow(control, e);
-                    }
                 }
             }
         }
-
         #endregion
     }
 

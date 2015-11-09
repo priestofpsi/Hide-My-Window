@@ -10,30 +10,32 @@ namespace theDiary.Tools.HideMyWindow
     internal static class Program
     {
         #region Constant Declarations
-
         internal static MainForm MainForm;
         internal static bool IsConfigured;
-
         #endregion
 
         #region Methods & Functions
-
         /// <summary>
         ///     The main entry point for the application.
         /// </summary>
         [STAThread]
         private static void Main()
         {
-            Mutex mutex;
-            if (Program.IsAlreadyRunning(out mutex))
-                return;
+            if (Environment.Is64BitOperatingSystem != Environment.Is64BitProcess)
+                MessageBox.Show("The application is not compiled for this architecture.");
+            else
+            {
+                Mutex mutex;
+                if (Program.IsAlreadyRunning(out mutex))
+                    return;
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.ApplicationExit += Program.Application_ApplicationExit;
-            Program.MainForm = new MainForm();
-            Application.Run(Program.MainForm);
-            GC.KeepAlive(mutex);
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.ApplicationExit += Program.Application_ApplicationExit;
+                Program.MainForm = new MainForm();
+                Application.Run(Program.MainForm);
+                GC.KeepAlive(mutex);
+            }
         }
 
         private static void Application_ApplicationExit(object sender, EventArgs e)
@@ -51,7 +53,6 @@ namespace theDiary.Tools.HideMyWindow
             mutex = new Mutex(true, attribute.Title, out onlyInstance);
             return !onlyInstance;
         }
-
         #endregion
     }
 }

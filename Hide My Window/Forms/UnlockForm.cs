@@ -8,8 +8,7 @@ namespace theDiary.Tools.HideMyWindow
 {
     public partial class UnlockForm : Form
     {
-        #region Constructors
-
+        #region Public Constructors
         public UnlockForm()
         {
             this.InitializeComponent();
@@ -20,20 +19,19 @@ namespace theDiary.Tools.HideMyWindow
         {
             this.Text = string.Format("Unlock - {0}", title);
         }
-
         #endregion
 
         #region Properties
-
         public bool PasswordMatched
         {
-            get { return this.passwordTextBox1.Password.GetMD5Hash().Equals(Runtime.Instance.Settings.Password); }
+            get
+            {
+                return this.passwordTextBox1.Password.GetMD5Hash().Equals(Runtime.Instance.Settings.Password);
+            }
         }
-
         #endregion
 
         #region Methods & Functions
-
         private static string GetHashString(byte[] value)
         {
             StringBuilder sb = new StringBuilder();
@@ -51,7 +49,6 @@ namespace theDiary.Tools.HideMyWindow
                 this.Close();
             }
         }
-
         #endregion
     }
 }

@@ -8,7 +8,6 @@ namespace theDiary.Tools.HideMyWindow
     public partial class WindowInfo
     {
         #region Methods & Functions
-
         /// <summary>
         ///     The event that is raised when a Window associated to a <c>Pinned</c> <see cref="WindowInfo" /> instance has been
         ///     minimized.
@@ -86,7 +85,6 @@ namespace theDiary.Tools.HideMyWindow
         ///     The event that is raised when the Window associated with a <see cref="WindowInfo" /> instance has been shown.
         /// </summary>
         public event WindowEventHandler Shown;
-
         #endregion
     }
 }

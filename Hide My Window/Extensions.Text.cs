@@ -13,7 +13,6 @@ namespace System
     public static class TextExtensions
     {
         #region Constant Declarations
-
         private static readonly char WhiteSpace = ' ';
 
         private static readonly Regex readableRegEx = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)",
@@ -31,11 +30,9 @@ namespace System
 
         private static readonly Func<Group, string> replace2 =
             g => TextExtensions.readableRemovedRegEx2.Replace(g.Value, string.Empty);
-
         #endregion
 
         #region Methods & Functions
-
         public static bool IsNumber(this string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -46,7 +43,7 @@ namespace System
         }
 
         public static string AsReadable(this string value,
-            ReadablilityCondition normalizeConditions = ReadablilityCondition.Default)
+                                        ReadablilityCondition normalizeConditions = ReadablilityCondition.Default)
         {
             if (value.IsNullEmptyOrWhiteSpace())
                 return value;
@@ -90,9 +87,7 @@ namespace System
         {
             if (value.HasPrevious(index)
                 && value.PreviousIsUpper(index)
-                && (char.IsLower(value[index])
-                    || char.IsUpper(value[index])
-                    && value.NextIsLower(index)))
+                && (char.IsLower(value[index]) || char.IsUpper(value[index]) && value.NextIsLower(index)))
                 return true;
 
             return false;
@@ -147,11 +142,9 @@ namespace System
                     || (valueContent.IsUpper(i)
                         && (valueContent.PreviousIsLower(i)
                             || (valueContent.PreviousIsDigit(i) && conditions.HasFlag(ReadablilityCondition.ByDigit))
-                            || valueContent.PreviousIsUnderscore(i)
-                            || valueContent.NextIsLower(i)))
-                    ||
-                    (conditions.HasFlag(ReadablilityCondition.ByDigit) && valueContent.IsDigit(i) &&
-                     !valueContent.PreviousIsDigit(i))
+                            || valueContent.PreviousIsUnderscore(i) || valueContent.NextIsLower(i)))
+                    || (conditions.HasFlag(ReadablilityCondition.ByDigit) && valueContent.IsDigit(i)
+                        && !valueContent.PreviousIsDigit(i))
                     || (conditions.HasFlag(ReadablilityCondition.ByUnderscore) && valueContent.IsUnderscore(i)))
                     vals.Add(new List<char>());
 
@@ -189,7 +182,8 @@ namespace System
 
         private static string Capitalize(this ReadablilityCondition conditions, string value)
         {
-            if (conditions.Capitalize() && !value.IsNullEmptyOrWhiteSpace())
+            if (conditions.Capitalize()
+                && !value.IsNullEmptyOrWhiteSpace())
             {
                 char firstChar = value[0];
                 string substring = value.Length == 0 ? string.Empty : value.Substring(1);
@@ -221,8 +215,7 @@ namespace System
 
         private static bool IsDigit(this char[] value, int index)
         {
-            return char.IsDigit(value[index])
-                   || char.IsNumber(value[index]);
+            return char.IsDigit(value[index]) || char.IsNumber(value[index]);
         }
 
         private static bool IsUnderscore(this char[] value, int index)
@@ -273,8 +266,7 @@ namespace System
             if (!value.HasNext(index, out @char))
                 return false;
 
-            return char.IsDigit(@char)
-                   || char.IsNumber(@char);
+            return char.IsDigit(@char) || char.IsNumber(@char);
         }
 
         private static bool PreviousIsDigit(this char[] value, int index)
@@ -283,8 +275,7 @@ namespace System
             if (!value.HasPrevious(index, out @char))
                 return false;
 
-            return char.IsDigit(@char)
-                   || char.IsNumber(@char);
+            return char.IsDigit(@char) || char.IsNumber(@char);
         }
 
         private static bool NextIsUnderscore(this char[] value, int index)
@@ -344,7 +335,6 @@ namespace System
             @char = value[index - 1];
             return true;
         }
-
         #endregion
 
         //}
@@ -391,8 +381,7 @@ namespace System
     ///     A bitwise flag used to indicate the conditions to use when performing normalization.
     /// </summary>
     [Flags]
-    public enum ReadablilityCondition
-        : byte
+    public enum ReadablilityCondition : byte
     {
         /// <summary>
         ///     Specifies that Normalization should not happen if the value contains any whitespace.

@@ -1,293 +1,341 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{00BEA266-C352-46EF-95B8-67249C1D612E}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>theDiary.Tools.HideMyWindow</RootNamespace>
-    <AssemblyName>Hide My Window</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <TargetCulture>en</TargetCulture>
-    <ProductName>Hide My Window</ProductName>
-    <PublisherName>theDiary Software</PublisherName>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <CreateDesktopShortcut>true</CreateDesktopShortcut>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <DocumentationFile>bin\Debug\Hide My Window.XML</DocumentationFile>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>theDiary.Tools.HideMyWindow.Program</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Resources\application.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetZone>Internet</TargetZone>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>false</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup />
-  <ItemGroup>
-    <Reference Include="Octokit, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Octokit.0.16.0\lib\net45\Octokit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UIAutomationClient" />
-    <Reference Include="UIAutomationClientsideProviders" />
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="UIAutomationTypes" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ActionResource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ActionResource.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\GlowGroupBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\GlowPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\HotKeyMimicTextBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\HotKeyMimicTextBox.Designer.cs">
-      <DependentUpon>HotKeyMimicTextBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Extensions.cs" />
-    <Compile Include="Extensions.Text.cs" />
-    <Compile Include="ExternalReferences\ShowWindowCommands.cs" />
-    <Compile Include="ExternalReferences\WindowPlacement.cs" />
-    <Compile Include="ExternalReferences\WindowPlacementFlags.cs" />
-    <Compile Include="FileStorage\IIsolatedStorageFile.Extensions.cs" />
-    <Compile Include="FileStorage\WindowsStoreItem.cs" />
-    <Compile Include="Forms\ConfigurationSections\GeneralConfiguration.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\ConfigurationSections\GeneralConfiguration.Designer.cs">
-      <DependentUpon>GeneralConfiguration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ConfigurationSections\IConfigurationSection.cs" />
-    <Compile Include="Forms\ConfigurationSections\PinnedWindowConfiguration.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\ConfigurationSections\PinnedWindowConfiguration.Designer.cs">
-      <DependentUpon>PinnedWindowConfiguration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\HiddenWindowsListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\PasswordTextbox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\WatermarkTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Graphics\Graphics.Extensions.cs" />
-    <Compile Include="Graphics\ImageOverlayPosition.cs" />
-    <Compile Include="IconEventArgs.cs" />
-    <Compile Include="FileStorage\IIsolatedStorageFile.cs" />
-    <Compile Include="MessageBoxEventArgs.cs" />
-    <Compile Include="MessageBoxEventArgs.Delegates.cs" />
-    <Compile Include="Forms\AboutBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\AboutBox.Designer.cs">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ConfigurationForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ConfigurationForm.Designer.cs">
-      <DependentUpon>ConfigurationForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ExternalReferences\ExternalReferences.cs" />
-    <Compile Include="ExternalReferences\ExternalReferences.HotKeys.cs" />
-    <Compile Include="ExternalReferences\ExternalReferences.Window.cs" />
-    <Compile Include="Forms\WindowListViewItem.cs" />
-    <Compile Include="HotKeys\HotKeyBindingList.cs" />
-    <Compile Include="Forms\MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="HotKeys\HotKey.cs" />
-    <Compile Include="HotKeys\HotkeyFunction.cs" />
-    <Compile Include="HotKeys\HotModifierKeys.cs" />
-    <Compile Include="Notification.Delegates.cs" />
-    <Compile Include="Notification.EventArgs.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Runtime.instance.cs" />
-    <Compile Include="Runtime.singleton.cs" />
-    <Compile Include="Forms\UnlockForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\UnlockForm.Designer.cs">
-      <DependentUpon>UnlockForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FileStorage\FileEventArgs.cs" />
-    <Compile Include="FileStorage\HiddenWindowStore.cs" />
-    <Compile Include="FileStorage\Settings.Appearance.cs" />
-    <Compile Include="FileStorage\Settings.cs" />
-    <Compile Include="FileStorage\Settings.FormState.cs" />
-    <Compile Include="FileStorage\Settings.Password.cs" />
-    <Compile Include="Updater\Updater.cs" />
-    <Compile Include="Windows\WindowInfoManager.cs" />
-    <Compile Include="Windows\IWindowState.cs" />
-    <Compile Include="Windows\WindowEventArgs.cs" />
-    <Compile Include="Windows\WindowInfo.cs" />
-    <Compile Include="Windows\WindowInfo.Delegates.cs" />
-    <Compile Include="Windows\WindowInfo.EventArgs.cs" />
-    <Compile Include="Windows\WindowInfo.Events.cs" />
-    <Compile Include="Windows\WindowStates.cs" />
-    <EmbeddedResource Include="ActionResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ActionResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\HotKeyMimicTextBox.resx">
-      <DependentUpon>HotKeyMimicTextBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AboutBox.resx">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ConfigurationForm.resx">
-      <DependentUpon>ConfigurationForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ConfigurationSections\GeneralConfiguration.resx">
-      <DependentUpon>GeneralConfiguration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ConfigurationSections\PinnedWindowConfiguration.resx">
-      <DependentUpon>PinnedWindowConfiguration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <EmbeddedResource Include="Forms\UnlockForm.resx">
-      <DependentUpon>UnlockForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="packages.config" />
-    <None Include="Properties\app.manifest" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="application.ico" />
-    <EmbeddedResource Include="Resources\application.ico" />
-    <EmbeddedResource Include="Resources\unlock.ico" />
-    <EmbeddedResource Include="Resources\lock.ico" />
-    <None Include="Resources\configuration.ico" />
-    <None Include="Resources\unlock.png" />
-    <None Include="Resources\tack.png" />
-    <None Include="Resources\show.png" />
-    <None Include="Resources\rename.png" />
-    <None Include="Resources\lock.png" />
-    <None Include="Resources\hide.png" />
-    <None Include="Resources\exit.png" />
-    <None Include="Resources\configure.png" />
-    <None Include="Resources\unlock_small.png" />
-    <None Include="Resources\tack_small.png" />
-    <None Include="Resources\show_small.png" />
-    <None Include="Resources\rename_small.png" />
-    <None Include="Resources\lock_small.png" />
-    <None Include="Resources\hide_small.png" />
-    <None Include="Resources\exit_small.png" />
-    <None Include="Resources\configure_small.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 4.5</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Watcher\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
+            Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{00BEA266-C352-46EF-95B8-67249C1D612E}</ProjectGuid>
+        <OutputType>WinExe</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>theDiary.Tools.HideMyWindow</RootNamespace>
+        <AssemblyName>Hide My Window</AssemblyName>
+        <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <TargetFrameworkProfile>
+        </TargetFrameworkProfile>
+        <IsWebBootstrapper>false</IsWebBootstrapper>
+        <PublishUrl>publish\</PublishUrl>
+        <Install>true</Install>
+        <InstallFrom>Disk</InstallFrom>
+        <UpdateEnabled>false</UpdateEnabled>
+        <UpdateMode>Foreground</UpdateMode>
+        <UpdateInterval>7</UpdateInterval>
+        <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+        <UpdatePeriodically>false</UpdatePeriodically>
+        <UpdateRequired>false</UpdateRequired>
+        <MapFileExtensions>true</MapFileExtensions>
+        <TargetCulture>en</TargetCulture>
+        <ProductName>Hide My Window</ProductName>
+        <PublisherName>theDiary Software</PublisherName>
+        <ApplicationRevision>0</ApplicationRevision>
+        <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+        <UseApplicationTrust>false</UseApplicationTrust>
+        <CreateDesktopShortcut>true</CreateDesktopShortcut>
+        <BootstrapperEnabled>true</BootstrapperEnabled>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <Prefer32Bit>false</Prefer32Bit>
+        <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+        <DocumentationFile>bin\Debug\Hide My Window.XML</DocumentationFile>
+        <RunCodeAnalysis>true</RunCodeAnalysis>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup>
+        <StartupObject>theDiary.Tools.HideMyWindow.Program</StartupObject>
+    </PropertyGroup>
+    <PropertyGroup>
+        <ApplicationIcon>Resources\application.ico</ApplicationIcon>
+    </PropertyGroup>
+    <PropertyGroup>
+        <TargetZone>Internet</TargetZone>
+    </PropertyGroup>
+    <PropertyGroup>
+        <GenerateManifests>false</GenerateManifests>
+    </PropertyGroup>
+    <PropertyGroup />
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+        <DebugSymbols>true</DebugSymbols>
+        <OutputPath>bin\x64\Debug\</OutputPath>
+        <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
+        <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+        <DocumentationFile>bin\Debug\Hide My Window.XML</DocumentationFile>
+        <Optimize>true</Optimize>
+        <DebugType>full</DebugType>
+        <PlatformTarget>x64</PlatformTarget>
+        <RunCodeAnalysis>true</RunCodeAnalysis>
+        <ErrorReport>prompt</ErrorReport>
+        <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+        <OutputPath>bin\x64\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <Optimize>true</Optimize>
+        <DebugType>pdbonly</DebugType>
+        <PlatformTarget>x64</PlatformTarget>
+        <ErrorReport>prompt</ErrorReport>
+        <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+        <Prefer32Bit>true</Prefer32Bit>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+        <DebugSymbols>true</DebugSymbols>
+        <OutputPath>bin\x86\Debug\</OutputPath>
+        <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
+        <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+        <DocumentationFile>bin\Debug\Hide My Window.XML</DocumentationFile>
+        <Optimize>true</Optimize>
+        <DebugType>full</DebugType>
+        <PlatformTarget>x86</PlatformTarget>
+        <RunCodeAnalysis>true</RunCodeAnalysis>
+        <ErrorReport>prompt</ErrorReport>
+        <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+        <OutputPath>bin\x86\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <Optimize>true</Optimize>
+        <DebugType>pdbonly</DebugType>
+        <PlatformTarget>x86</PlatformTarget>
+        <ErrorReport>prompt</ErrorReport>
+        <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+        <Prefer32Bit>true</Prefer32Bit>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Octokit, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
+            <HintPath>..\packages\Octokit.0.16.0\lib\net45\Octokit.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Drawing" />
+        <Reference Include="System.Net.Http" />
+        <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.Xml" />
+        <Reference Include="UIAutomationClient" />
+        <Reference Include="UIAutomationClientsideProviders" />
+        <Reference Include="UIAutomationProvider" />
+        <Reference Include="UIAutomationTypes" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="ActionResource.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>ActionResource.resx</DependentUpon>
+        </Compile>
+        <Compile Include="Controls\GlowGroupBox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Include="Controls\GlowPanel.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Include="Controls\HotKeyMimicTextBox.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Include="Controls\HotKeyMimicTextBox.Designer.cs">
+            <DependentUpon>HotKeyMimicTextBox.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Extensions.cs" />
+        <Compile Include="Extensions.Text.cs" />
+        <Compile Include="ExternalReferences\ShowWindowCommands.cs" />
+        <Compile Include="ExternalReferences\WindowPlacement.cs" />
+        <Compile Include="ExternalReferences\WindowPlacementFlags.cs" />
+        <Compile Include="FileStorage\IIsolatedStorageFile.Extensions.cs" />
+        <Compile Include="FileStorage\WindowsStoreItem.cs" />
+        <Compile Include="Forms\ConfigurationSections\GeneralConfiguration.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Include="Forms\ConfigurationSections\GeneralConfiguration.Designer.cs">
+            <DependentUpon>GeneralConfiguration.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Forms\ConfigurationSections\IConfigurationSection.cs" />
+        <Compile Include="Forms\ConfigurationSections\PinnedWindowConfiguration.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Include="Forms\ConfigurationSections\PinnedWindowConfiguration.Designer.cs">
+            <DependentUpon>PinnedWindowConfiguration.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Forms\HiddenWindowsListView.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Include="Forms\PasswordTextbox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Include="Forms\WatermarkTextBox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Include="Graphics\Graphics.Extensions.cs" />
+        <Compile Include="Graphics\ImageOverlayPosition.cs" />
+        <Compile Include="IconEventArgs.cs" />
+        <Compile Include="FileStorage\IIsolatedStorageFile.cs" />
+        <Compile Include="MessageBoxEventArgs.cs" />
+        <Compile Include="MessageBoxEventArgs.Delegates.cs" />
+        <Compile Include="Forms\AboutBox.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="Forms\AboutBox.Designer.cs">
+            <DependentUpon>AboutBox.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Forms\ConfigurationForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="Forms\ConfigurationForm.Designer.cs">
+            <DependentUpon>ConfigurationForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="ExternalReferences\ExternalReferences.cs" />
+        <Compile Include="ExternalReferences\ExternalReferences.HotKeys.cs" />
+        <Compile Include="ExternalReferences\ExternalReferences.Window.cs" />
+        <Compile Include="Forms\WindowListViewItem.cs" />
+        <Compile Include="HotKeys\HotKeyBindingList.cs" />
+        <Compile Include="Forms\MainForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="Forms\MainForm.Designer.cs">
+            <DependentUpon>MainForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="HotKeys\HotKey.cs" />
+        <Compile Include="HotKeys\HotkeyFunction.cs" />
+        <Compile Include="HotKeys\HotModifierKeys.cs" />
+        <Compile Include="Notification.Delegates.cs" />
+        <Compile Include="Notification.EventArgs.cs" />
+        <Compile Include="Program.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Runtime.instance.cs" />
+        <Compile Include="Runtime.singleton.cs" />
+        <Compile Include="Forms\UnlockForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="Forms\UnlockForm.Designer.cs">
+            <DependentUpon>UnlockForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="FileStorage\FileEventArgs.cs" />
+        <Compile Include="FileStorage\HiddenWindowStore.cs" />
+        <Compile Include="FileStorage\Settings.Appearance.cs" />
+        <Compile Include="FileStorage\Settings.cs" />
+        <Compile Include="FileStorage\Settings.FormState.cs" />
+        <Compile Include="FileStorage\Settings.Password.cs" />
+        <Compile Include="Updater\Updater.cs" />
+        <Compile Include="Windows\WindowInfoManager.cs" />
+        <Compile Include="Windows\IWindowState.cs" />
+        <Compile Include="Windows\WindowEventArgs.cs" />
+        <Compile Include="Windows\WindowInfo.cs" />
+        <Compile Include="Windows\WindowInfo.Delegates.cs" />
+        <Compile Include="Windows\WindowInfo.EventArgs.cs" />
+        <Compile Include="Windows\WindowInfo.Events.cs" />
+        <Compile Include="Windows\WindowStates.cs" />
+        <EmbeddedResource Include="ActionResource.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>ActionResource.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Controls\HotKeyMimicTextBox.resx">
+            <DependentUpon>HotKeyMimicTextBox.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Forms\AboutBox.resx">
+            <DependentUpon>AboutBox.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Forms\ConfigurationForm.resx">
+            <DependentUpon>ConfigurationForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Forms\ConfigurationSections\GeneralConfiguration.resx">
+            <DependentUpon>GeneralConfiguration.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Forms\ConfigurationSections\PinnedWindowConfiguration.resx">
+            <DependentUpon>PinnedWindowConfiguration.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Forms\MainForm.resx">
+            <DependentUpon>MainForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Properties\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <Compile Include="Properties\Resources.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Resources.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+        </Compile>
+        <EmbeddedResource Include="Forms\UnlockForm.resx">
+            <DependentUpon>UnlockForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <None Include="packages.config" />
+        <None Include="Properties\app.manifest" />
+        <None Include="Properties\Settings.settings">
+            <Generator>SettingsSingleFileGenerator</Generator>
+            <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+        </None>
+        <Compile Include="Properties\Settings.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Settings.settings</DependentUpon>
+            <DesignTimeSharedInput>True</DesignTimeSharedInput>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="App.config" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="application.ico" />
+        <EmbeddedResource Include="Resources\application.ico" />
+        <EmbeddedResource Include="Resources\unlock.ico" />
+        <EmbeddedResource Include="Resources\lock.ico" />
+        <None Include="Resources\configuration.ico" />
+        <None Include="Resources\unlock.png" />
+        <None Include="Resources\tack.png" />
+        <None Include="Resources\show.png" />
+        <None Include="Resources\rename.png" />
+        <None Include="Resources\lock.png" />
+        <None Include="Resources\hide.png" />
+        <None Include="Resources\exit.png" />
+        <None Include="Resources\configure.png" />
+        <None Include="Resources\unlock_small.png" />
+        <None Include="Resources\tack_small.png" />
+        <None Include="Resources\show_small.png" />
+        <None Include="Resources\rename_small.png" />
+        <None Include="Resources\lock_small.png" />
+        <None Include="Resources\hide_small.png" />
+        <None Include="Resources\exit_small.png" />
+        <None Include="Resources\configure_small.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+            <Visible>False</Visible>
+            <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+            <Install>true</Install>
+        </BootstrapperPackage>
+        <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+            <Visible>False</Visible>
+            <ProductName>.NET Framework 3.5 SP1</ProductName>
+            <Install>false</Install>
+        </BootstrapperPackage>
+        <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+            <Visible>False</Visible>
+            <ProductName>Windows Installer 4.5</ProductName>
+            <Install>true</Install>
+        </BootstrapperPackage>
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Watcher\" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

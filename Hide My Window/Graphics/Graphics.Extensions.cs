@@ -9,32 +9,31 @@ namespace theDiary.Tools.HideMyWindow
     internal static class GraphicsExtensions
     {
         #region Methods & Functions
-
         public static Icon GetApplicationIcon(this Process process)
         {
             return Icon.ExtractAssociatedIcon(process.MainModule.FileName);
         }
 
         public static Rectangle AddImage(this Graphics graphics, Rectangle bounds, Icon overlayIcon, int? minX = null,
-            int? minY = null)
+                                         int? minY = null)
         {
             return graphics.AddImage(bounds, overlayIcon, ImageOverlayPosition.Center, minX, minY);
         }
 
         public static Rectangle AddImage(this Graphics graphics, Rectangle bounds, Image overlayImage, int? minX = null,
-            int? minY = null)
+                                         int? minY = null)
         {
             return graphics.AddImage(bounds, overlayImage, ImageOverlayPosition.Center, minX, minY);
         }
 
-        public static Rectangle AddImage(this Graphics graphics, Rectangle bounds, Icon overlayIcon, ImageOverlayPosition overlayPosition,
-            int? minX = null, int? minY = null)
+        public static Rectangle AddImage(this Graphics graphics, Rectangle bounds, Icon overlayIcon,
+                                         ImageOverlayPosition overlayPosition, int? minX = null, int? minY = null)
         {
             return graphics.AddImage(bounds, overlayIcon.ToBitmap(), overlayPosition, minX, minY);
         }
 
-        public static Rectangle AddImage(this Graphics graphics, Rectangle bounds, Image overlayImage, ImageOverlayPosition overlayPosition,
-            int? minX = null, int? minY = null)
+        public static Rectangle AddImage(this Graphics graphics, Rectangle bounds, Image overlayImage,
+                                         ImageOverlayPosition overlayPosition, int? minX = null, int? minY = null)
         {
             Rectangle newBounds = bounds.GetImageBounds(overlayImage.Size, overlayPosition, minX, minY);
             graphics.DrawImage(overlayImage, newBounds);
@@ -42,17 +41,20 @@ namespace theDiary.Tools.HideMyWindow
             return newBounds;
         }
 
-        public static Icon AddOverlay(this Icon icon, Image overlayIcon, ImageOverlayPosition overlayPosition, double downSizeModifier = 0.75)
+        public static Icon AddOverlay(this Icon icon, Image overlayIcon, ImageOverlayPosition overlayPosition,
+                                      double downSizeModifier = 0.75)
         {
             return icon.AddOverlay(overlayIcon, overlayPosition, default(Point), downSizeModifier);
         }
 
-        public static Icon AddOverlay(this Icon icon, Image overlayIcon, ImageOverlayPosition overlayPosition, Size offset = new Size(), double downSizeModifier = 0.75)
+        public static Icon AddOverlay(this Icon icon, Image overlayIcon, ImageOverlayPosition overlayPosition,
+                                      Size offset = new Size(), double downSizeModifier = 0.75)
         {
             return icon.AddOverlay(overlayIcon, overlayPosition, new Point(offset), downSizeModifier);
         }
 
-        public static Icon AddOverlay(this Icon icon, Image overlayIcon, ImageOverlayPosition overlayPosition, Point offset = new Point(), double downSizeModifier = 0.75)
+        public static Icon AddOverlay(this Icon icon, Image overlayIcon, ImageOverlayPosition overlayPosition,
+                                      Point offset = new Point(), double downSizeModifier = 0.75)
         {
             Bitmap n = new Bitmap(overlayIcon, icon.Size.DownSize(downSizeModifier));
             Bitmap iconBitmap = icon.ToBitmap();
@@ -61,17 +63,20 @@ namespace theDiary.Tools.HideMyWindow
                 Rectangle location = Rectangle.Round(g.VisibleClipBounds.GetImageBounds(n.Size, overlayPosition));
                 location.Offset(offset);
                 g.AddOverlay(n, location, overlayPosition);
+
                 //g.Flush();
             }
             return Icon.FromHandle(iconBitmap.GetHicon());
         }
 
-        public static Icon AddOverlay(this Icon icon, Icon overlayIcon, ImageOverlayPosition overlayPosition, double downSizeModifier = 0.75)
+        public static Icon AddOverlay(this Icon icon, Icon overlayIcon, ImageOverlayPosition overlayPosition,
+                                      double downSizeModifier = 0.75)
         {
             return icon.AddOverlay(overlayIcon, overlayPosition, default(Point), downSizeModifier);
         }
 
-        public static Icon AddOverlay(this Icon icon, Icon overlayIcon, ImageOverlayPosition overlayPosition, Point offset = new Point(), double downSizeModifier = 0.75)
+        public static Icon AddOverlay(this Icon icon, Icon overlayIcon, ImageOverlayPosition overlayPosition,
+                                      Point offset = new Point(), double downSizeModifier = 0.75)
         {
             Bitmap n = new Bitmap(overlayIcon.ToBitmap(), icon.Size.DownSize(downSizeModifier));
             Bitmap iconBitmap = icon.ToBitmap();
@@ -82,6 +87,7 @@ namespace theDiary.Tools.HideMyWindow
                 offset.Y *= -1;
                 location.Offset(offset);
                 g.AddOverlay(n, location, overlayPosition);
+
                 //g.Flush();
             }
             return Icon.FromHandle(iconBitmap.GetHicon());
@@ -89,22 +95,22 @@ namespace theDiary.Tools.HideMyWindow
 
         private static Size DownSize(this Size size, double modifier)
         {
-            
             double width = size.Width;
             double height = size.Height;
             if (modifier > 1)
                 return new Size((int) (width / modifier), (int) (height / modifier));
-            else
-                return new Size((int) (width * modifier), (int) (height * modifier));
+            return new Size((int) (width * modifier), (int) (height * modifier));
         }
 
-        public static void AddOverlay(this Graphics graphics, Image image, Rectangle bounds, ImageOverlayPosition overlayPosition)
+        public static void AddOverlay(this Graphics graphics, Image image, Rectangle bounds,
+                                      ImageOverlayPosition overlayPosition)
         {
-            System.Drawing.Rectangle overlayBounds = bounds.GetImageBounds(image.Size, overlayPosition);
+            Rectangle overlayBounds = bounds.GetImageBounds(image.Size, overlayPosition);
             graphics.DrawImage(image, overlayBounds);
         }
 
-        public static void AddOverlay(this Graphics graphics, Icon icon, Rectangle bounds, ImageOverlayPosition overlayPosition)
+        public static void AddOverlay(this Graphics graphics, Icon icon, Rectangle bounds,
+                                      ImageOverlayPosition overlayPosition)
         {
             graphics.AddOverlay(icon.ToBitmap(), bounds, overlayPosition);
         }
@@ -115,7 +121,7 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         public static Rectangle GetImageBounds(this Rectangle currentBounds, int imageWidth, int imageHeight,
-            ImageOverlayPosition overlayPosition, int? minX = null, int? minY = null)
+                                               ImageOverlayPosition overlayPosition, int? minX = null, int? minY = null)
         {
             Rectangle returnValue;
             switch (overlayPosition)
@@ -145,16 +151,18 @@ namespace theDiary.Tools.HideMyWindow
                         currentBounds.Y + ((currentBounds.Height - imageHeight) / 2), imageWidth, imageHeight);
                     break;
             }
-            if (minX.HasValue && returnValue.X - currentBounds.X > minX.Value)
+            if (minX.HasValue
+                && returnValue.X - currentBounds.X > minX.Value)
                 returnValue = new Rectangle(minX.Value, returnValue.Y, returnValue.Width, returnValue.Height);
-            if (minY.HasValue && returnValue.Y - currentBounds.Y > minY.Value)
+            if (minY.HasValue
+                && returnValue.Y - currentBounds.Y > minY.Value)
                 returnValue = new Rectangle(returnValue.X, minY.Value, returnValue.Width, returnValue.Height);
 
             return returnValue;
         }
 
         public static RectangleF GetImageBounds(this RectangleF currentBounds, int imageWidth, int imageHeight,
-            ImageOverlayPosition overlayPosition, int? minX = null, int? minY = null)
+                                                ImageOverlayPosition overlayPosition, int? minX = null, int? minY = null)
         {
             RectangleF returnValue;
             switch (overlayPosition)
@@ -184,21 +192,24 @@ namespace theDiary.Tools.HideMyWindow
                         currentBounds.Y + ((currentBounds.Height - imageHeight) / 2), imageWidth, imageHeight);
                     break;
             }
-            if (minX.HasValue && returnValue.X - currentBounds.X > minX.Value)
+            if (minX.HasValue
+                && returnValue.X - currentBounds.X > minX.Value)
                 returnValue = new RectangleF(minX.Value, returnValue.Y, returnValue.Width, returnValue.Height);
-            if (minY.HasValue && returnValue.Y - currentBounds.Y > minY.Value)
+            if (minY.HasValue
+                && returnValue.Y - currentBounds.Y > minY.Value)
                 returnValue = new RectangleF(returnValue.X, minY.Value, returnValue.Width, returnValue.Height);
 
             return returnValue;
         }
-        public static Rectangle GetImageBounds(this Rectangle currentBounds, Size imageSize, ImageOverlayPosition overlayPosition,
-            int? minX = null, int? minY = null)
+
+        public static Rectangle GetImageBounds(this Rectangle currentBounds, Size imageSize,
+                                               ImageOverlayPosition overlayPosition, int? minX = null, int? minY = null)
         {
             return currentBounds.GetImageBounds(imageSize.Width, imageSize.Height, overlayPosition, minX, minY);
         }
 
-        public static RectangleF GetImageBounds(this RectangleF currentBounds, Size imageSize, ImageOverlayPosition overlayPosition,
-            int? minX = null, int? minY = null)
+        public static RectangleF GetImageBounds(this RectangleF currentBounds, Size imageSize,
+                                                ImageOverlayPosition overlayPosition, int? minX = null, int? minY = null)
         {
             return currentBounds.GetImageBounds(imageSize.Width, imageSize.Height, overlayPosition, minX, minY);
         }

@@ -7,34 +7,26 @@ using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public sealed class WindowInfoManager
-        : IEnumerable<WindowInfo>
+    public sealed class WindowInfoManager : IEnumerable<WindowInfo>
     {
-        #region Constructors
-
+        #region Public Constructors
         public WindowInfoManager()
         {
             WindowInfoManager.Instance = this;
         }
-
         #endregion
 
         #region Constant Declarations
-
         private static volatile WindowInfoManager Instance;
         private static readonly object syncObject = new object();
         private static volatile Dictionary<IntPtr, WindowInfo> items = new Dictionary<IntPtr, WindowInfo>();
-
         #endregion
 
         #region Declarations
-
         private Task checkApplicationProcessesTask;
-
         #endregion
 
         #region Properties
-
         private Dictionary<IntPtr, WindowInfo> Items
         {
             get
@@ -49,7 +41,10 @@ namespace theDiary.Tools.HideMyWindow
         /// </summary>
         public int Count
         {
-            get { return this.Items.Count; }
+            get
+            {
+                return this.Items.Count;
+            }
         }
 
         public WindowInfo this[IntPtr handle]
@@ -68,7 +63,10 @@ namespace theDiary.Tools.HideMyWindow
 
         private bool CanCheckProcesses
         {
-            get { return this.Count > 0; }
+            get
+            {
+                return this.Count > 0;
+            }
         }
 
         private bool Running
@@ -80,10 +78,14 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
+        public WindowInfo LastWindow
+        {
+            get;
+            private set;
+        }
         #endregion
 
         #region Methods & Functions
-
         public event WindowEventHandler Registered;
         public event WindowEventHandler UnRegistered;
 
@@ -138,17 +140,20 @@ namespace theDiary.Tools.HideMyWindow
             {
                 lock (WindowInfoManager.syncObject)
                 {
-                    if (!window.IsValid || WindowInfoManager.items.ContainsKey(window.Handle))
+                    if (!window.IsValid
+                        || WindowInfoManager.items.ContainsKey(window.Handle))
                         return false;
 
                     WindowInfoManager.items.Add(window.Handle, window);
-                    //Task task = Task.Run(() =>
-                    //{
-                    window.Shown += this.Window_Shown;
-                    Runtime.Instance.Store.Add(window.Handle);
-                    if (this.Registered != null)
-                        this.Registered(this, new WindowInfoEventArgs(window));
-                    //});
+
+                    Task.Run(() =>
+                             {
+                                 this.LastWindow = window;
+                                 window.Shown += this.Window_Shown;
+                                 Runtime.Instance.Store.Add(window.Handle);
+                                 if (this.Registered != null)
+                                     this.Registered(this, new WindowInfoEventArgs(window));
+                             });
                     return true;
                 }
             }
@@ -172,13 +177,13 @@ namespace theDiary.Tools.HideMyWindow
                     if (WindowInfoManager.items.ContainsKey(window.Handle)
                         && WindowInfoManager.items.Remove(window.Handle))
                     {
-                        //Task task = Task.Run(() =>
-                        //{
-                        window.Shown -= this.Window_Shown;
-                        Runtime.Instance.Store.Remove(window.Handle);
-                        if (this.UnRegistered != null)
-                            this.UnRegistered(this, new WindowInfoEventArgs(window));
-                        //});
+                        Task task = Task.Run(() =>
+                                             {
+                                                 window.Shown -= this.Window_Shown;
+                                                 Runtime.Instance.Store.Remove(window.Handle);
+                                                 if (this.UnRegistered != null)
+                                                     this.UnRegistered(this, new WindowInfoEventArgs(window));
+                                             });
 
                         return true;
                     }
@@ -203,15 +208,18 @@ namespace theDiary.Tools.HideMyWindow
                 return;
 
             this.checkApplicationProcessesTask = Task.Run(() =>
-            {
-                Thread.CurrentThread.Name = "HideMyWindow:CheckWindowProcesses";
-                while (this.CanCheckProcesses)
-                {
-                    IntPtr[] handles = this.Items.Keys.ToArray();
-                    handles.AsParallel().ForAll(handle => this.CheckWindowProcess(handle));
-                    Thread.Sleep(100);
-                }
-            });
+                                                          {
+                                                              Thread.CurrentThread.Name =
+                                                                  "HideMyWindow:CheckWindowProcesses";
+                                                              while (this.CanCheckProcesses)
+                                                              {
+                                                                  IntPtr[] handles = this.Items.Keys.ToArray();
+                                                                  handles.AsParallel()
+                                                                         .ForAll(
+                                                                             handle => this.CheckWindowProcess(handle));
+                                                                  Thread.Sleep(100);
+                                                              }
+                                                          });
         }
 
         private void CheckWindowProcess(IntPtr handle)
@@ -225,11 +233,9 @@ namespace theDiary.Tools.HideMyWindow
         {
             return WindowInfoManager.Instance[handle];
         }
-
         #endregion
 
         #region Interface Implementations
-
         public IEnumerator<WindowInfo> GetEnumerator()
         {
             return this.Items.Values.GetEnumerator();
@@ -239,7 +245,6 @@ namespace theDiary.Tools.HideMyWindow
         {
             return this.Items.Values.GetEnumerator();
         }
-
         #endregion
     }
 }

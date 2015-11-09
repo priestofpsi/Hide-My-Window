@@ -7,14 +7,11 @@ namespace theDiary.Tools.HideMyWindow
     public partial class Runtime
     {
         #region Constant Declarations
-
         private static volatile Runtime instance;
         private static readonly object syncObject = new object();
-
         #endregion
 
         #region Properties
-
         public static Runtime Instance
         {
             get
@@ -28,7 +25,6 @@ namespace theDiary.Tools.HideMyWindow
                 }
             }
         }
-
         #endregion
     }
 }

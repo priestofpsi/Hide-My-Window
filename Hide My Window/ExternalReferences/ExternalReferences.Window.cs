@@ -13,10 +13,24 @@ namespace theDiary.Tools.HideMyWindow
     {
         #region Constant Declarations
         internal const int WM_SETICON = 0x80;
-        internal const int ICON_SMALL = 0, ICON_BIG = 1;
 
+        internal const int ICON_SMALL = 0,
+                           ICON_BIG = 1;
+
+        internal const int GWL_STYLE = -16,
+                           GWL_EXSTYLE = -20;
+
+        internal const long WS_VISIBLE = 0x10000000,
+                            WS_MAXIMIZE = 0x01000000,
+                            WS_BORDER = 0x00800000,
+                            WS_CHILD = 0x40000000,
+                            WS_EX_APPWINDOW = 0x00040000,
+                            WS_EX_TOOLWINDOW = 0x00000080;
+        #endregion
+
+        #region Methods & Functions
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern bool SetWindowText(IntPtr hwnd, String lpString);
+        public static extern bool SetWindowText(IntPtr hwnd, string lpString);
 
         public static void RestoreWindowText(this WindowInfo window)
         {
@@ -27,35 +41,23 @@ namespace theDiary.Tools.HideMyWindow
         {
             ExternalReferences.SetWindowText(window.Handle, text);
         }
+
         public static void SetWindowText(this WindowInfo window, string prefix, string suffix)
         {
-            ExternalReferences.SetWindowText(window.Handle, string.Format("{0}{2}{1}", prefix, suffix, window.OriginalTitle));
+            ExternalReferences.SetWindowText(window.Handle,
+                string.Format("{0}{2}{1}", prefix, suffix, window.OriginalTitle));
         }
 
         public static void SetWindowIcon(this WindowInfo window, Icon icon)
         {
-            ExternalReferences.SendMessage(window.Handle, ExternalReferences.WM_SETICON,
-                        ExternalReferences.ICON_SMALL, icon.Handle);
-            ExternalReferences.SendMessage(window.Handle, ExternalReferences.WM_SETICON,
-                ExternalReferences.ICON_BIG, icon.Handle);
+            ExternalReferences.SendMessage(window.Handle, ExternalReferences.WM_SETICON, ExternalReferences.ICON_SMALL,
+                icon.Handle);
+            ExternalReferences.SendMessage(window.Handle, ExternalReferences.WM_SETICON, ExternalReferences.ICON_BIG,
+                icon.Handle);
         }
 
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hwnd, int message, int wParam, IntPtr lParam);
-
-        internal const int GWL_STYLE = -16,
-            GWL_EXSTYLE = -20;
-
-        internal const long WS_VISIBLE = 0x10000000,
-            WS_MAXIMIZE = 0x01000000,
-            WS_BORDER = 0x00800000,
-            WS_CHILD = 0x40000000,
-            WS_EX_APPWINDOW = 0x00040000,
-            WS_EX_TOOLWINDOW = 0x00000080;
-
-        #endregion
-
-        #region Methods & Functions
 
         private static WindowPlacement GetPlacement(IntPtr hwnd)
         {
@@ -67,9 +69,7 @@ namespace theDiary.Tools.HideMyWindow
 
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetWindowPlacement(
-            IntPtr hWnd, ref WindowPlacement lpwndpl);
-
+        internal static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
 
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
@@ -126,18 +126,14 @@ namespace theDiary.Tools.HideMyWindow
         internal static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
         {
             if (IntPtr.Size == 4)
-            {
                 return ExternalReferences.SetWindowLongPtr32(hWnd, nIndex, dwNewLong);
-            }
             return ExternalReferences.SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
         }
 
         internal static IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
         {
             if (IntPtr.Size == 4)
-            {
                 return ExternalReferences.GetWindowLongPtr32(hWnd, nIndex);
-            }
             return ExternalReferences.GetWindowLongPtr64(hWnd, nIndex);
         }
 
@@ -155,11 +151,11 @@ namespace theDiary.Tools.HideMyWindow
             uint processId;
             uint callResult = ExternalReferences.GetWindowThreadProcessId(hWnd, out processId);
             Process returnValue = Process.GetProcessById((int) processId);
+
             //returnValue.EnableRaisingEvents = true;
 
             return returnValue;
         }
-
         #endregion
     }
 }

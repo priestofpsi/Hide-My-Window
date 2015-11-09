@@ -9,17 +9,14 @@ namespace theDiary.Tools.HideMyWindow
 {
     public class WatermarkTextBox : TextBox
     {
-        #region Constructors
-
+        #region Public Constructors
         public WatermarkTextBox()
         {
             this.Initialize();
         }
-
         #endregion
 
         #region Declarations
-
         protected Color _waterMarkActiveColor; //Color of the watermark when the control has focus
         protected Color _waterMarkColor; //Color of the watermark when the control does not have focus
 
@@ -28,16 +25,17 @@ namespace theDiary.Tools.HideMyWindow
 
         private Panel waterMarkContainer; //Container to hold the watermark
         private Font waterMarkFont; //Font of the watermark
-
         #endregion
 
         #region Properties
-
         [Category("Watermark attribtues")]
         [Description("Sets the text of the watermark")]
         public string WaterMark
         {
-            get { return this._waterMarkText; }
+            get
+            {
+                return this._waterMarkText;
+            }
             set
             {
                 this._waterMarkText = value;
@@ -49,7 +47,10 @@ namespace theDiary.Tools.HideMyWindow
         [Description("When the control gaines focus, this color will be used as the watermark's forecolor")]
         public Color WaterMarkActiveForeColor
         {
-            get { return this._waterMarkActiveColor; }
+            get
+            {
+                return this._waterMarkActiveColor;
+            }
 
             set
             {
@@ -62,7 +63,10 @@ namespace theDiary.Tools.HideMyWindow
         [Description("When the control looses focus, this color will be used as the watermark's forecolor")]
         public Color WaterMarkForeColor
         {
-            get { return this._waterMarkColor; }
+            get
+            {
+                return this._waterMarkColor;
+            }
 
             set
             {
@@ -75,7 +79,10 @@ namespace theDiary.Tools.HideMyWindow
         [Description("The font used on the watermark. Default is the same as the control")]
         public Font WaterMarkFont
         {
-            get { return this.waterMarkFont; }
+            get
+            {
+                return this.waterMarkFont;
+            }
 
             set
             {
@@ -83,11 +90,9 @@ namespace theDiary.Tools.HideMyWindow
                 this.Invalidate();
             }
         }
-
         #endregion
 
         #region Methods & Functions
-
         /// <summary>
         ///     Initializes watermark properties and adds CtextBox events
         /// </summary>
@@ -127,7 +132,8 @@ namespace theDiary.Tools.HideMyWindow
         /// </summary>
         private void DrawWaterMark()
         {
-            if (this.waterMarkContainer == null && this.TextLength <= 0)
+            if (this.waterMarkContainer == null
+                && this.TextLength <= 0)
             {
                 this.waterMarkContainer = new Panel(); // Creates the new panel instance
                 this.waterMarkContainer.Paint += this.waterMarkContainer_Paint;
@@ -149,6 +155,7 @@ namespace theDiary.Tools.HideMyWindow
             this.waterMarkContainer.Height = this.Height; // Height should be the same as its parent
             this.waterMarkContainer.Width = this.Width; // same goes for width and the parent
             this.waterMarkContainer.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+
             // makes sure that it resizes with the parent control
 
             if (this.ContainsFocus)
@@ -165,6 +172,7 @@ namespace theDiary.Tools.HideMyWindow
             //Drawing the string into the panel
             Graphics g = e.Graphics;
             g.DrawString(this._waterMarkText, this.waterMarkFont, this.waterMarkBrush, new PointF(-2f, 1f));
+
             //Take a look at that point
             //The reason I'm using the panel at all, is because of this feature, that it has no limits
             //I started out with a label but that looked very very bad because of its paddings
@@ -216,6 +224,7 @@ namespace theDiary.Tools.HideMyWindow
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+
             //Draw the watermark even in design time
             this.DrawWaterMark();
         }
@@ -223,12 +232,13 @@ namespace theDiary.Tools.HideMyWindow
         protected override void OnInvalidated(InvalidateEventArgs e)
         {
             base.OnInvalidated(e);
+
             //Check if there is a watermark
             if (this.waterMarkContainer != null)
+
                 //if there is a watermark it should also be invalidated();
                 this.waterMarkContainer.Invalidate();
         }
-
         #endregion
     }
 }

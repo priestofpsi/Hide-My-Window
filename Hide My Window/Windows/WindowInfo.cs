@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Automation;
 using System.Windows.Forms;
@@ -27,12 +28,11 @@ namespace theDiary.Tools.HideMyWindow
             this.Pinned += this.AddAutomationEvents;
             this.Unpinned += this.RemoveAutomationEvents;
             this.ApplicationProcess.Exited += this.ApplicationProcessExited;
-            this.originalWindowTitle = ExternalReferences.GetWindowText(this.Handle);
+            this.OriginalTitle = ExternalReferences.GetWindowText(this.Handle);
         }
         #endregion
 
         #region Declarations
-        private string originalWindowTitle;
         private readonly object syncObject = new object();
         private bool hasAutomationEvents;
         private bool hasHiddenRegistered;
@@ -119,29 +119,18 @@ namespace theDiary.Tools.HideMyWindow
 
                 this.isPinned = value;
                 if (this.isPinned)
-                {
                     this.Pinned?.Invoke(this, new WindowInfoEventArgs(this));
-                    if (Runtime.Instance.Settings.PinnedSettings.AddIconOverlay)
-                        Task.Run(()=>this.SetWindowIcon());
-                }
                 else
-                {
                     this.Unpinned?.Invoke(this, new WindowInfoEventArgs(this));
-                    if (Runtime.Instance.Settings.PinnedSettings.AddIconOverlay)
-                        Task.Run(() => this.SetWindowIcon());
-                    if (Runtime.Instance.Settings.PinnedSettings.ModifyWindowTitle)
-                        Task.Run(() => this.SetWindowText());
-                }
+                Task.Run(() => this.ApplyPinnedSettings());
             }
         }
 
         public string OriginalTitle
         {
-            get
-            {
-                return this.originalWindowTitle;
-            }
+            get;
         }
+
         public string Title
         {
             get
@@ -158,7 +147,7 @@ namespace theDiary.Tools.HideMyWindow
 
                 if (this.title == value)
                     return;
-                
+
                 this.TitleChanging?.Invoke(this, new WindowInfoEventArgs(this));
                 this.title = value;
                 this.TitleChanged?.Invoke(this, new WindowInfoEventArgs(this));
@@ -199,26 +188,53 @@ namespace theDiary.Tools.HideMyWindow
                 return this.ApplicationProcess.GetApplicationIcon();
             }
         }
+
+        /// <summary>
+        ///     Gets the window that currently is focused.
+        /// </summary>
+        /// <returns>A <see cref="WindowInfo" /> instance of the currently focused window.</returns>
+        public static WindowInfo CurrentWindow
+        {
+            get
+            {
+                return WindowInfo.Find(ExternalReferences.GetForegroundWindow());
+            }
+        }
+
+        public static IEnumerable<WindowInfo> All
+        {
+            get
+            {
+                return Runtime.Instance.WindowManager.Where(window => window.CanShow);
+            }
+        }
+
+        public static WindowInfo Last
+        {
+            get
+            {
+                if (Runtime.Instance.WindowManager.LastWindow == null)
+                    return Runtime.Instance.WindowManager.GetLastWindow();
+                return Runtime.Instance.WindowManager.LastWindow;
+            }
+        }
         #endregion
 
         #region Methods & Functions
         private void SetWindowText()
         {
-            System.Text.StringBuilder suffix = new System.Text.StringBuilder();
+            StringBuilder suffix = new StringBuilder();
             if (this.IsPinned)
                 suffix.Append("- Pinned");
             if (this.IsPasswordProtected)
                 suffix.AppendFormat("{0}Locked", suffix.Length > 0 ? ":" : "- ");
             if (suffix.Length > 0)
             {
-
                 suffix.Append(Runtime.Instance.Settings.PinnedSettings.SufixWindowText ?? string.Empty);
                 this.SetWindowText(Runtime.Instance.Settings.PinnedSettings.PrefixWindowText, suffix.ToString());
             }
             else
-            {
                 this.RestoreWindowText();
-            }
         }
 
         private void SetWindowIcon()
@@ -227,14 +243,12 @@ namespace theDiary.Tools.HideMyWindow
             {
                 if (!this.IsPinned
                     && !this.IsPasswordProtected)
-                {
                     this.RestoreWindowIcon();
-                }
                 else
                 {
                     this.hasIconOverlay = false;
                     Icon icon = this.ApplicationIcon;
-                    
+
                     if (this.IsPinned)
                     {
                         icon = icon.AddOverlay(ActionResource.tack, ImageOverlayPosition.BottomRight, 0.66);
@@ -242,7 +256,10 @@ namespace theDiary.Tools.HideMyWindow
                     }
                     if (this.IsPasswordProtected)
                     {
-                        icon = icon.AddOverlay(ActionResource.lockwindow, ImageOverlayPosition.BottomLeft, new Size((SystemInformation.FrameBorderSize.Width + SystemInformation.BorderSize.Width) * -1, 0), 0.66);
+                        icon = icon.AddOverlay(ActionResource.lockwindow, ImageOverlayPosition.BottomLeft,
+                            new Size(
+                                (SystemInformation.FrameBorderSize.Width + SystemInformation.BorderSize.Width) * -1, 0),
+                            0.66);
                         this.hasIconOverlay = true;
                     }
 
@@ -260,7 +277,7 @@ namespace theDiary.Tools.HideMyWindow
             try
             {
                 this.SetWindowIcon(this.ApplicationIcon);
-                this.SetWindowText(this.originalWindowTitle);
+                this.SetWindowText(this.OriginalTitle);
             }
             finally
             {
@@ -279,10 +296,7 @@ namespace theDiary.Tools.HideMyWindow
             this.Locking?.Invoke(this, new WindowInfoEventArgs(this));
             this.unlockWindowHandler = handler;
             this.Locked?.Invoke(this, new WindowInfoEventArgs(this));
-            if (Runtime.Instance.Settings.PinnedSettings.AddIconOverlay)
-                Task.Run(() => this.SetWindowIcon());
-            if (Runtime.Instance.Settings.PinnedSettings.ModifyWindowTitle)
-                Task.Run(() => this.SetWindowText());
+            Task.Run(() => this.ApplyPinnedSettings());
         }
 
         public void Toggle()
@@ -301,10 +315,15 @@ namespace theDiary.Tools.HideMyWindow
             this.Unlocking?.Invoke(this, new WindowInfoEventArgs(this));
             this.unlockWindowHandler = null;
             this.Unlocked?.Invoke(this, new WindowInfoEventArgs(this));
+            Task.Run(() => this.ApplyPinnedSettings());
+        }
+
+        private void ApplyPinnedSettings()
+        {
             if (Runtime.Instance.Settings.PinnedSettings.AddIconOverlay)
-                Task.Run(() => this.SetWindowIcon());
+                this.SetWindowIcon();
             if (Runtime.Instance.Settings.PinnedSettings.ModifyWindowTitle)
-                Task.Run(() => this.SetWindowText());
+                this.SetWindowText();
         }
 
         /// <summary>
@@ -315,11 +334,19 @@ namespace theDiary.Tools.HideMyWindow
         {
             if (!this.CanHide)
                 return false;
+            bool returnValue = false;
+            try
+            {
+                this.Hidding?.Invoke(this, new WindowInfoEventArgs(this));
+                Task.Run(() => returnValue = ExternalReferences.HideWindow(this)).Wait();
 
-            this.Hidding?.Invoke(this, new WindowInfoEventArgs(this));
-            bool returnValue = ExternalReferences.HideWindow(this);
-            if (returnValue)
-                this.Hidden?.Invoke(this, new WindowInfoEventArgs(this));
+                if (returnValue)
+                    this.Hidden?.Invoke(this, new WindowInfoEventArgs(this));
+            }
+            catch
+            {
+                Task.Run(() => ExternalReferences.ShowWindow(this));
+            }
             return returnValue;
         }
 
@@ -337,7 +364,7 @@ namespace theDiary.Tools.HideMyWindow
             if (this.unlockWindowHandler == null
                 || this.unlockWindowHandler(this))
             {
-                ExternalReferences.ShowWindow(this);
+                Task.Run(() => ExternalReferences.ShowWindow(this));
                 this.Shown?.Invoke(this, new WindowInfoEventArgs(this));
                 returnValue = true;
             }
@@ -471,15 +498,6 @@ namespace theDiary.Tools.HideMyWindow
             returnValue.isPinned = storeItem.IsPinned;
 
             return returnValue;
-        }
-
-        /// <summary>
-        ///     Gets the window that currently is focused.
-        /// </summary>
-        /// <returns>A <see cref="WindowInfo" /> instance of the currently focused window.</returns>
-        public static WindowInfo CurrentWindow()
-        {
-            return WindowInfo.Find(ExternalReferences.GetForegroundWindow());
         }
         #endregion
     }

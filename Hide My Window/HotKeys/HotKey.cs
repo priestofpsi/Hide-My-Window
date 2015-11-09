@@ -6,39 +6,49 @@ using System.Xml.Serialization;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public sealed class Hotkey
-        : IDisposable
+    public sealed class Hotkey : IDisposable
     {
-        public Hotkey()
-        {
-        }
+        #region Public Constructors
+        public Hotkey() {}
+        #endregion
 
+        #region Private Constructors
         private Hotkey(HotkeyFunction function, Keys hotKey, HotModifierKeys modifiers)
         {
             this.Function = function;
             this.HotKey = hotKey;
             this.ModifierKeys = modifiers;
         }
+        #endregion
+
+        #region Constant Declarations
+        public static Hotkey DefaultHideCurrentWindow = new Hotkey(HotkeyFunction.HideCurrentWindow, Keys.H,
+            HotModifierKeys.Control | HotModifierKeys.Shift);
+
+        public static Hotkey DefaultUnhideLastWindow = new Hotkey(HotkeyFunction.UnhideLastWindow, Keys.S,
+            HotModifierKeys.Control | HotModifierKeys.Shift);
+        #endregion
+
         #region Declarations
+        [XmlAttribute]
+        public HotkeyFunction Function;
 
-        [XmlAttribute] public HotkeyFunction Function;
+        [XmlAttribute]
+        public Keys HotKey;
 
-        [XmlAttribute] public Keys HotKey;
+        [XmlIgnore]
+        internal short ID;
 
-        [XmlIgnore] internal short ID;
-
-        [XmlAttribute] public HotModifierKeys ModifierKeys;
-
+        [XmlAttribute]
+        public HotModifierKeys ModifierKeys;
         #endregion
 
         #region Properties
-
         public bool IsEmpty
         {
             get
             {
-                return string.IsNullOrEmpty(this.Key)
-                       && this.ModifierKeys == 0;
+                return string.IsNullOrEmpty(this.Key) && this.ModifierKeys == 0;
             }
         }
 
@@ -72,54 +82,83 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.HotKey.ToString();
             }
-            set { this.HotKey = (Keys) Enum.Parse(typeof (Keys), value); }
+            set
+            {
+                this.HotKey = (Keys) Enum.Parse(typeof (Keys), value);
+            }
         }
 
         [XmlIgnore]
         public string HKFunction
         {
-            get { return this.Function.ToString(); }
-            set { this.Function = (HotkeyFunction) Enum.Parse(typeof (HotkeyFunction), value); }
+            get
+            {
+                return this.Function.ToString();
+            }
+            set
+            {
+                this.Function = (HotkeyFunction) Enum.Parse(typeof (HotkeyFunction), value);
+            }
         }
 
         [XmlIgnore]
         public bool Control
         {
-            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Control); }
-            set { this.ModHotFlag(value, HotModifierKeys.Control); }
+            get
+            {
+                return this.ModifierKeys.HasFlag(HotModifierKeys.Control);
+            }
+            set
+            {
+                this.ModHotFlag(value, HotModifierKeys.Control);
+            }
         }
 
         [XmlIgnore]
         public bool Alt
         {
-            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Alt); }
-            set { this.ModHotFlag(value, HotModifierKeys.Alt); }
+            get
+            {
+                return this.ModifierKeys.HasFlag(HotModifierKeys.Alt);
+            }
+            set
+            {
+                this.ModHotFlag(value, HotModifierKeys.Alt);
+            }
         }
 
         [XmlIgnore]
         public bool Shift
         {
-            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Shift); }
-            set { this.ModHotFlag(value, HotModifierKeys.Shift); }
+            get
+            {
+                return this.ModifierKeys.HasFlag(HotModifierKeys.Shift);
+            }
+            set
+            {
+                this.ModHotFlag(value, HotModifierKeys.Shift);
+            }
         }
 
         [XmlIgnore]
         public bool Win
         {
-            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Win); }
-            set { this.ModHotFlag(value, HotModifierKeys.Win); }
+            get
+            {
+                return this.ModifierKeys.HasFlag(HotModifierKeys.Win);
+            }
+            set
+            {
+                this.ModHotFlag(value, HotModifierKeys.Win);
+            }
         }
-
         #endregion
 
         #region Methods & Functions
-
         private void Dispose(bool disposing)
         {
             if (disposing)
-            {
                 this.Unregister();
-            }
         }
 
         private void ModHotFlag(bool enabled, HotModifierKeys toggleEnum)
@@ -149,27 +188,16 @@ namespace theDiary.Tools.HideMyWindow
 
         public override int GetHashCode()
         {
-            return this.Function.GetHashCode()
-                   | this.HotKey.GetHashCode()
-                   | this.Shift.GetHashCode()
-                   | this.Win.GetHashCode()
-                   | this.Alt.GetHashCode()
-                   | this.Control.GetHashCode();
+            return this.Function.GetHashCode() | this.HotKey.GetHashCode() | this.Shift.GetHashCode()
+                   | this.Win.GetHashCode() | this.Alt.GetHashCode() | this.Control.GetHashCode();
         }
-
         #endregion
 
-        public static Hotkey DefaultHideCurrentWindow = new Hotkey(HotkeyFunction.HideCurrentWindow, Keys.H,
-            HotModifierKeys.Control | HotModifierKeys.Shift);
-        public static Hotkey DefaultUnhideLastWindow = new Hotkey(HotkeyFunction.UnhideLastWindow, Keys.S,
-            HotModifierKeys.Control | HotModifierKeys.Shift);
         #region Interface Implementations
-
         public void Dispose()
         {
             this.Dispose(true);
         }
-
         #endregion
     }
 }

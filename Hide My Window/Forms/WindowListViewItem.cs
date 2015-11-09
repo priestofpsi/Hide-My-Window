@@ -5,45 +5,39 @@ using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public class WindowListViewItem
-        : ListViewItem
+    public class WindowListViewItem : ListViewItem
     {
-        #region Constructors
-
+        #region Public Constructors
         public WindowListViewItem(WindowInfo window)
         {
             this.Text = window.Title;
             this.Name = window.Key;
             this.ImageKey = window.Key;
             this.SubItems.Add(new ListViewSubItem(this, window.IsPasswordProtected ? "Yes" : "No")
-            {
-                Tag = window.IsPasswordProtected,
-                Name = "IsPasswordProtected"
-            });
+                              {
+                                  Tag = window.IsPasswordProtected,
+                                  Name = "IsPasswordProtected"
+                              });
             this.SubItems.Add(new ListViewSubItem(this, window.IsPinned ? "Yes" : "No")
-            {
-                Tag = window.IsPinned,
-                Name = "IsPinned"
-            });
+                              {
+                                  Tag = window.IsPinned,
+                                  Name = "IsPinned"
+                              });
             this.SubItems.Add(new ListViewSubItem
-            {
-                Text = window.ApplicationPathName,
-                Name = "ApplicationPathName"
-            });
+                              {
+                                  Text = window.ApplicationPathName,
+                                  Name = "ApplicationPathName"
+                              });
             this.windowHandle = window.Handle;
             this.Tag = window.Handle;
         }
-
         #endregion
 
         #region Declarations
-
         private IntPtr windowHandle;
-
         #endregion
 
         #region Properties
-
         public IntPtr WindowHandle
         {
             get
@@ -57,13 +51,14 @@ namespace theDiary.Tools.HideMyWindow
 
         public WindowInfo Window
         {
-            get { return WindowInfo.Find(this.WindowHandle); }
+            get
+            {
+                return WindowInfo.Find(this.WindowHandle);
+            }
         }
-
         #endregion
 
         #region Methods & Functions
-
         public override int GetHashCode()
         {
             return this.Window.GetHashCode();
@@ -80,7 +75,6 @@ namespace theDiary.Tools.HideMyWindow
         {
             return item.Window;
         }
-
         #endregion
     }
 }

@@ -5,15 +5,11 @@ using System.Linq;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public class IconEventArgs
-        : EventArgs
+    public class IconEventArgs : EventArgs
 
     {
-        #region Constructors
-
-        public IconEventArgs()
-        {
-        }
+        #region Public Constructors
+        public IconEventArgs() {}
 
         public IconEventArgs(Icon icon)
             : this()
@@ -23,18 +19,22 @@ namespace theDiary.Tools.HideMyWindow
 
             this.Icon = icon;
         }
-
         #endregion
 
         #region Properties
-
-        public Icon Icon { get; set; }
+        public Icon Icon
+        {
+            get;
+            set;
+        }
 
         public bool HasIcon
         {
-            get { return this.Icon != null; }
+            get
+            {
+                return this.Icon != null;
+            }
         }
-
         #endregion
     }
 }

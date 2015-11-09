@@ -6,22 +6,15 @@ namespace theDiary.Tools.HideMyWindow
 {
     public partial class Runtime
     {
-        #region Constructors
-
-        #endregion
-
         #region Declarations
-
         internal Random randomizer = new Random();
         private Settings settings;
         private HiddenWindowStore store;
 
         private volatile WindowInfoManager windowManager = new WindowInfoManager();
-
         #endregion
 
         #region Properties
-
         public Settings Settings
         {
             get
@@ -31,7 +24,10 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.settings;
             }
-            internal set { this.settings = value; }
+            internal set
+            {
+                this.settings = value;
+            }
         }
 
         public HiddenWindowStore Store
@@ -43,20 +39,23 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.store;
             }
-            internal set { this.store = value; }
+            internal set
+            {
+                this.store = value;
+            }
         }
 
         public WindowInfoManager WindowManager
         {
-            get { return this.windowManager; }
+            get
+            {
+                return this.windowManager;
+            }
         }
-
         #endregion
 
         #region Methods & Functions
-
         public event WindowEventHandler ApplicationOpened;
-
         #endregion
     }
 }

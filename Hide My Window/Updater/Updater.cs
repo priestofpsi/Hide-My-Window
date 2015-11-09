@@ -5,25 +5,19 @@ using Octokit;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public class Updater
-        : IDisposable
+    public class Updater : IDisposable
     {
         #region Constant Declarations
-
         private const string gitHubUser = "priestofpsi";
         private const string gitHubProject = "Hide-My-Window";
-
         #endregion
 
         #region Declarations
-
         private GitHubClient client;
         private bool disposedValue;
-
         #endregion
 
         #region Properties
-
         private GitHubClient Client
         {
             get
@@ -37,11 +31,9 @@ namespace theDiary.Tools.HideMyWindow
                 return this.client;
             }
         }
-
         #endregion
 
         #region Methods & Functions
-
         public event NotificationEventHandler Notification;
         public event ClientUpdatesEventHandler Updating;
 
@@ -72,7 +64,6 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-
         private GitHubClient InitializeClient()
         {
             GitHubClient returnValue = null;
@@ -87,7 +78,6 @@ namespace theDiary.Tools.HideMyWindow
             return returnValue;
         }
 
-
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposedValue)
@@ -97,34 +87,28 @@ namespace theDiary.Tools.HideMyWindow
                     // TODO: dispose managed state (managed objects).
                 }
                 this.client = null;
+
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                 // TODO: set large fields to null.
 
                 this.disposedValue = true;
             }
         }
-
         #endregion
 
         #region Interface Implementations
-
         public void Dispose()
         {
             this.Dispose(true);
         }
-
         #endregion
     }
 
-
     public delegate void ClientUpdatesEventHandler(object sender, ClientUpdatesEventArg e);
 
-
-    public class ClientUpdatesEventArg
-        : NotificationEventArgs
+    public class ClientUpdatesEventArg : NotificationEventArgs
     {
-        #region Constructors
-
+        #region Public Constructors
         public ClientUpdatesEventArg()
             : this("Checking for Updates")
         {
@@ -142,67 +126,84 @@ namespace theDiary.Tools.HideMyWindow
             : this("Finished checking for Updates")
         {
             items.AsParallel().ForAll(item =>
-            {
-                AvailableUpdate update = new AvailableUpdate(item);
-                this.items.Add(update.Date, update);
-            });
+                                      {
+                                          AvailableUpdate update = new AvailableUpdate(item);
+                                          this.items.Add(update.Date, update);
+                                      });
             this.Completed = true;
         }
+        #endregion
 
+        #region Private Constructors
         private ClientUpdatesEventArg(string message)
             : base(message)
         {
             this.items = new SortedList<DateTime, AvailableUpdate>();
         }
-
         #endregion
 
         #region Declarations
-
         private readonly SortedList<DateTime, AvailableUpdate> items;
-
         #endregion
 
         #region Properties
+        public Exception Error
+        {
+            get;
+        }
 
-        public Exception Error { get; }
-
-        public bool Completed { get; private set; }
+        public bool Completed
+        {
+            get;
+            private set;
+        }
 
         public bool Success
         {
-            get { return this.Error == null; }
+            get
+            {
+                return this.Error == null;
+            }
         }
 
         public int Count
         {
-            get { return this.items.Count; }
+            get
+            {
+                return this.items.Count;
+            }
         }
-
         #endregion
     }
 
     public class AvailableUpdate
     {
-        #region Constructors
-
+        #region Public Constructors
         public AvailableUpdate(Release releaseInfo)
         {
             this.Date = (releaseInfo.PublishedAt ?? releaseInfo.CreatedAt).LocalDateTime;
             this.Details = releaseInfo.Body;
             this.IsBeta = releaseInfo.Prerelease;
         }
-
         #endregion
 
         #region Properties
+        public DateTime Date
+        {
+            get;
+        }
 
-        public DateTime Date { get; }
+        public string Details
+        {
+            get;
+            private set;
+        }
 
-        public string Details { get; private set; }
-
-        public bool IsBeta { get; private set; }
-
+        public bool IsBeta
+        {
+            get;
+            private set;
+        }
         #endregion
     }
 }

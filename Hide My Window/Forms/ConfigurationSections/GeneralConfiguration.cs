@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
 {
-    public partial class GeneralConfiguration 
-        : UserControl, IConfigurationSection
+    public partial class GeneralConfiguration : UserControl, IConfigurationSection
     {
+        #region Public Constructors
         public GeneralConfiguration()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
+        #endregion
 
+        #region Properties
         public bool ConfigurationChanged
         {
             get
@@ -28,17 +26,20 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
 
         public string SectionName
         {
-            get { return "General"; }
+            get
+            {
+                return "General";
+            }
         }
+        #endregion
 
-        public void Activated(object sender, EventArgs e)
-        {
-            
-        }
+        #region Interface Implementations
+        public void Activated(object sender, EventArgs e) {}
 
         public void LoadConfiguration(object sender, EventArgs e)
         {
-            this.minimizeToTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "MinimizeToTaskBar"));
+            this.minimizeToTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings,
+                "MinimizeToTaskBar"));
             this.closeToTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "CloseToTaskBar"));
             this.restoreWindowsOnExit.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings,
                 "RestoreWindowsOnExit"));
@@ -54,18 +55,20 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
                 "AutoStartWithWindows"));
             this.glowPanel1.EffectColor = Runtime.Instance.Settings.PasswordIsSet ? Color.LimeGreen : Color.Firebrick;
             if (!Runtime.Instance.Settings.PasswordIsSet)
+            {
                 this.password.TextChanged += (s, e1) =>
-                {
-                    bool isSet = !string.IsNullOrWhiteSpace(this.password.Text);
-                    this.glowPanel1.EffectColor = isSet ? Color.LimeGreen : Color.Firebrick;
-                    this.password.AccessibleDescription = isSet
-                        ? "The password has been configured."
-                        : "The password has not been set.";
-                    this.glowPanel1.AccessibleDescription = isSet
-                        ? "The password has been configured."
-                        : "The password has not been set.";
-                    this.requirePasswordOnShow.Enabled = isSet;
-                };
+                                             {
+                                                 bool isSet = !string.IsNullOrWhiteSpace(this.password.Text);
+                                                 this.glowPanel1.EffectColor = isSet ? Color.LimeGreen : Color.Firebrick;
+                                                 this.password.AccessibleDescription = isSet
+                                                     ? "The password has been configured."
+                                                     : "The password has not been set.";
+                                                 this.glowPanel1.AccessibleDescription = isSet
+                                                     ? "The password has been configured."
+                                                     : "The password has not been set.";
+                                                 this.requirePasswordOnShow.Enabled = isSet;
+                                             };
+            }
             this.password.AccessibleDescription = Runtime.Instance.Settings.PasswordIsSet
                 ? "The password has been configured."
                 : "The password has not been set.";
@@ -75,14 +78,9 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
             this.clearPassword.AccessibleDescription = "Check to have your password cleared when closing.";
         }
 
-        public void ResetConfiguration(object sender, EventArgs e)
-        {
-            
-        }
+        public void ResetConfiguration(object sender, EventArgs e) {}
 
-        public void SaveConfiguration(object sender, EventArgs e)
-        {
-            
-        }
+        public void SaveConfiguration(object sender, EventArgs e) {}
+        #endregion
     }
 }

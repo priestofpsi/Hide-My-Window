@@ -7,11 +7,9 @@ namespace theDiary.Tools.HideMyWindow
     /// <summary>
     ///     Represents the class that contains details about a Notification.
     /// </summary>
-    public class NotificationEventArgs
-        : EventArgs
+    public class NotificationEventArgs : EventArgs
     {
-        #region Constructors
-
+        #region Public Constructors
         /// <summary>
         ///     Initializes a new instance of the <see cref="NotificationEventArgs" /> class with the specified
         ///     <paramref name="message" />.
@@ -26,7 +24,9 @@ namespace theDiary.Tools.HideMyWindow
             this.NotificationDate = DateTime.Now;
             this.Message = message;
         }
+        #endregion
 
+        #region Protected Constructors
         /// <summary>
         ///     Protected initialize
         /// </summary>
@@ -37,21 +37,26 @@ namespace theDiary.Tools.HideMyWindow
             this.NotificationDate = DateTime.Now;
             this.Message = message;
         }
-
         #endregion
 
         #region Properties
-
         /// <summary>
         ///     Gets the <see cref="DateTime" /> that the notification was raised.
         /// </summary>
-        public DateTime NotificationDate { get; protected set; }
+        public DateTime NotificationDate
+        {
+            get;
+            protected set;
+        }
 
         /// <summary>
         ///     Gets the message describing the raised notification.
         /// </summary>
-        public string Message { get; protected set; }
-
+        public string Message
+        {
+            get;
+            protected set;
+        }
         #endregion
     }
 }

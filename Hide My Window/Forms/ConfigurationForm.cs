@@ -8,8 +8,7 @@ namespace theDiary.Tools.HideMyWindow
 {
     public partial class ConfigurationForm : Form
     {
-        #region Constructors
-
+        #region Public Constructors
         public ConfigurationForm()
         {
             this.InitializeComponent();
@@ -36,72 +35,90 @@ namespace theDiary.Tools.HideMyWindow
             this.hotKeyMimicTextBox2.HotKey =
                 Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.UnhideLastWindow);
             this.hotKeyMimicTextBox3.HotKey =
-                Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.HideAllWindows);
+                Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.ToggleLastWindow);
             this.hotKeyMimicTextBox4.HotKey =
                 Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.UnhideAllWindows);
             this.hotKeyMimicTextBox1.HotKeyChanged += (s, e) =>
-            {
-                if (!Runtime.Instance.Settings.Hotkey.Contains(this.hotKeyMimicTextBox1.HotKey))
-                {
-                    Runtime.Instance.Settings.Hotkey.Add(this.hotKeyMimicTextBox1.HotKey);
-                }
-                else
-                {
-                    Runtime.Instance.Settings.Hotkey[0] = this.hotKeyMimicTextBox1.HotKey;
-                }
-                this.hotkeysChanged = true;
-            };
+                                                      {
+                                                          if (
+                                                              !Runtime.Instance.Settings.Hotkey.Contains(
+                                                                  this.hotKeyMimicTextBox1.HotKey))
+                                                          {
+                                                              Runtime.Instance.Settings.Hotkey.Add(
+                                                                  this.hotKeyMimicTextBox1.HotKey);
+                                                          }
+                                                          else
+                                                          {
+                                                              Runtime.Instance.Settings.Hotkey[0] =
+                                                                  this.hotKeyMimicTextBox1.HotKey;
+                                                          }
+                                                          this.hotkeysChanged = true;
+                                                      };
             this.hotKeyMimicTextBox2.HotKeyChanged += (s, e) =>
-            {
-                if (!Runtime.Instance.Settings.Hotkey.Contains(this.hotKeyMimicTextBox2.HotKey))
-                {
-                    Runtime.Instance.Settings.Hotkey.Add(this.hotKeyMimicTextBox2.HotKey);
-                }
-                else
-                {
-                    Runtime.Instance.Settings.Hotkey[1] = this.hotKeyMimicTextBox2.HotKey;
-                }
-                this.hotkeysChanged = true;
-            };
+                                                      {
+                                                          if (
+                                                              !Runtime.Instance.Settings.Hotkey.Contains(
+                                                                  this.hotKeyMimicTextBox2.HotKey))
+                                                          {
+                                                              Runtime.Instance.Settings.Hotkey.Add(
+                                                                  this.hotKeyMimicTextBox2.HotKey);
+                                                          }
+                                                          else
+                                                          {
+                                                              Runtime.Instance.Settings.Hotkey[1] =
+                                                                  this.hotKeyMimicTextBox2.HotKey;
+                                                          }
+                                                          this.hotkeysChanged = true;
+                                                      };
             this.hotKeyMimicTextBox3.HotKeyChanged += (s, e) =>
-            {
-                if (!Runtime.Instance.Settings.Hotkey.Contains(this.hotKeyMimicTextBox3.HotKey))
-                {
-                    Runtime.Instance.Settings.Hotkey.Add(this.hotKeyMimicTextBox3.HotKey);
-                }
-                else
-                {
-                    Runtime.Instance.Settings.Hotkey[0] = this.hotKeyMimicTextBox3.HotKey;
-                }
-                this.hotkeysChanged = true;
-            };
+                                                      {
+                                                          if (
+                                                              !Runtime.Instance.Settings.Hotkey.Contains(
+                                                                  this.hotKeyMimicTextBox3.HotKey))
+                                                          {
+                                                              Runtime.Instance.Settings.Hotkey.Add(
+                                                                  this.hotKeyMimicTextBox3.HotKey);
+                                                          }
+                                                          else
+                                                          {
+                                                              Runtime.Instance.Settings.Hotkey[0] =
+                                                                  this.hotKeyMimicTextBox3.HotKey;
+                                                          }
+                                                          this.hotkeysChanged = true;
+                                                      };
             this.hotKeyMimicTextBox4.HotKeyChanged += (s, e) =>
-            {
-                if (!Runtime.Instance.Settings.Hotkey.Contains(this.hotKeyMimicTextBox4.HotKey))
-                {
-                    Runtime.Instance.Settings.Hotkey.Add(this.hotKeyMimicTextBox4.HotKey);
-                }
-                else
-                {
-                    Runtime.Instance.Settings.Hotkey[0] = this.hotKeyMimicTextBox4.HotKey;
-                }
-                this.hotkeysChanged = true;
-            };
+                                                      {
+                                                          if (
+                                                              !Runtime.Instance.Settings.Hotkey.Contains(
+                                                                  this.hotKeyMimicTextBox4.HotKey))
+                                                          {
+                                                              Runtime.Instance.Settings.Hotkey.Add(
+                                                                  this.hotKeyMimicTextBox4.HotKey);
+                                                          }
+                                                          else
+                                                          {
+                                                              Runtime.Instance.Settings.Hotkey[0] =
+                                                                  this.hotKeyMimicTextBox4.HotKey;
+                                                          }
+                                                          this.hotkeysChanged = true;
+                                                      };
 
             this.glowPanel1.EffectColor = Runtime.Instance.Settings.PasswordIsSet ? Color.LimeGreen : Color.Firebrick;
             if (!Runtime.Instance.Settings.PasswordIsSet)
+            {
                 this.password.TextChanged += (s, e) =>
-                {
-                    bool isSet = !string.IsNullOrWhiteSpace(this.password.Text);
-                    this.glowPanel1.EffectColor = isSet ? Color.LimeGreen : Color.Firebrick;
-                    this.password.AccessibleDescription = isSet
-                        ? "The password has been configured."
-                        : "The password has not been set.";
-                    this.glowPanel1.AccessibleDescription = isSet
-                        ? "The password has been configured."
-                        : "The password has not been set.";
-                    this.requirePasswordOnShow.Enabled = isSet;
-                };
+                                             {
+                                                 bool isSet = !string.IsNullOrWhiteSpace(this.password.Text);
+                                                 this.glowPanel1.EffectColor = isSet ? Color.LimeGreen : Color.Firebrick;
+                                                 this.password.AccessibleDescription = isSet
+                                                     ? "The password has been configured."
+                                                     : "The password has not been set.";
+                                                 this.glowPanel1.AccessibleDescription = isSet
+                                                     ? "The password has been configured."
+                                                     : "The password has not been set.";
+                                                 this.requirePasswordOnShow.Enabled = isSet;
+                                             };
+            }
             this.password.AccessibleDescription = Runtime.Instance.Settings.PasswordIsSet
                 ? "The password has been configured."
                 : "The password has not been set.";
@@ -110,41 +127,34 @@ namespace theDiary.Tools.HideMyWindow
                 : "The password has not been set.";
             this.clearPassword.AccessibleDescription = "Check to have your password cleared when closing.";
             this.FormClosing += (s, e) =>
-            {
-                if (this.password.ClearPassword)
-                {
-                    Runtime.Instance.Settings.HashedPassword = string.Empty;
-                }
-                else if (this.password.Password != string.Empty)
-                {
-                    Runtime.Instance.Settings.HashedPassword = this.password.Password;
-                }
-                ExternalReferences.RegisterAll();
-            };
+                                {
+                                    if (this.password.ClearPassword)
+                                        Runtime.Instance.Settings.HashedPassword = string.Empty;
+                                    else if (this.password.Password != string.Empty)
+                                        Runtime.Instance.Settings.HashedPassword = this.password.Password;
+                                    ExternalReferences.RegisterAll();
+                                };
             this.InitializeToolTips(null);
         }
-
         #endregion
 
         #region Declarations
-
         private bool hotkeysChanged;
 
         private Updater updater;
-
         #endregion
 
         #region Properties
-
         public TabPage ActivePage
         {
-            get { return this.tabControl.SelectedTab; }
+            get
+            {
+                return this.tabControl.SelectedTab;
+            }
         }
-
         #endregion
 
         #region Methods & Functions
-
         private void InitializeToolTips(Control.ControlCollection container)
         {
             if (container == null)
@@ -159,9 +169,7 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        private void tabControl_Selected(object sender, TabControlEventArgs e)
-        {
-        }
+        private void tabControl_Selected(object sender, TabControlEventArgs e) {}
 
         private void password_TextChanged(object sender, EventArgs e)
         {
@@ -183,31 +191,30 @@ namespace theDiary.Tools.HideMyWindow
             using (this.updater = new Updater())
             {
                 this.updater.Notification +=
-                    (s, ne) =>
-                        this.listBox1.Items.Add(string.Format("[{0}]\t{1}", ne.NotificationDate, ne.Message));
-                this.updater.Updating +=
-                    (s, ne) =>
-                    {
-                        this.listBox1.Items.Add(string.Format("[{0}]\t{1}", ne.NotificationDate, ne.Message));
-                        if (ne.Completed)
-                        {
-                            if (ne.Success)
-                            {
-                                this.listBox1.Items.Add(string.Format("[{0}]\t{1} Updates available.",
-                                    ne.NotificationDate, ne.Count));
-                            }
-                            else
-                            {
-                                this.listBox1.Items.Add(string.Format("[{0}]\tError: {1}", ne.NotificationDate,
-                                    ne.Error.Message));
-                            }
-                        }
-                    };
+                    (s, ne) => this.listBox1.Items.Add(string.Format("[{0}]\t{1}", ne.NotificationDate, ne.Message));
+                this.updater.Updating += (s, ne) =>
+                                         {
+                                             this.listBox1.Items.Add(string.Format("[{0}]\t{1}", ne.NotificationDate,
+                                                 ne.Message));
+                                             if (ne.Completed)
+                                             {
+                                                 if (ne.Success)
+                                                 {
+                                                     this.listBox1.Items.Add(
+                                                         string.Format("[{0}]\t{1} Updates available.",
+                                                             ne.NotificationDate, ne.Count));
+                                                 }
+                                                 else
+                                                 {
+                                                     this.listBox1.Items.Add(string.Format("[{0}]\tError: {1}",
+                                                         ne.NotificationDate, ne.Error.Message));
+                                                 }
+                                             }
+                                         };
 
                 this.updater.GetAvailableUpdates();
             }
         }
-
         #endregion
     }
 }

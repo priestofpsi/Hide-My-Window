@@ -6,14 +6,10 @@ namespace theDiary.Tools.HideMyWindow
 {
     public delegate void FileEventHandler(object sender, FileEventArgs e);
 
-    public class FileEventArgs
-        : EventArgs
+    public class FileEventArgs : EventArgs
     {
-        #region Constructors
-
-        public FileEventArgs()
-        {
-        }
+        #region Public Constructors
+        public FileEventArgs() {}
 
         public FileEventArgs(string fileName)
             : this()
@@ -27,14 +23,19 @@ namespace theDiary.Tools.HideMyWindow
             this.FileName = fileName;
             this.Event = @event;
         }
-
         #endregion
 
         #region Properties
+        public string FileName
+        {
+            get;
+            private set;
+        }
 
-        public string FileName { get; private set; }
-
-        public FileEventTypes Event { get; }
+        public FileEventTypes Event
+        {
+            get;
+        }
 
         public string EventText
         {
@@ -46,7 +47,6 @@ namespace theDiary.Tools.HideMyWindow
                 return this.Event.ToString();
             }
         }
-
         #endregion
     }
 

@@ -4,18 +4,16 @@ using System.Linq;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public class WindowInfoEventArgs
-        : EventArgs
+    public class WindowInfoEventArgs : EventArgs
     {
-        #region Constructors
-
+        #region Public Constructors
         /// <summary>
         ///     Initializes a new instance of the <see cref="WindowInfoEventArgs" /> class.
         /// </summary>
-        public WindowInfoEventArgs()
-        {
-        }
+        public WindowInfoEventArgs() {}
+        #endregion
 
+        #region Internal Constructors
         internal WindowInfoEventArgs(WindowInfo window)
         {
             this.Window = window;
@@ -25,25 +23,34 @@ namespace theDiary.Tools.HideMyWindow
             if (window.IsPinned)
                 this.State |= WindowStates.Pinned;
         }
-
         #endregion
 
         #region Properties
-
         public IntPtr Handle
         {
-            get { return this.Window.Handle; }
+            get
+            {
+                return this.Window.Handle;
+            }
         }
 
         public int ProcessId
         {
-            get { return this.Window.ApplicationId; }
+            get
+            {
+                return this.Window.ApplicationId;
+            }
         }
 
-        public WindowStates State { get; }
+        public WindowStates State
+        {
+            get;
+        }
 
-        public WindowInfo Window { get; }
-
+        public WindowInfo Window
+        {
+            get;
+        }
         #endregion
     }
 }

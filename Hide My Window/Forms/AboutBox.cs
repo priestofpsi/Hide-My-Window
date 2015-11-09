@@ -9,8 +9,7 @@ namespace theDiary.Tools.HideMyWindow
 {
     partial class AboutBox : Form
     {
-        #region Constructors
-
+        #region Public Constructors
         public AboutBox()
         {
             this.InitializeComponent();
@@ -21,24 +20,20 @@ namespace theDiary.Tools.HideMyWindow
             this.labelCompanyName.Text = this.AssemblyCompany;
             this.textBoxDescription.Text = this.AssemblyDescription;
         }
-
         #endregion
 
         #region Properties
-
         public string AssemblyTitle
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly()
-                    .GetCustomAttributes(typeof (AssemblyTitleAttribute), false);
+                object[] attributes =
+                    Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyTitleAttribute), false);
                 if (attributes.Length > 0)
                 {
                     AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute) attributes[0];
                     if (titleAttribute.Title != "")
-                    {
                         return titleAttribute.Title;
-                    }
                 }
                 return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
             }
@@ -46,7 +41,10 @@ namespace theDiary.Tools.HideMyWindow
 
         public string AssemblyVersion
         {
-            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+            get
+            {
+                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            }
         }
 
         public string AssemblyDescription
@@ -56,9 +54,7 @@ namespace theDiary.Tools.HideMyWindow
                 object[] attributes =
                     Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyDescriptionAttribute), false);
                 if (attributes.Length == 0)
-                {
                     return "";
-                }
                 return ((AssemblyDescriptionAttribute) attributes[0]).Description;
             }
         }
@@ -67,12 +63,10 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly()
-                    .GetCustomAttributes(typeof (AssemblyProductAttribute), false);
+                object[] attributes =
+                    Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyProductAttribute), false);
                 if (attributes.Length == 0)
-                {
                     return "";
-                }
                 return ((AssemblyProductAttribute) attributes[0]).Product;
             }
         }
@@ -81,12 +75,10 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly()
-                    .GetCustomAttributes(typeof (AssemblyCopyrightAttribute), false);
+                object[] attributes =
+                    Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyCopyrightAttribute), false);
                 if (attributes.Length == 0)
-                {
                     return "";
-                }
                 return ((AssemblyCopyrightAttribute) attributes[0]).Copyright;
             }
         }
@@ -95,16 +87,13 @@ namespace theDiary.Tools.HideMyWindow
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly()
-                    .GetCustomAttributes(typeof (AssemblyCompanyAttribute), false);
+                object[] attributes =
+                    Assembly.GetExecutingAssembly().GetCustomAttributes(typeof (AssemblyCompanyAttribute), false);
                 if (attributes.Length == 0)
-                {
                     return "";
-                }
                 return ((AssemblyCompanyAttribute) attributes[0]).Company;
             }
         }
-
         #endregion
     }
 }

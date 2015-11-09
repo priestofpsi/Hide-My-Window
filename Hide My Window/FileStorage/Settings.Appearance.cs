@@ -11,24 +11,19 @@ namespace theDiary.Tools.HideMyWindow
     public partial class Settings
     {
         #region Constant Declarations
-
         private static readonly Icon DefaultApplicationIcon =
             new Icon(
                 typeof (Settings).Assembly.GetManifestResourceStream(
                     "theDiary.Tools.HideMyWindow.Resources.application.ico"));
-
         #endregion
 
         #region Declarations
-
         private Icon applicationIcon;
 
         private string applicationIconPath;
-
         #endregion
 
         #region Properties
-
         public Icon ApplicationIcon
         {
             get
@@ -47,7 +42,10 @@ namespace theDiary.Tools.HideMyWindow
 
         public string ApplicationIconPath
         {
-            get { return this.applicationIconPath; }
+            get
+            {
+                return this.applicationIconPath;
+            }
             set
             {
                 if (this.applicationIconPath == value)
@@ -58,11 +56,9 @@ namespace theDiary.Tools.HideMyWindow
                     this.ApplicationIconChanged(this, new IconEventArgs(this.ApplicationIcon));
             }
         }
-
         #endregion
 
         #region Methods & Functions
-
         public void ClearIcon()
         {
             this.ApplicationIconPath = null;
@@ -77,15 +73,17 @@ namespace theDiary.Tools.HideMyWindow
 
             string iconFileName = Path.GetFileName(iconPath);
             if (!IsolatedStorageFile.GetUserStoreForAssembly().FileExists(iconFileName)
-                || (this.ConfirmIconOverride != null
-                    && this.ConfirmIconOverride(this,
-                        new MessageBoxEventArgs
-                        {
-                            Text = "Replace existing application Icon?",
-                            Caption = "Replace Application Icon",
-                            Buttons = MessageBoxButtons.YesNo,
-                            CancelResult = DialogResult.No
-                        })))
+                || (this.ConfirmIconOverride != null && this.ConfirmIconOverride(this, new MessageBoxEventArgs
+                                                                                       {
+                                                                                           Text =
+                                                                                               "Replace existing application Icon?",
+                                                                                           Caption =
+                                                                                               "Replace Application Icon",
+                                                                                           Buttons =
+                                                                                               MessageBoxButtons.YesNo,
+                                                                                           CancelResult =
+                                                                                               DialogResult.No
+                                                                                       })))
             {
                 IsolatedStorageFile.GetUserStoreForAssembly().CopyFile(iconPath, iconFileName);
                 this.ApplicationIconPath = iconPath;
@@ -95,7 +93,6 @@ namespace theDiary.Tools.HideMyWindow
         public event EventHandler<IconEventArgs> ApplicationIconChanged;
 
         public event MessageBoxHandler ConfirmIconOverride;
-
         #endregion
     }
 }

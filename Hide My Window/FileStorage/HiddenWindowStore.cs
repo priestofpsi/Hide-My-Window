@@ -6,72 +6,83 @@ using System.Xml.Serialization;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public class HiddenWindowStore
-        : IIsolatedStorageFile,
-            IList<WindowsStoreItem>
+    public class HiddenWindowStore : IIsolatedStorageFile, IList<WindowsStoreItem>
     {
-        #region Constructors
-
+        #region Public Constructors
         public HiddenWindowStore()
         {
             this.Added += this.Items_Added;
             this.Removed += this.Items_Removed;
         }
-
         #endregion
 
         #region Constant Declarations
-
-        [XmlIgnore] internal static string StorageFileName = "WindowStore.xml";
-
+        [XmlIgnore]
+        internal static string StorageFileName = "WindowStore.xml";
         #endregion
 
         #region Declarations
-
         private readonly List<WindowsStoreItem> items = new List<WindowsStoreItem>();
 
         private bool running;
-
         #endregion
 
         #region Properties
-
         public int Count
         {
-            get { return this.items.Count; }
+            get
+            {
+                return this.items.Count;
+            }
         }
 
         bool ICollection<WindowsStoreItem>.IsReadOnly
         {
-            get { return false; }
+            get
+            {
+                return false;
+            }
         }
 
         public WindowsStoreItem this[int index]
         {
-            get { return this.items[index]; }
+            get
+            {
+                return this.items[index];
+            }
 
-            set { this.items[index] = value; }
+            set
+            {
+                this.items[index] = value;
+            }
         }
 
         private bool CanCheckProcesses
         {
-            get { return this.items.ToArray().Length > 0; }
+            get
+            {
+                return this.items.ToArray().Length > 0;
+            }
         }
 
         public WindowsStoreItem this[IntPtr handle]
         {
-            get { return this.items.FirstOrDefault(item => item.Handle == handle); }
+            get
+            {
+                return this.items.FirstOrDefault(item => item.Handle == handle);
+            }
         }
 
         public WindowsStoreItem this[WindowInfo window]
         {
-            get { return this[window.Handle]; }
+            get
+            {
+                return this[window.Handle];
+            }
         }
-
         #endregion
 
         #region Methods & Functions
-
         public static event FileEventHandler FileNotification;
 
         private void Items_Removed(object sender, EventArgs e)
@@ -163,11 +174,9 @@ namespace theDiary.Tools.HideMyWindow
         {
             this.items.ForEach(item => action(item.Handle));
         }
-
         #endregion
 
         #region Interface Implementations
-
         public event NotificationEventHandler Notification;
 
         public void Save()
@@ -262,7 +271,6 @@ namespace theDiary.Tools.HideMyWindow
         {
             return this.items.GetEnumerator();
         }
-
         #endregion
     }
 }

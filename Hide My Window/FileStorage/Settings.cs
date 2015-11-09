@@ -8,11 +8,9 @@ using Microsoft.Win32;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public partial class Settings
-        : IIsolatedStorageFile
+    public partial class Settings : IIsolatedStorageFile
     {
-        #region Constructors
-
+        #region Public Constructors
         /// <summary>
         ///     Initializes a new instance of the <see cref="Settings" /> class.
         /// </summary>
@@ -20,42 +18,45 @@ namespace theDiary.Tools.HideMyWindow
         {
             this.Hotkey = new HotKeyBindingList();
         }
-
         #endregion
 
         #region Constant Declarations
-
         private const string StorageFileName = "Settings.xml";
 
         private const string RegistryStartPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
 
         private static bool failedToLoad = false;
-
         #endregion
 
         #region Declarations
-
         private bool autoStartWithWindows;
         public HotKeyBindingList hotkeys;
         private FormState lastState;
 
         private PinnedApplicationSettings pinnedSettings;
-
         #endregion
 
         #region Properties
-
         [XmlElement]
         public HotKeyBindingList Hotkey
         {
-            get { return this.hotkeys; }
-            set { this.hotkeys = value; }
+            get
+            {
+                return this.hotkeys;
+            }
+            set
+            {
+                this.hotkeys = value;
+            }
         }
 
         [XmlAttribute]
         public bool AutoStartWithWindows
         {
-            get { return this.autoStartWithWindows; }
+            get
+            {
+                return this.autoStartWithWindows;
+            }
             set
             {
                 if (this.autoStartWithWindows == value)
@@ -66,26 +67,53 @@ namespace theDiary.Tools.HideMyWindow
         }
 
         [XmlAttribute]
-        public View CurrentView { get; set; }
+        public View CurrentView
+        {
+            get;
+            set;
+        }
 
         [XmlAttribute]
-        public bool HideStatusbar { get; set; }
+        public bool HideStatusbar
+        {
+            get;
+            set;
+        }
 
         [XmlAttribute]
-        public bool StartInTaskBar { get; set; }
+        public bool StartInTaskBar
+        {
+            get;
+            set;
+        }
 
         [XmlAttribute]
-        public bool MinimizeToTaskBar { get; set; }
+        public bool MinimizeToTaskBar
+        {
+            get;
+            set;
+        }
 
         [XmlAttribute]
-        public bool CloseToTaskBar { get; set; }
+        public bool CloseToTaskBar
+        {
+            get;
+            set;
+        }
 
         [XmlAttribute]
-        public bool RestoreWindowsOnExit { get; set; }
+        public bool RestoreWindowsOnExit
+        {
+            get;
+            set;
+        }
 
         [XmlAttribute]
-        public bool ConfirmApplicationExit { get; set; }
-
+        public bool ConfirmApplicationExit
+        {
+            get;
+            set;
+        }
 
         [XmlElement]
         public FormState LastState
@@ -97,28 +125,48 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.lastState;
             }
-            set { this.lastState = value; }
+            set
+            {
+                this.lastState = value;
+            }
         }
-
 
         [XmlIgnore]
         public bool PasswordIsSet
         {
-            get { return !string.IsNullOrWhiteSpace(this.Password); }
+            get
+            {
+                return !string.IsNullOrWhiteSpace(this.Password);
+            }
         }
 
         [XmlElement]
-        public bool RequirePasswordOnShow { get; set; }
-
+        public bool RequirePasswordOnShow
+        {
+            get;
+            set;
+        }
 
         [XmlElement]
-        public string Password { get; set; }
+        public string Password
+        {
+            get;
+            set;
+        }
 
         [XmlAttribute]
-        public bool SmallToolbarIcons { get; set; }
+        public bool SmallToolbarIcons
+        {
+            get;
+            set;
+        }
 
         [XmlAttribute]
-        public bool HideToolbarText { get; set; }
+        public bool HideToolbarText
+        {
+            get;
+            set;
+        }
 
         [XmlIgnore]
         public string HashedPassword
@@ -126,13 +174,9 @@ namespace theDiary.Tools.HideMyWindow
             set
             {
                 if (string.IsNullOrEmpty(value))
-                {
                     this.Password = string.Empty;
-                }
                 else
-                {
                     this.Password = value.GetMD5Hash();
-                }
             }
         }
 
@@ -145,22 +189,28 @@ namespace theDiary.Tools.HideMyWindow
                     this.pinnedSettings = new PinnedApplicationSettings();
                 return this.pinnedSettings;
             }
-            set { this.pinnedSettings = value; }
+            set
+            {
+                this.pinnedSettings = value;
+            }
         }
-
         #endregion
 
         #region Methods & Functions
-
         public static event FileEventHandler FileNotification;
 
         public Hotkey GetHotKeyByFunction(HotkeyFunction function)
         {
             foreach (Hotkey key in this.Hotkey)
+            {
                 if (key.Function == function)
                     return key;
+            }
 
-            return new Hotkey {Function = function};
+            return new Hotkey
+                   {
+                       Function = function
+                   };
         }
 
         private bool HasRegistryEntry(string path, string name)
@@ -186,13 +236,9 @@ namespace theDiary.Tools.HideMyWindow
                 || (autoStartWithWindows && !hasKey))
             {
                 if (autoStartWithWindows)
-                {
                     key.SetValue(attribute.Title, string.Format("\"{0}\"", Assembly.GetEntryAssembly().Location));
-                }
                 else
-                {
                     key.DeleteValue(attribute.Title);
-                }
             }
         }
 
@@ -217,17 +263,15 @@ namespace theDiary.Tools.HideMyWindow
                 returnValue.Hotkey.Add(HideMyWindow.Hotkey.DefaultHideCurrentWindow);
                 returnValue.Hotkey.Add(HideMyWindow.Hotkey.DefaultUnhideLastWindow);
             }
-                
+
             Program.IsConfigured = (wasCreated || returnValue.Hotkey.Count != 0);
             if (FileNotification != null)
                 FileNotification(null, new FileEventArgs(Settings.StorageFileName, FileEventTypes.Loaded));
             return returnValue;
         }
-
         #endregion
 
         #region Interface Implementations
-
         /// <summary>
         ///     The event that is raised
         /// </summary>
@@ -259,42 +303,55 @@ namespace theDiary.Tools.HideMyWindow
         {
             return Settings.StorageFileName;
         }
-
         #endregion
 
         #region Child Classes
-
         public class PinnedApplicationSettings
         {
-            #region Constructors
-
+            #region Public Constructors
             public PinnedApplicationSettings()
             {
                 this.HideOnMinimize = true;
             }
-
             #endregion
 
             #region Properties
+            [XmlAttribute]
+            public bool HideOnMinimize
+            {
+                get;
+                set;
+            }
 
             [XmlAttribute]
-            public bool HideOnMinimize { get; set; }
+            public bool AddIconOverlay
+            {
+                get;
+                set;
+            }
 
             [XmlAttribute]
-            public bool AddIconOverlay { get; set; }
+            public bool ModifyWindowTitle
+            {
+                get;
+                set;
+            }
 
             [XmlAttribute]
-            public bool ModifyWindowTitle { get; set; }
+            public string PrefixWindowText
+            {
+                get;
+                set;
+            }
 
             [XmlAttribute]
-            public string PrefixWindowText { get; set; }
-
-            [XmlAttribute]
-            public string SufixWindowText { get; set; }
-
+            public string SufixWindowText
+            {
+                get;
+                set;
+            }
             #endregion
         }
-
         #endregion
     }
 }

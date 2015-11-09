@@ -9,7 +9,6 @@ namespace theDiary.Tools.HideMyWindow
     internal static partial class ExternalReferences
     {
         #region Methods & Functions
-
         internal static IntPtr CurrentState(IntPtr handle)
         {
             return ExternalReferences.GetWindowLongPtr64(handle, ExternalReferences.GWL_STYLE);
@@ -27,8 +26,10 @@ namespace theDiary.Tools.HideMyWindow
 
             ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.Hide); // hide the window
             ExternalReferences.SetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE, new IntPtr(style));
+
             // set the style
             ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
+
             // show the window for the new style to
             bool returnValue = ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.Hide);
             if (!returnValue)
@@ -42,12 +43,15 @@ namespace theDiary.Tools.HideMyWindow
             IntPtr style1 = ExternalReferences.GetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE);
 
             ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
+
             // show the window for the new style to
             ExternalReferences.SetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE,
                 new IntPtr(window.OriginalState)); // set the style
             ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.Hide);
+
             // show the window for the new style to
             ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
+
             // show the window for the new style to
             window.OriginalState = 0;
         }
@@ -92,7 +96,12 @@ namespace theDiary.Tools.HideMyWindow
         {
             Hotkey hkey = Runtime.Instance.Settings.Hotkey.ToList().Find(x => x.Function == hotkeyFunction);
             if (hkey == null)
-                Runtime.Instance.Settings.Hotkey.Add(hkey = new Hotkey {Function = hotkeyFunction});
+            {
+                Runtime.Instance.Settings.Hotkey.Add(hkey = new Hotkey
+                                                            {
+                                                                Function = hotkeyFunction
+                                                            });
+            }
 
             return hkey;
         }
@@ -108,7 +117,6 @@ namespace theDiary.Tools.HideMyWindow
             foreach (Hotkey hotkey in Runtime.Instance.Settings.Hotkey)
                 hotkey.Unregister();
         }
-
         #endregion
     }
 }

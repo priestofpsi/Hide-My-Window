@@ -6,11 +6,9 @@ using System.Windows.Forms;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    public class HiddenWindowsListView
-        : ListView
+    public class HiddenWindowsListView : ListView
     {
-        #region Constructors
-
+        #region Public Constructors
         public HiddenWindowsListView()
         {
             //this.LabelEdit = true;
@@ -19,11 +17,9 @@ namespace theDiary.Tools.HideMyWindow
             this.DrawColumnHeader += this.HiddenWindowsListView_DrawColumnHeader;
             this.DrawSubItem += this.HiddenWindowsListView_DrawSubItem;
         }
-
         #endregion
 
         #region Methods & Functions
-
         private void HiddenWindowsListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
         {
             if (e.ColumnIndex == 0)
@@ -71,6 +67,7 @@ namespace theDiary.Tools.HideMyWindow
                     e.DrawDefault = false;
                     e.DrawBackground();
                     Rectangle itemBounds = new Rectangle(e.Bounds.Location, new Size(e.Bounds.Width, 65));
+
                     //if (e.Item.Selected)
                     //    e.Graphics.FillRectangle(SystemColors.Highlight.ToBrush(), e.Bounds);
 
@@ -82,12 +79,14 @@ namespace theDiary.Tools.HideMyWindow
                             : ActionResource.unlockwindow_small, ImageOverlayPosition.TopLeft);
                     if (currentItem.IsPinned)
                         e.Graphics.AddImage(e.Bounds, ActionResource.tack_small, ImageOverlayPosition.TopRight);
+
                     //e.DrawText(TextFormatFlags.Bottom | TextFormatFlags.EndEllipsis | TextFormatFlags.HorizontalCenter);
                     Rectangle rec = new Rectangle(e.Bounds.X + 2, e.Bounds.Y + 2, e.Bounds.Width - 4,
                         e.Bounds.Height - 4);
                     TextRenderer.DrawText(e.Graphics, e.Item.Text, e.Item.Font, rec, e.Item.ForeColor,
-                        TextFormatFlags.Bottom | TextFormatFlags.Left | TextFormatFlags.EndEllipsis |
-                        TextFormatFlags.ExpandTabs | TextFormatFlags.SingleLine);
+                        TextFormatFlags.Bottom | TextFormatFlags.Left | TextFormatFlags.EndEllipsis
+                        | TextFormatFlags.ExpandTabs | TextFormatFlags.SingleLine);
+
                     //e.DrawFocusRectangle();
                     break;
 
@@ -106,7 +105,6 @@ namespace theDiary.Tools.HideMyWindow
                 e.Item.SubItems[2].Text = currentItem.IsPinned ? "Yes" : "No";
             }
         }
-
         #endregion
     }
 }
