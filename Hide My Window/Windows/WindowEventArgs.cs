@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
     /* public delegate void WindowEventHandler(object sender, WindowEventArgs e);
 

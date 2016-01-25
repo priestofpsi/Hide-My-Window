@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+
     public delegate void FileEventHandler(object sender, FileEventArgs e);
 
     public class FileEventArgs : EventArgs
     {
-        #region Public Constructors
-        public FileEventArgs() {}
+        #region Constructors
+
+        public FileEventArgs()
+        {
+        }
 
         public FileEventArgs(string fileName)
             : this()
@@ -23,19 +24,14 @@ namespace theDiary.Tools.HideMyWindow
             this.FileName = fileName;
             this.Event = @event;
         }
+
         #endregion
 
         #region Properties
-        public string FileName
-        {
-            get;
-            private set;
-        }
 
-        public FileEventTypes Event
-        {
-            get;
-        }
+        public string FileName { get; private set; }
+
+        public FileEventTypes Event { get; }
 
         public string EventText
         {
@@ -47,6 +43,7 @@ namespace theDiary.Tools.HideMyWindow
                 return this.Event.ToString();
             }
         }
+
         #endregion
     }
 

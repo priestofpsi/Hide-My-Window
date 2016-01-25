@@ -1,160 +1,138 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using System.Xml.Serialization;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
-    public sealed class Hotkey : IDisposable
-    {
-        #region Public Constructors
-        public Hotkey() {}
-        #endregion
+    using System;
+    using System.Text;
+    using System.Windows.Forms;
+    using System.Xml.Serialization;
 
-        #region Private Constructors
-        private Hotkey(HotkeyFunction function, Keys hotKey, HotModifierKeys modifiers)
+    public sealed class HotKey : IDisposable
+    {
+        #region Constructors
+
+        public HotKey()
+        {
+        }
+
+        internal HotKey(HotKey hotKey)
+            : this(hotKey.Function, hotKey.Key, hotKey.ModifierKeys)
+        {
+        }
+
+        public HotKey(HotKeyFunction function)
+            : this()
         {
             this.Function = function;
-            this.HotKey = hotKey;
+        }
+
+        private HotKey(HotKeyFunction function, Keys key, HotModifierKeys modifiers)
+            : this()
+        {
+            this.Function = function;
+            this.Key = key;
             this.ModifierKeys = modifiers;
         }
-        #endregion
 
-        #region Constant Declarations
-        public static Hotkey DefaultHideCurrentWindow = new Hotkey(HotkeyFunction.HideCurrentWindow, Keys.H,
-            HotModifierKeys.Control | HotModifierKeys.Shift);
-
-        public static Hotkey DefaultUnhideLastWindow = new Hotkey(HotkeyFunction.UnhideLastWindow, Keys.S,
-            HotModifierKeys.Control | HotModifierKeys.Shift);
         #endregion
 
         #region Declarations
-        [XmlAttribute]
-        public HotkeyFunction Function;
 
-        [XmlAttribute]
-        public Keys HotKey;
+        #region Static Declarations
 
-        [XmlIgnore]
-        internal short ID;
+        public static HotKey DefaultHideCurrentWindow = new HotKey(HotKeyFunction.HideCurrentWindow, Keys.H,
+            HotModifierKeys.Control | HotModifierKeys.Shift);
 
-        [XmlAttribute]
-        public HotModifierKeys ModifierKeys;
+        public static HotKey DefaultUnhideLastWindow = new HotKey(HotKeyFunction.UnhideLastWindow, Keys.S,
+            HotModifierKeys.Control | HotModifierKeys.Shift);
+
+        public static HotKey DefaultToggleLastWindow = new HotKey(HotKeyFunction.ToggleLastWindow, Keys.H,
+            HotModifierKeys.Control | HotModifierKeys.Shift | HotModifierKeys.Alt);
+
         #endregion
 
+        #region Public Declarations
+
+        [XmlAttribute] public HotKeyFunction Function;
+
+        [XmlAttribute] public Keys Key;
+
+        [XmlAttribute] public HotModifierKeys ModifierKeys;
+
+        #endregion
+
+        #endregion
+
+        #region Interface Implementations
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+        }
+
+        #endregion
+
+        [XmlIgnore] internal short Id;
+
         #region Properties
+
         public bool IsEmpty
         {
             get
             {
-                return string.IsNullOrEmpty(this.Key) && this.ModifierKeys == 0;
+                return this.Key == Keys.None
+                       || this.ModifierKeys == HotModifierKeys.None;
             }
         }
 
-        [XmlIgnore]
-        public string HotKeyString
+
+        private static string GetModifierString(HotModifierKeys keys, params HotModifierKeys[] modifiers)
         {
-            get
-            {
-                string keystring = "";
-                if ((this.ModifierKeys & HotModifierKeys.Alt) > 0)
-                    keystring += "Alt+";
-                if ((this.ModifierKeys & HotModifierKeys.Control) > 0)
-                    keystring += "Ctrl+";
-                if ((this.ModifierKeys & HotModifierKeys.Shift) > 0)
-                    keystring += "Shift+";
-                if ((this.ModifierKeys & HotModifierKeys.Win) > 0)
-                    keystring += "Win+";
-                keystring += this.Key;
+            StringBuilder returnValue = new StringBuilder();
+            foreach (HotModifierKeys mod in modifiers)
+                if ((keys & mod) > 0)
+                    returnValue.AppendFormat("{0}+", (mod == HotModifierKeys.Control) ? "Ctrl" : mod.ToString());
 
-                return keystring;
-            }
-        }
-
-        [XmlIgnore]
-        public string Key
-        {
-            get
-            {
-                if (this.HotKey == 0)
-                    return string.Empty;
-
-                return this.HotKey.ToString();
-            }
-            set
-            {
-                this.HotKey = (Keys) Enum.Parse(typeof (Keys), value);
-            }
+            return returnValue.ToString();
         }
 
         [XmlIgnore]
         public string HKFunction
         {
-            get
-            {
-                return this.Function.ToString();
-            }
-            set
-            {
-                this.Function = (HotkeyFunction) Enum.Parse(typeof (HotkeyFunction), value);
-            }
+            get { return this.Function.ToString(); }
+            set { this.Function = (HotKeyFunction) Enum.Parse(typeof (HotKeyFunction), value); }
         }
 
         [XmlIgnore]
         public bool Control
         {
-            get
-            {
-                return this.ModifierKeys.HasFlag(HotModifierKeys.Control);
-            }
-            set
-            {
-                this.ModHotFlag(value, HotModifierKeys.Control);
-            }
+            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Control); }
+            set { this.ModHotFlag(value, HotModifierKeys.Control); }
         }
 
         [XmlIgnore]
         public bool Alt
         {
-            get
-            {
-                return this.ModifierKeys.HasFlag(HotModifierKeys.Alt);
-            }
-            set
-            {
-                this.ModHotFlag(value, HotModifierKeys.Alt);
-            }
+            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Alt); }
+            set { this.ModHotFlag(value, HotModifierKeys.Alt); }
         }
 
         [XmlIgnore]
         public bool Shift
         {
-            get
-            {
-                return this.ModifierKeys.HasFlag(HotModifierKeys.Shift);
-            }
-            set
-            {
-                this.ModHotFlag(value, HotModifierKeys.Shift);
-            }
+            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Shift); }
+            set { this.ModHotFlag(value, HotModifierKeys.Shift); }
         }
 
         [XmlIgnore]
         public bool Win
         {
-            get
-            {
-                return this.ModifierKeys.HasFlag(HotModifierKeys.Win);
-            }
-            set
-            {
-                this.ModHotFlag(value, HotModifierKeys.Win);
-            }
+            get { return this.ModifierKeys.HasFlag(HotModifierKeys.Win); }
+            set { this.ModHotFlag(value, HotModifierKeys.Win); }
         }
+
         #endregion
 
         #region Methods & Functions
+
         private void Dispose(bool disposing)
         {
             if (disposing)
@@ -171,33 +149,38 @@ namespace theDiary.Tools.HideMyWindow
 
         internal bool Register()
         {
-            if (this.HotKey == Keys.None)
+            //if (this.HotKey == Keys.None)
+            if (this.IsEmpty)
                 return false;
 
-            if (this.ID != 0)
+            if (this.Id != 0)
                 this.Unregister();
 
-            this.ID = ExternalReferences.RegisterGlobalHotKey(this.ID, this.ModifierKeys, this.HotKey);
-            return this.ID != 0;
+            this.Id = ExternalReferences.RegisterGlobalHotKey(this.Id, this.ModifierKeys, this.Key);
+            return this.Id != 0;
         }
 
         internal void Unregister()
         {
-            ExternalReferences.UnregisterGlobalHotKey(this.ID);
+            ExternalReferences.UnregisterGlobalHotKey(this.Id);
         }
 
         public override int GetHashCode()
         {
-            return this.Function.GetHashCode() | this.HotKey.GetHashCode() | this.Shift.GetHashCode()
+            return this.Function.GetHashCode() | this.Key.GetHashCode() | this.Shift.GetHashCode()
                    | this.Win.GetHashCode() | this.Alt.GetHashCode() | this.Control.GetHashCode();
         }
-        #endregion
 
-        #region Interface Implementations
-        public void Dispose()
+        public override string ToString()
         {
-            this.Dispose(true);
+            if (this.IsEmpty)
+                return "Not Set";
+
+            return string.Format("{0}{1}",
+                GetModifierString(this.ModifierKeys, HotModifierKeys.Alt, HotModifierKeys.Shift,
+                    HotModifierKeys.Win, HotModifierKeys.Control), this.Key);
         }
+
         #endregion
     }
 }

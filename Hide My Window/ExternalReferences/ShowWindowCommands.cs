@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
     public enum ShowWindowCommands
     {
@@ -36,7 +32,7 @@ namespace theDiary.Tools.HideMyWindow
 
         /// <summary>
         ///     Displays a window in its most recent size and position. This value
-        ///     is similar to <see cref="Win32.ShowWindowCommand.Normal" />, except
+        ///     is similar to <see cref="Microsoft.Win32.ShowWindowCommand.Normal" />, except
         ///     the window is not activated.
         /// </summary>
         ShowNoActivate = 4,
@@ -54,14 +50,14 @@ namespace theDiary.Tools.HideMyWindow
 
         /// <summary>
         ///     Displays the window as a minimized window. This value is similar to
-        ///     <see cref="Win32.ShowWindowCommand.ShowMinimized" />, except the
+        ///     <see cref="Microsoft.Win32.ShowWindowCommand.ShowMinimized" />, except the
         ///     window is not activated.
         /// </summary>
         ShowMinNoActive = 7,
 
         /// <summary>
         ///     Displays the window in its current size and position. This value is
-        ///     similar to <see cref="Win32.ShowWindowCommand.Show" />, except the
+        ///     similar to <see cref="Microsoft.Win32.ShowWindowCommand.Show" />, except the
         ///     window is not activated.
         /// </summary>
         ShowNA = 8,

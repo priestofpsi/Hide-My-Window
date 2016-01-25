@@ -1,56 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
+
     internal static partial class ExternalReferences
     {
         #region Methods & Functions
+
         internal static IntPtr CurrentState(IntPtr handle)
         {
-            return ExternalReferences.GetWindowLongPtr64(handle, ExternalReferences.GWL_STYLE);
+            return GetWindowLongPtr64(handle, GwlStyle);
+        }
+
+        private static long GetOriginalStateStyle(this WindowInfo window)
+        {
+            long style = window.OriginalState;
+            style &= ~(WindowStateVisible); // this works - window become invisible
+            style |= WindowStateExToolWindow; // flags don't work - windows remains in taskbar
+            style &= ~(WindowStateExApplicationWindow);
+
+            return style;
         }
 
         internal static bool HideWindow(WindowInfo window)
         {
             window.OriginalState =
-                ExternalReferences.GetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE).ToInt64();
-            long style = window.OriginalState;
-            style &= ~(ExternalReferences.WS_VISIBLE); // this works - window become invisible
+                GetWindowLongPtr(window.Handle, GwlStyle).ToInt64();
 
-            style |= ExternalReferences.WS_EX_TOOLWINDOW; // flags don't work - windows remains in taskbar
-            style &= ~(ExternalReferences.WS_EX_APPWINDOW);
+            long style = window.GetOriginalStateStyle();
 
-            ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.Hide); // hide the window
-            ExternalReferences.SetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE, new IntPtr(style));
-
-            // set the style
-            ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
+            ShowWindow(window.Handle, (int) ShowWindowCommands.Hide); // hide the window
+            SetWindowLongPtr(window.Handle, GwlStyle, new IntPtr(style));
+            ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
 
             // show the window for the new style to
-            bool returnValue = ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.Hide);
+            bool returnValue = ShowWindow(window.Handle, (int) ShowWindowCommands.Hide);
             if (!returnValue)
-                ExternalReferences.ShowWindow(window);
+                ShowWindow(window);
 
             return returnValue;
         }
 
         internal static void ShowWindow(WindowInfo window)
         {
-            IntPtr style1 = ExternalReferences.GetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE);
+            IntPtr style1 = GetWindowLongPtr(window.Handle, GwlStyle);
 
-            ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
+            ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
 
             // show the window for the new style to
-            ExternalReferences.SetWindowLongPtr(window.Handle, ExternalReferences.GWL_STYLE,
+            SetWindowLongPtr(window.Handle, GwlStyle,
                 new IntPtr(window.OriginalState)); // set the style
-            ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.Hide);
+            ShowWindow(window.Handle, (int) ShowWindowCommands.Hide);
 
             // show the window for the new style to
-            ExternalReferences.ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
+            ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
 
             // show the window for the new style to
             window.OriginalState = 0;
@@ -58,7 +63,7 @@ namespace theDiary.Tools.HideMyWindow
 
         public static void SetWindowState(IntPtr hWnd, ShowWindowCommands state)
         {
-            ExternalReferences.ShowWindow(hWnd, (int) state);
+            ShowWindow(hWnd, (int) state);
         }
 
         [DllImport("user32.dll")]
@@ -67,19 +72,19 @@ namespace theDiary.Tools.HideMyWindow
         [DllImport("user32.dll")]
         public static extern int GetWindowModuleFileName(IntPtr hWnd, out string fileName, uint maxLength);
 
-        internal static short RegisterGlobalHotKey(short oldID, HotModifierKeys modifierKeys, Keys hotKey)
+        internal static short RegisterGlobalHotKey(short oldId, HotModifierKeys modifierKeys, Keys hotKey)
         {
-            if (oldID != 0)
-                ExternalReferences.UnregisterGlobalHotKey(oldID);
+            if (oldId != 0)
+                UnregisterGlobalHotKey(oldId);
 
             try
             {
-                short newID = (short) Runtime.Instance.randomizer.Next(short.MinValue, short.MaxValue);
+                short newId = (short) Runtime.Instance.randomizer.Next(short.MinValue, short.MaxValue);
                 if (
-                    !ExternalReferences.RegisterHotKey(ExternalReferences.MainHandle, newID, (uint) modifierKeys,
+                    !RegisterHotKey(MainHandle, newId, (uint) modifierKeys,
                         (uint) hotKey))
                     return 0;
-                return newID;
+                return newId;
             }
             catch
             {
@@ -89,18 +94,15 @@ namespace theDiary.Tools.HideMyWindow
 
         internal static void UnregisterGlobalHotKey(short id)
         {
-            ExternalReferences.UnregisterHotKey(ExternalReferences.MainHandle, id);
+            UnregisterHotKey(MainHandle, id);
         }
 
-        internal static Hotkey AddOrFind(HotkeyFunction hotkeyFunction)
+        internal static HotKey AddOrFind(HotKeyFunction hotKeyFunction)
         {
-            Hotkey hkey = Runtime.Instance.Settings.Hotkey.ToList().Find(x => x.Function == hotkeyFunction);
+            HotKey hkey = Runtime.Instance.Settings.HotKeys.ToList().Find(x => x.Function == hotKeyFunction);
             if (hkey == null)
             {
-                Runtime.Instance.Settings.Hotkey.Add(hkey = new Hotkey
-                                                            {
-                                                                Function = hotkeyFunction
-                                                            });
+                Runtime.Instance.Settings.HotKeys.Add(hkey = new HotKey(hotKeyFunction));
             }
 
             return hkey;
@@ -108,15 +110,16 @@ namespace theDiary.Tools.HideMyWindow
 
         internal static void RegisterAll()
         {
-            foreach (Hotkey hotkey in Runtime.Instance.Settings.Hotkey)
+            foreach (HotKey hotkey in Runtime.Instance.Settings.HotKeys)
                 hotkey.Register();
         }
 
         internal static void UnregisterAll()
         {
-            foreach (Hotkey hotkey in Runtime.Instance.Settings.Hotkey)
+            foreach (HotKey hotkey in Runtime.Instance.Settings.HotKeys)
                 hotkey.Unregister();
         }
+
         #endregion
     }
 }

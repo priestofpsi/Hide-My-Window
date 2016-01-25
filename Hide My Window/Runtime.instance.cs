@@ -1,33 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+
     public partial class Runtime
     {
         #region Declarations
-        internal Random randomizer = new Random();
-        private Settings settings;
+
+        #region Private Declarations
+
+        private SettingsStore settingsStore;
         private HiddenWindowStore store;
 
         private volatile WindowInfoManager windowManager = new WindowInfoManager();
+
+        #endregion
+
+        #endregion
+
+        internal Random randomizer = new Random();
+
+        #region Methods & Functions
+
+        public event WindowEventHandler ApplicationOpened;
+
         #endregion
 
         #region Properties
-        public Settings Settings
+
+        public SettingsStore Settings
         {
             get
             {
-                if (this.settings == null)
-                    this.settings = Settings.Load();
+                if (this.settingsStore == null)
+                    this.settingsStore = SettingsStore.Load();
 
-                return this.settings;
+                return this.settingsStore;
             }
-            internal set
-            {
-                this.settings = value;
-            }
+            internal set { this.settingsStore = value; }
         }
 
         public HiddenWindowStore Store
@@ -39,23 +48,14 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.store;
             }
-            internal set
-            {
-                this.store = value;
-            }
+            internal set { this.store = value; }
         }
 
         public WindowInfoManager WindowManager
         {
-            get
-            {
-                return this.windowManager;
-            }
+            get { return this.windowManager; }
         }
-        #endregion
 
-        #region Methods & Functions
-        public event WindowEventHandler ApplicationOpened;
         #endregion
     }
 }

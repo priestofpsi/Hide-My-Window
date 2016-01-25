@@ -1,48 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+    using System.Windows.Forms;
+
     public partial class HotKeyMimicTextBox : UserControl
     {
-        #region Public Constructors
+        #region Constructors
+
         public HotKeyMimicTextBox()
         {
             this.InitializeComponent();
         }
+
         #endregion
 
         #region Declarations
-        private bool _firstFocus = true;
 
-        private Hotkey hotkey;
-        private Hotkey originalHotkey;
+        #region Private Declarations
+
+        private HotKey _hotKey;
+        private HotKey _originalHotKey;
+        private bool firstFocus = true;
+
+        #endregion
+
         #endregion
 
         #region Properties
-        public Hotkey HotKey
+
+        public HotKey HotKey
         {
-            get
-            {
-                return this.hotkey;
-            }
+            get { return this._hotKey; }
             set
             {
-                this.hotkey = value;
-                if (this.originalHotkey == null)
-                    this.originalHotkey = value;
-                if (this.hotkey == null)
+                this._hotKey = value;
+                if (this._originalHotKey == null && value != null)
+                    this._originalHotKey = new HotKey(value);
+                if (this._hotKey == null)
                     return;
 
-                this.label1.Text = this.hotkey.Function.ToString().AsReadable();
+                this.label1.Text = this._hotKey.Function.ToString().AsReadable();
                 this.txtHotKey_Leave(this, new EventArgs());
             }
         }
+
         #endregion
 
         #region Methods & Functions
+
         public event EventHandler HotKeyChanged;
 
         private void txtHotKey_KeyUp(object sender, KeyEventArgs e)
@@ -52,45 +57,46 @@ namespace theDiary.Tools.HideMyWindow
                 || e.KeyCode == Keys.Menu)
                 return;
 
-            this.hotkey.HotKey = e.KeyCode;
-            this.hotkey.ModifierKeys = HotModifierKeys.None;
+            this._hotKey.Key = e.KeyCode;
+            this._hotKey.ModifierKeys = HotModifierKeys.None;
 
             if (e.Control)
-                this.hotkey.ModifierKeys = this.hotkey.ModifierKeys | HotModifierKeys.Control;
+                this._hotKey.ModifierKeys = this._hotKey.ModifierKeys | HotModifierKeys.Control;
 
             if (e.Alt)
-                this.hotkey.ModifierKeys = this.hotkey.ModifierKeys | HotModifierKeys.Alt;
+                this._hotKey.ModifierKeys = this._hotKey.ModifierKeys | HotModifierKeys.Alt;
 
             if (e.Shift)
-                this.hotkey.ModifierKeys = this.hotkey.ModifierKeys | HotModifierKeys.Shift;
+                this._hotKey.ModifierKeys = this._hotKey.ModifierKeys | HotModifierKeys.Shift;
 
             if (e.Modifiers == Keys.LWin
                 || e.Modifiers == Keys.RWin)
-                this.hotkey.ModifierKeys = this.hotkey.ModifierKeys | HotModifierKeys.Win;
+                this._hotKey.ModifierKeys = this._hotKey.ModifierKeys | HotModifierKeys.Win;
 
-            this.txtHotKey.Text = this.hotkey.HotKeyString;
-            if (this.hotkey != this.originalHotkey
+            this.txtHotKey.Text = this._hotKey.ToString();
+            if (this._hotKey != this._originalHotKey
                 && this.HotKeyChanged != null)
                 this.HotKeyChanged(this, new EventArgs());
         }
 
         private void txtHotKey_Enter(object sender, EventArgs e)
         {
-            if (!this._firstFocus)
+            if (!this.firstFocus)
                 return;
 
             this.txtHotKey.Text = "";
-            this._firstFocus = false;
+            this.firstFocus = false;
         }
 
         private void txtHotKey_Leave(object sender, EventArgs e)
         {
-            if (this.hotkey == null
-                || this.hotkey.IsEmpty)
+            if (this._hotKey == null
+                || this._hotKey.IsEmpty)
                 this.txtHotKey.Text = "Mimic Hot Key In Here";
             else
-                this.txtHotKey.Text = this.hotkey.HotKeyString;
+                this.txtHotKey.Text = this._hotKey.ToString();
         }
+
         #endregion
     }
 }

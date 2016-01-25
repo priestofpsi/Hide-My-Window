@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System.Diagnostics;
+
     public partial class WindowInfo
     {
         #region Methods & Functions
+
         /// <summary>
         ///     The event that is raised when a Window associated to a <c>Pinned</c> <see cref="WindowInfo" /> instance has been
         ///     minimized.
@@ -85,6 +83,7 @@ namespace theDiary.Tools.HideMyWindow
         ///     The event that is raised when the Window associated with a <see cref="WindowInfo" /> instance has been shown.
         /// </summary>
         public event WindowEventHandler Shown;
+
         #endregion
     }
 }

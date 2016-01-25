@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using System.Xml.Serialization;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System.Drawing;
+    using System.Windows.Forms;
+    using System.Xml.Serialization;
+
     public class FormState
     {
-        #region Public Constructors
-        public FormState() {}
+        #region Constructors
+
+        public FormState()
+        {
+        }
 
         public FormState(Form form)
         {
@@ -18,51 +18,21 @@ namespace theDiary.Tools.HideMyWindow
             this.Size = form.Size;
             this.Location = form.Location;
         }
+
         #endregion
 
         #region Declarations
+
+        #region Private Declarations
+
         private Size? size;
+
         #endregion
 
-        #region Properties
-        [XmlAttribute]
-        public FormWindowState WindowState
-        {
-            get;
-            set;
-        }
-
-        [XmlElement]
-        public Point Location
-        {
-            get;
-            set;
-        }
-
-        [XmlElement]
-        public Size Size
-        {
-            get
-            {
-                return this.size.GetValueOrDefault();
-            }
-            set
-            {
-                this.size = value;
-            }
-        }
-
-        [XmlIgnore]
-        public bool IsEmpty
-        {
-            get
-            {
-                return !this.size.HasValue;
-            }
-        }
         #endregion
 
         #region Methods & Functions
+
         public void SetFormState(Form form)
         {
             if (this.IsEmpty)
@@ -71,6 +41,30 @@ namespace theDiary.Tools.HideMyWindow
             form.Location = this.Location;
             form.Size = this.Size;
         }
+
+        #endregion
+
+        #region Properties
+
+        [XmlAttribute]
+        public FormWindowState WindowState { get; set; }
+
+        [XmlElement]
+        public Point Location { get; set; }
+
+        [XmlElement]
+        public Size Size
+        {
+            get { return this.size.GetValueOrDefault(); }
+            set { this.size = value; }
+        }
+
+        [XmlIgnore]
+        public bool IsEmpty
+        {
+            get { return !this.size.HasValue; }
+        }
+
         #endregion
     }
 }

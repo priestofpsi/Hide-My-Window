@@ -1,58 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+    using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Drawing;
+    using System.Runtime.InteropServices;
+    using System.Text;
+
     internal static partial class ExternalReferences
     {
-        #region Constant Declarations
-        internal const int WM_SETICON = 0x80;
+        #region Declarations
 
-        internal const int ICON_SMALL = 0,
-                           ICON_BIG = 1;
+        #region Static Declarations
 
-        internal const int GWL_STYLE = -16,
-                           GWL_EXSTYLE = -20;
+        internal const int WindowsMessageSetIcon = 0x80;
 
-        internal const long WS_VISIBLE = 0x10000000,
-                            WS_MAXIMIZE = 0x01000000,
-                            WS_BORDER = 0x00800000,
-                            WS_CHILD = 0x40000000,
-                            WS_EX_APPWINDOW = 0x00040000,
-                            WS_EX_TOOLWINDOW = 0x00000080;
+        internal const int IconSmall = 0,
+            IconBig = 1;
+
+        internal const int GwlStyle = -16,
+            GwlExStyle = -20;
+
+        internal const long WindowStateVisible = 0x10000000,
+            WindowStateMaximize = 0x01000000,
+            WindowStateBorder = 0x00800000,
+            WindowStateChild = 0x40000000,
+            WindowStateExApplicationWindow = 0x00040000,
+            WindowStateExToolWindow = 0x00000080;
+
+        #endregion
+
         #endregion
 
         #region Methods & Functions
+
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern bool SetWindowText(IntPtr hwnd, string lpString);
 
         public static void RestoreWindowText(this WindowInfo window)
         {
-            ExternalReferences.SetWindowText(window.Handle, window.OriginalTitle);
+            SetWindowText(window.Handle, window.OriginalTitle);
         }
 
         public static void SetWindowText(this WindowInfo window, string text)
         {
-            ExternalReferences.SetWindowText(window.Handle, text);
+            SetWindowText(window.Handle, text);
         }
 
         public static void SetWindowText(this WindowInfo window, string prefix, string suffix)
         {
-            ExternalReferences.SetWindowText(window.Handle,
+            SetWindowText(window.Handle,
                 string.Format("{0}{2}{1}", prefix, suffix, window.OriginalTitle));
         }
 
         public static void SetWindowIcon(this WindowInfo window, Icon icon)
         {
-            ExternalReferences.SendMessage(window.Handle, ExternalReferences.WM_SETICON, ExternalReferences.ICON_SMALL,
+            SendMessage(window.Handle, WindowsMessageSetIcon, IconSmall,
                 icon.Handle);
-            ExternalReferences.SendMessage(window.Handle, ExternalReferences.WM_SETICON, ExternalReferences.ICON_BIG,
+            SendMessage(window.Handle, WindowsMessageSetIcon, IconBig,
                 icon.Handle);
         }
 
@@ -63,7 +68,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             WindowPlacement placement = new WindowPlacement();
             placement.length = Marshal.SizeOf(placement);
-            ExternalReferences.GetWindowPlacement(hwnd, ref placement);
+            GetWindowPlacement(hwnd, ref placement);
             return placement;
         }
 
@@ -79,9 +84,9 @@ namespace theDiary.Tools.HideMyWindow
 
         public static void ShowToFront(string windowName)
         {
-            IntPtr firstInstance = ExternalReferences.FindWindow(null, windowName);
-            ExternalReferences.ShowWindow(firstInstance, 1);
-            ExternalReferences.SetForegroundWindow(firstInstance);
+            IntPtr firstInstance = FindWindow(null, windowName);
+            ShowWindow(firstInstance, 1);
+            SetForegroundWindow(firstInstance);
         }
 
         [DllImport("user32.dll", SetLastError = true, EntryPoint = "SetWindowLong")]
@@ -126,22 +131,22 @@ namespace theDiary.Tools.HideMyWindow
         internal static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
         {
             if (IntPtr.Size == 4)
-                return ExternalReferences.SetWindowLongPtr32(hWnd, nIndex, dwNewLong);
-            return ExternalReferences.SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
+                return SetWindowLongPtr32(hWnd, nIndex, dwNewLong);
+            return SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
         }
 
         internal static IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
         {
             if (IntPtr.Size == 4)
-                return ExternalReferences.GetWindowLongPtr32(hWnd, nIndex);
-            return ExternalReferences.GetWindowLongPtr64(hWnd, nIndex);
+                return GetWindowLongPtr32(hWnd, nIndex);
+            return GetWindowLongPtr64(hWnd, nIndex);
         }
 
         internal static string GetWindowText(IntPtr hWnd)
         {
-            int textLength = ExternalReferences.GetWindowTextLength(hWnd);
+            int textLength = GetWindowTextLength(hWnd);
             StringBuilder returnValue = new StringBuilder(textLength + 1);
-            int a = ExternalReferences.GetWindowText(hWnd, returnValue, returnValue.Capacity);
+            int a = GetWindowText(hWnd, returnValue, returnValue.Capacity);
 
             return returnValue.ToString();
         }
@@ -149,13 +154,14 @@ namespace theDiary.Tools.HideMyWindow
         internal static Process GetWindowProcess(IntPtr hWnd)
         {
             uint processId;
-            uint callResult = ExternalReferences.GetWindowThreadProcessId(hWnd, out processId);
+            uint callResult = GetWindowThreadProcessId(hWnd, out processId);
             Process returnValue = Process.GetProcessById((int) processId);
 
             //returnValue.EnableRaisingEvents = true;
 
             return returnValue;
         }
+
         #endregion
     }
 }

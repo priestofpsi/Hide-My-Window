@@ -1,38 +1,52 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public sealed class WindowInfoManager : IEnumerable<WindowInfo>
     {
-        #region Public Constructors
+        #region Constructors
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="WindowInfoManager" /> class.
+        /// </summary>
         public WindowInfoManager()
         {
-            WindowInfoManager.Instance = this;
+            instance = this;
         }
-        #endregion
 
-        #region Constant Declarations
-        private static volatile WindowInfoManager Instance;
-        private static readonly object syncObject = new object();
-        private static volatile Dictionary<IntPtr, WindowInfo> items = new Dictionary<IntPtr, WindowInfo>();
         #endregion
 
         #region Declarations
+
+        #region Public Static Declarations
+
+        private static volatile WindowInfoManager instance;
+        private static readonly object syncObject = new object();
+        private static volatile Dictionary<IntPtr, WindowInfo> items = new Dictionary<IntPtr, WindowInfo>();
+
+        #endregion
+
+        #region Private Static Declarations
+
         private Task checkApplicationProcessesTask;
+
+        #endregion
+
         #endregion
 
         #region Properties
+
         private Dictionary<IntPtr, WindowInfo> Items
         {
             get
             {
-                lock (WindowInfoManager.syncObject)
-                    return WindowInfoManager.items;
+                lock (syncObject)
+                    return items;
             }
         }
 
@@ -41,20 +55,17 @@ namespace theDiary.Tools.HideMyWindow
         /// </summary>
         public int Count
         {
-            get
-            {
-                return this.Items.Count;
-            }
+            get { return this.Items.Count; }
         }
 
         public WindowInfo this[IntPtr handle]
         {
             get
             {
-                lock (WindowInfoManager.syncObject)
+                lock (syncObject)
                 {
-                    if (WindowInfoManager.items.ContainsKey(handle))
-                        return WindowInfoManager.items[handle];
+                    if (items.ContainsKey(handle))
+                        return items[handle];
 
                     return null;
                 }
@@ -63,10 +74,7 @@ namespace theDiary.Tools.HideMyWindow
 
         private bool CanCheckProcesses
         {
-            get
-            {
-                return this.Count > 0;
-            }
+            get { return this.Count > 0; }
         }
 
         private bool Running
@@ -78,15 +86,20 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        public WindowInfo LastWindow
-        {
-            get;
-            private set;
-        }
+        public WindowInfo LastWindow { get; private set; }
+
         #endregion
 
         #region Methods & Functions
+
+        /// <summary>
+        ///     The event that is raised when a Window has been registered.
+        /// </summary>
         public event WindowEventHandler Registered;
+
+        /// <summary>
+        ///     The event that is raised when a Window has been unregistered.
+        /// </summary>
         public event WindowEventHandler UnRegistered;
 
         /// <summary>
@@ -134,33 +147,37 @@ namespace theDiary.Tools.HideMyWindow
             return this.Register(WindowInfo.Find(windowHandle));
         }
 
+        private async void RegisterAsync(WindowInfo window)
+        {
+            await Task.Run(() =>
+            {
+                this.LastWindow = window;
+                window.Shown += this.Window_Shown;
+                Runtime.Instance.Store.Add(window.Handle);
+                if (this.Registered != null)
+                    this.Registered(this, new WindowInfoEventArgs(window));
+            });
+        }
+
         public bool Register(WindowInfo window)
         {
             try
             {
-                lock (WindowInfoManager.syncObject)
+                lock (syncObject)
                 {
                     if (!window.IsValid
-                        || WindowInfoManager.items.ContainsKey(window.Handle))
+                        || items.ContainsKey(window.Handle))
                         return false;
 
-                    WindowInfoManager.items.Add(window.Handle, window);
-
-                    Task.Run(() =>
-                             {
-                                 this.LastWindow = window;
-                                 window.Shown += this.Window_Shown;
-                                 Runtime.Instance.Store.Add(window.Handle);
-                                 if (this.Registered != null)
-                                     this.Registered(this, new WindowInfoEventArgs(window));
-                             });
-                    return true;
+                    items.Add(window.Handle, window);
+                    this.RegisterAsync(window);
                 }
             }
             finally
             {
                 this.CheckApplicationProcesses();
             }
+            return true;
         }
 
         public bool UnRegister(IntPtr windowHandle)
@@ -168,32 +185,33 @@ namespace theDiary.Tools.HideMyWindow
             return this.UnRegister(WindowInfo.Find(windowHandle));
         }
 
+        private async void UnregisterAsync(WindowInfo window)
+        {
+            await Task.Run(() =>
+            {
+                window.Shown -= this.Window_Shown;
+                Runtime.Instance.Store.Remove(window.Handle);
+                if (this.UnRegistered != null)
+                    this.UnRegistered(this, new WindowInfoEventArgs(window));
+            });
+        }
+
         public bool UnRegister(WindowInfo window)
         {
             try
             {
-                lock (WindowInfoManager.syncObject)
+                lock (syncObject)
                 {
-                    if (WindowInfoManager.items.ContainsKey(window.Handle)
-                        && WindowInfoManager.items.Remove(window.Handle))
-                    {
-                        Task task = Task.Run(() =>
-                                             {
-                                                 window.Shown -= this.Window_Shown;
-                                                 Runtime.Instance.Store.Remove(window.Handle);
-                                                 if (this.UnRegistered != null)
-                                                     this.UnRegistered(this, new WindowInfoEventArgs(window));
-                                             });
-
-                        return true;
-                    }
-                    return false;
+                    if (!items.Remove(window.Handle))
+                        return false;
+                    this.UnregisterAsync(window);
                 }
             }
             finally
             {
                 this.CheckApplicationProcesses();
             }
+            return true;
         }
 
         private void Window_Shown(object sender, WindowInfoEventArgs e)
@@ -208,18 +226,18 @@ namespace theDiary.Tools.HideMyWindow
                 return;
 
             this.checkApplicationProcessesTask = Task.Run(() =>
-                                                          {
-                                                              Thread.CurrentThread.Name =
-                                                                  "HideMyWindow:CheckWindowProcesses";
-                                                              while (this.CanCheckProcesses)
-                                                              {
-                                                                  IntPtr[] handles = this.Items.Keys.ToArray();
-                                                                  handles.AsParallel()
-                                                                         .ForAll(
-                                                                             handle => this.CheckWindowProcess(handle));
-                                                                  Thread.Sleep(100);
-                                                              }
-                                                          });
+            {
+                Thread.CurrentThread.Name =
+                    "HideMyWindow:CheckWindowProcesses";
+                while (this.CanCheckProcesses)
+                {
+                    IntPtr[] handles = this.Items.Keys.ToArray();
+                    handles.AsParallel()
+                        .ForAll(
+                            handle => this.CheckWindowProcess(handle));
+                    Thread.Sleep(100);
+                }
+            });
         }
 
         private void CheckWindowProcess(IntPtr handle)
@@ -231,11 +249,13 @@ namespace theDiary.Tools.HideMyWindow
 
         public static WindowInfo Find(IntPtr handle)
         {
-            return WindowInfoManager.Instance[handle];
+            return instance[handle];
         }
+
         #endregion
 
         #region Interface Implementations
+
         public IEnumerator<WindowInfo> GetEnumerator()
         {
             return this.Items.Values.GetEnumerator();
@@ -245,6 +265,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             return this.Items.Values.GetEnumerator();
         }
+
         #endregion
     }
 }

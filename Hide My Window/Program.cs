@@ -1,20 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Windows.Forms;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+    using System.Reflection;
+    using System.Threading;
+    using System.Windows.Forms;
+
     internal static class Program
     {
-        #region Constant Declarations
+        #region Declarations
+
+        #region Static Declarations
+
         internal static MainForm MainForm;
         internal static bool IsConfigured;
+
+        #endregion
+
         #endregion
 
         #region Methods & Functions
+
         /// <summary>
         ///     The main entry point for the application.
         /// </summary>
@@ -31,9 +36,9 @@ namespace theDiary.Tools.HideMyWindow
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.ApplicationExit += Program.Application_ApplicationExit;
-                Program.MainForm = new MainForm();
-                Application.Run(Program.MainForm);
+                Application.ApplicationExit += Application_ApplicationExit;
+                MainForm = new MainForm();
+                Application.Run(MainForm);
                 GC.KeepAlive(mutex);
             }
         }
@@ -41,8 +46,8 @@ namespace theDiary.Tools.HideMyWindow
         private static void Application_ApplicationExit(object sender, EventArgs e)
         {
             if (Runtime.Instance.Settings.RestoreWindowsOnExit)
-                Program.MainForm.UnhideAllWindows(sender, e);
-            Settings.Save(Runtime.Instance.Settings);
+                MainForm.UnhideAllWindows(sender, e);
+            SettingsStore.Save(Runtime.Instance.Settings);
         }
 
         private static bool IsAlreadyRunning(out Mutex mutex)
@@ -51,8 +56,13 @@ namespace theDiary.Tools.HideMyWindow
             Assembly.GetEntryAssembly().TryGetCustomAttribute(out attribute);
             bool onlyInstance = false;
             mutex = new Mutex(true, attribute.Title, out onlyInstance);
+
+#if DEBUG
+            onlyInstance = true;
+#endif
             return !onlyInstance;
         }
+
         #endregion
     }
 }

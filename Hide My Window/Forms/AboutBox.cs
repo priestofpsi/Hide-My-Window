@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows.Forms;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System.IO;
+    using System.Reflection;
+    using System.Windows.Forms;
+
     partial class AboutBox : Form
     {
-        #region Public Constructors
+        #region Constructors
+
         public AboutBox()
         {
             this.InitializeComponent();
@@ -20,9 +18,11 @@ namespace theDiary.Tools.HideMyWindow
             this.labelCompanyName.Text = this.AssemblyCompany;
             this.textBoxDescription.Text = this.AssemblyDescription;
         }
+
         #endregion
 
         #region Properties
+
         public string AssemblyTitle
         {
             get
@@ -41,10 +41,7 @@ namespace theDiary.Tools.HideMyWindow
 
         public string AssemblyVersion
         {
-            get
-            {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            }
+            get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
         }
 
         public string AssemblyDescription
@@ -94,6 +91,7 @@ namespace theDiary.Tools.HideMyWindow
                 return ((AssemblyCompanyAttribute) attributes[0]).Company;
             }
         }
+
         #endregion
     }
 }

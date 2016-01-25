@@ -1,29 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.IO.IsolatedStorage;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
-    public partial class Settings
+    using System;
+    using System.Drawing;
+    using System.IO;
+    using System.IO.IsolatedStorage;
+    using System.Windows.Forms;
+
+    public partial class SettingsStore
     {
-        #region Constant Declarations
+        #region Declarations
+
+        #region Static Declarations
+
         private static readonly Icon DefaultApplicationIcon =
             new Icon(
-                typeof (Settings).Assembly.GetManifestResourceStream(
+                typeof (SettingsStore).Assembly.GetManifestResourceStream(
                     "theDiary.Tools.HideMyWindow.Resources.application.ico"));
+
         #endregion
 
-        #region Declarations
+        #region Private Declarations
+
         private Icon applicationIcon;
 
         private string applicationIconPath;
+
+        #endregion
+
         #endregion
 
         #region Properties
+
         public Icon ApplicationIcon
         {
             get
@@ -34,7 +41,7 @@ namespace theDiary.Tools.HideMyWindow
                         && IsolatedStorageFile.GetUserStoreForAssembly().FileExists(this.ApplicationIconPath))
                         this.applicationIcon = new Icon(this.ApplicationIconPath);
 
-                    this.applicationIcon = Settings.DefaultApplicationIcon;
+                    this.applicationIcon = DefaultApplicationIcon;
                 }
                 return this.applicationIcon;
             }
@@ -42,10 +49,7 @@ namespace theDiary.Tools.HideMyWindow
 
         public string ApplicationIconPath
         {
-            get
-            {
-                return this.applicationIconPath;
-            }
+            get { return this.applicationIconPath; }
             set
             {
                 if (this.applicationIconPath == value)
@@ -56,9 +60,11 @@ namespace theDiary.Tools.HideMyWindow
                     this.ApplicationIconChanged(this, new IconEventArgs(this.ApplicationIcon));
             }
         }
+
         #endregion
 
         #region Methods & Functions
+
         public void ClearIcon()
         {
             this.ApplicationIconPath = null;
@@ -74,16 +80,16 @@ namespace theDiary.Tools.HideMyWindow
             string iconFileName = Path.GetFileName(iconPath);
             if (!IsolatedStorageFile.GetUserStoreForAssembly().FileExists(iconFileName)
                 || (this.ConfirmIconOverride != null && this.ConfirmIconOverride(this, new MessageBoxEventArgs
-                                                                                       {
-                                                                                           Text =
-                                                                                               "Replace existing application Icon?",
-                                                                                           Caption =
-                                                                                               "Replace Application Icon",
-                                                                                           Buttons =
-                                                                                               MessageBoxButtons.YesNo,
-                                                                                           CancelResult =
-                                                                                               DialogResult.No
-                                                                                       })))
+                {
+                    Text =
+                        "Replace existing application Icon?",
+                    Caption =
+                        "Replace Application Icon",
+                    Buttons =
+                        MessageBoxButtons.YesNo,
+                    CancelResult =
+                        DialogResult.No
+                })))
             {
                 IsolatedStorageFile.GetUserStoreForAssembly().CopyFile(iconPath, iconFileName);
                 this.ApplicationIconPath = iconPath;
@@ -93,6 +99,7 @@ namespace theDiary.Tools.HideMyWindow
         public event EventHandler<IconEventArgs> ApplicationIconChanged;
 
         public event MessageBoxHandler ConfirmIconOverride;
+
         #endregion
     }
 }

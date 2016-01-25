@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
     public class PasswordTextBox : WatermarkTextBox
     {
         #region Properties
+
         public string Password
         {
             get
@@ -17,17 +14,11 @@ namespace theDiary.Tools.HideMyWindow
 
                 return this.Text;
             }
-            set
-            {
-                this.Text = value;
-            }
+            set { this.Text = value; }
         }
 
-        public bool ClearPassword
-        {
-            get;
-            set;
-        }
+        public bool ClearPassword { get; set; }
+
         #endregion
     }
 }

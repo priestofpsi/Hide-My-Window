@@ -1,121 +1,105 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Serialization;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
-    public class HiddenWindowStore : IIsolatedStorageFile, IList<WindowsStoreItem>
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Xml.Serialization;
+
+    public class HiddenWindowStore : IsolatedStorageFileBase, IList<WindowsStoreItem>
     {
-        #region Public Constructors
+        #region Constructors
+
         public HiddenWindowStore()
+            : base(StorageFileName)
         {
             this.Added += this.Items_Added;
             this.Removed += this.Items_Removed;
         }
-        #endregion
 
-        #region Constant Declarations
-        [XmlIgnore]
-        internal static string StorageFileName = "WindowStore.xml";
         #endregion
 
         #region Declarations
+
+        #region Static Declarations
+
+        [XmlIgnore] internal static string StorageFileName = "WindowStore.xml";
+
+        #endregion
+
+        #region Private Declarations
+
         private readonly List<WindowsStoreItem> items = new List<WindowsStoreItem>();
 
-        private bool running;
+        #endregion
+
         #endregion
 
         #region Properties
+
         public int Count
         {
-            get
-            {
-                return this.items.Count;
-            }
+            get { return this.items.Count; }
         }
 
         bool ICollection<WindowsStoreItem>.IsReadOnly
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
         public WindowsStoreItem this[int index]
         {
-            get
-            {
-                return this.items[index];
-            }
+            get { return this.items[index]; }
 
-            set
-            {
-                this.items[index] = value;
-            }
+            set { this.items[index] = value; }
         }
 
         private bool CanCheckProcesses
         {
-            get
-            {
-                return this.items.ToArray().Length > 0;
-            }
+            get { return this.items.ToArray().Length > 0; }
         }
 
         public WindowsStoreItem this[IntPtr handle]
         {
-            get
-            {
-                return this.items.FirstOrDefault(item => item.Handle == handle);
-            }
+            get { return this.items.FirstOrDefault(item => item.Handle == handle); }
         }
 
         public WindowsStoreItem this[WindowInfo window]
         {
-            get
-            {
-                return this[window.Handle];
-            }
+            get { return this[window.Handle]; }
         }
+
         #endregion
 
         #region Methods & Functions
-        public static event FileEventHandler FileNotification;
 
         private void Items_Removed(object sender, EventArgs e)
         {
-            HiddenWindowStore.Save(this);
+            Save(this);
         }
 
         private void Items_Added(object sender, EventArgs e)
         {
-            HiddenWindowStore.Save(this);
+            Save(this);
         }
 
         internal static void Save(HiddenWindowStore store)
         {
-            if (FileNotification != null)
-                FileNotification(store, new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Saving));
+            RaiseFileNotification(store, new FileEventArgs(StorageFileName, FileEventTypes.Saving));
 
             store.SaveFile();
-
-            if (FileNotification != null)
-                FileNotification(store, new FileEventArgs(HiddenWindowStore.StorageFileName));
+            RaiseFileNotification(store, new FileEventArgs(StorageFileName));
         }
 
         internal static HiddenWindowStore Load()
         {
-            if (FileNotification != null)
-                FileNotification(null, new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Opening));
-            HiddenWindowStore returnValue = null;
-            bool wasCreated;
-            returnValue = returnValue.LoadFile(out wasCreated);
+            RaiseFileNotification(new FileEventArgs(StorageFileName, FileEventTypes.Opening));
 
-            if (FileNotification != null)
-                FileNotification(null, new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Loaded));
+            bool wasCreated;
+            HiddenWindowStore returnValue = LoadFile<HiddenWindowStore>(out wasCreated);
+            ;
+
+            RaiseFileNotification(new FileEventArgs(StorageFileName, FileEventTypes.Loaded));
             return returnValue;
         }
 
@@ -137,10 +121,14 @@ namespace theDiary.Tools.HideMyWindow
                 WindowInfo window = WindowInfo.Find(handle);
                 returnValue = new WindowsStoreItem(window);
                 this.items.Add(returnValue);
-                WindowInfoEventArgs e = new WindowInfoEventArgs(window);
-                this.Added(this, e);
+                if (this.Added != null)
+                {
+                    WindowInfoEventArgs e = new WindowInfoEventArgs(window);
+                    this.Added(this, e);
+                }
             }
-            returnValue.RegisterHandlers();
+            if (returnValue != null)
+                returnValue.RegisterHandlers();
             return returnValue;
         }
 
@@ -152,7 +140,7 @@ namespace theDiary.Tools.HideMyWindow
                 return false;
             bool returnValue = this.items.Remove(match);
 
-            if (returnValue)
+            if (this.Removed != null && returnValue)
             {
                 WindowInfoEventArgs e = new WindowInfoEventArgs(WindowInfo.Find(handle));
                 this.Removed(this, e);
@@ -174,36 +162,27 @@ namespace theDiary.Tools.HideMyWindow
         {
             this.items.ForEach(item => action(item.Handle));
         }
+
         #endregion
 
         #region Interface Implementations
-        public event NotificationEventHandler Notification;
 
-        public void Save()
+        public override void Save()
         {
-            if (this.Notification != null)
-                this.Notification(this, new NotificationEventArgs("Saving"));
+            this.RaiseNotification(this, new NotificationEventArgs("Saving"));
 
             this.SaveFile();
 
-            if (this.Notification != null)
-                this.Notification(this, new NotificationEventArgs("Saved"));
+            this.RaiseNotification(this, new NotificationEventArgs("Saved"));
         }
 
-        public void Reset()
+        public override void Reset()
         {
-            if (this.Notification != null)
-                this.Notification(this, new NotificationEventArgs("Resetting"));
+            this.RaiseNotification(this, new NotificationEventArgs("Resetting"));
 
             Runtime.Instance.Store = this.LoadFile();
 
-            if (this.Notification != null)
-                this.Notification(this, new NotificationEventArgs("Reset"));
-        }
-
-        string IIsolatedStorageFile.GetStorageFileName()
-        {
-            return HiddenWindowStore.StorageFileName;
+            this.RaiseNotification(this, new NotificationEventArgs("Reset"));
         }
 
         int IList<WindowsStoreItem>.IndexOf(WindowsStoreItem item)
@@ -271,6 +250,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             return this.items.GetEnumerator();
         }
+
         #endregion
     }
 }

@@ -1,38 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-
-namespace System
+﻿namespace System
 {
+    using Collections.Generic;
+    using Linq;
+    using Text;
+    using Text.RegularExpressions;
+
     /// <summary>
     ///     Provides extenion methods & Functions used in Text and <see cref="String" />
     ///     manipulation.
     /// </summary>
     public static class TextExtensions
     {
-        #region Constant Declarations
+        #region Declarations
+
+        #region Static Declarations
+
         private static readonly char WhiteSpace = ' ';
 
-        private static readonly Regex readableRegEx = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)",
+        private static readonly Regex ReadableRegEx = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)",
             RegexOptions.Compiled);
 
-        private static readonly Regex readableRemovedRegEx = new Regex(@"[_\-\.]+");
+        private static readonly Regex ReadableRemovedRegEx = new Regex(@"[_\-\.]+");
 
-        private static readonly Regex readableRegEx2 = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)",
+        private static readonly Regex ReadableRegEx2 = new Regex(@"(\S)([A-Z]+|(\d+)(?![A-Z_\-\.]|\b|\s)|[_\-\.]+)",
             RegexOptions.Compiled);
 
-        private static readonly Regex readableRemovedRegEx2 = new Regex(@"[_\-\.]+");
+        private static readonly Regex ReadableRemovedRegEx2 = new Regex(@"[_\-\.]+");
 
-        private static readonly Func<Group, string> replace =
-            g => TextExtensions.readableRemovedRegEx.Replace(g.Value, string.Empty);
-
-        private static readonly Func<Group, string> replace2 =
-            g => TextExtensions.readableRemovedRegEx2.Replace(g.Value, string.Empty);
         #endregion
 
+        #endregion
+
+        //}
+
+        //public static string AsReadable3(this string text)
+        //{
+        //    return ReadableRegEx2.Replace(text, (m) => string.Format("{0} {1}", replace2(m.Groups[1]), replace2(m.Groups[2])));
+
+        //}
+
         #region Methods & Functions
+
         public static bool IsNumber(this string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -43,7 +51,7 @@ namespace System
         }
 
         public static string AsReadable(this string value,
-                                        ReadablilityCondition normalizeConditions = ReadablilityCondition.Default)
+            ReadablilityCondition normalizeConditions = ReadablilityCondition.Default)
         {
             if (value.IsNullEmptyOrWhiteSpace())
                 return value;
@@ -77,7 +85,7 @@ namespace System
                 hasValue = iterator.MoveNext();
                 isFirst = false;
                 if (hasValue)
-                    returnValue.Append(TextExtensions.WhiteSpace);
+                    returnValue.Append(WhiteSpace);
             }
 
             return returnValue.ToString();
@@ -135,7 +143,7 @@ namespace System
         private static IEnumerable<string> SeperateForReadability(this string value, ReadablilityCondition conditions)
         {
             char[] valueContent = value.ToCharArray();
-            var vals = new List<List<char>>();
+            List<List<char>> vals = new List<List<char>>();
             for (int i = 0; i < valueContent.Length; i++)
             {
                 if (i == 0
@@ -159,7 +167,7 @@ namespace System
         private static bool CanMakeReadable(this ReadablilityCondition conditions, string value)
         {
             if (conditions.HasFlag(ReadablilityCondition.StopIfAnyWhitespace)
-                && value.Contains(TextExtensions.WhiteSpace))
+                && value.Contains(WhiteSpace))
                 return false;
 
             return true;
@@ -335,15 +343,10 @@ namespace System
             @char = value[index - 1];
             return true;
         }
+
         #endregion
 
-        //}
-        //    return readableRegEx2.Replace(text, (m) => string.Format("{0} {1}", replace2(m.Groups[1]), replace2(m.Groups[2])));
-        //{
-
-        //public static string AsReadable3(this string text)
-        //}
-        //    return readableRegEx.Replace(text, (m) => string.Format("{0} {1}", replace(m.Groups[1]), replace(m.Groups[2])));
+        //    return ReadableRegEx.Replace(text, (m) => string.Format("{0} {1}", replace(m.Groups[1]), replace(m.Groups[2])));
         //{
 
         //public static string AsReadable2(this string text)

@@ -1,27 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+    using System.Runtime.InteropServices;
+    using System.Windows.Forms;
+
     internal static partial class ExternalReferences
     {
-        #region Constant Declarations
-        internal const int WM_HOTKEY = 0x0312;
-        internal const int WM_SYSCOMMAND = 0x0112;
-        internal const int SC_MINIMIZE = 0xF020;
+        #region Declarations
 
-        private static short HotKeyIDCounter = 16345;
+        #region Static Declarations
+
+        internal const int WmHotkey = 0x0312;
+        internal const int WmSyscommand = 0x0112;
+        internal const int ScMinimize = 0xF020;
         internal static IntPtr MainHandle;
+
+        #endregion
+
         #endregion
 
         #region Methods & Functions
+
         internal static void SetHandle(Form mainForm)
         {
-            if (ExternalReferences.MainHandle == IntPtr.Zero)
-                ExternalReferences.MainHandle = mainForm.Handle;
+            if (MainHandle == IntPtr.Zero)
+                MainHandle = mainForm.Handle;
         }
 
         [DllImport("user32.dll")]
@@ -29,6 +32,7 @@ namespace theDiary.Tools.HideMyWindow
 
         [DllImport("user32.dll")]
         private static extern void UnregisterHotKey(IntPtr hwnd, int id);
+
         #endregion
     }
 }

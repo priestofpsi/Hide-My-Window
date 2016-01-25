@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System.Drawing;
+    using System.Windows.Forms;
+
     public class HiddenWindowsListView : ListView
     {
-        #region Public Constructors
+        #region Constructors
+
         public HiddenWindowsListView()
         {
             //this.LabelEdit = true;
@@ -17,9 +15,11 @@ namespace theDiary.Tools.HideMyWindow
             this.DrawColumnHeader += this.HiddenWindowsListView_DrawColumnHeader;
             this.DrawSubItem += this.HiddenWindowsListView_DrawSubItem;
         }
+
         #endregion
 
         #region Methods & Functions
+
         private void HiddenWindowsListView_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
         {
             if (e.ColumnIndex == 0)
@@ -105,6 +105,7 @@ namespace theDiary.Tools.HideMyWindow
                 e.Item.SubItems[2].Text = currentItem.IsPinned ? "Yes" : "No";
             }
         }
+
         #endregion
     }
 }

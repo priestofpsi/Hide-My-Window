@@ -1,160 +1,82 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Linq;
+    using System.Windows.Forms;
+    using Forms.ConfigurationSections;
+
     public partial class ConfigurationForm : Form
     {
-        #region Public Constructors
+        #region Constructors
+
         public ConfigurationForm()
         {
             this.InitializeComponent();
-            ExternalReferences.UnregisterAll();
-            this.pinnedHideWhenMinimized.DataBindings.Add(new Binding("Checked",
-                Runtime.Instance.Settings.PinnedSettings, "HideOnMinimize"));
-            this.minimizeToTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings,
-                "MinimizeToTaskBar"));
-            this.closeToTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "CloseToTaskBar"));
-            this.restoreWindowsOnExit.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings,
-                "RestoreWindowsOnExit"));
-            this.confirmWhenExiting.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings,
-                "ConfirmApplicationExit"));
-            this.startInTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "StartInTaskBar"));
-            this.requirePasswordOnShow.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings,
-                "RequirePasswordOnShow"));
-            this.requirePasswordOnShow.DataBindings.Add(new Binding("Enabled", Runtime.Instance.Settings,
-                "PasswordIsSet"));
-            this.clearPassword.CheckedChanged += (s, e) => this.glowPanel1.Enabled = !this.clearPassword.Checked;
-            this.startWithWindows.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings,
-                "AutoStartWithWindows"));
             this.hotKeyMimicTextBox1.HotKey =
-                Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.HideCurrentWindow);
+                Runtime.Instance.Settings.GetHotKeyByFunction(HotKeyFunction.HideCurrentWindow);
             this.hotKeyMimicTextBox2.HotKey =
-                Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.UnhideLastWindow);
+                Runtime.Instance.Settings.GetHotKeyByFunction(HotKeyFunction.UnhideLastWindow);
             this.hotKeyMimicTextBox3.HotKey =
-                Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.ToggleLastWindow);
+                Runtime.Instance.Settings.GetHotKeyByFunction(HotKeyFunction.ToggleLastWindow);
             this.hotKeyMimicTextBox4.HotKey =
-                Runtime.Instance.Settings.GetHotKeyByFunction(HotkeyFunction.UnhideAllWindows);
-            this.hotKeyMimicTextBox1.HotKeyChanged += (s, e) =>
-                                                      {
-                                                          if (
-                                                              !Runtime.Instance.Settings.Hotkey.Contains(
-                                                                  this.hotKeyMimicTextBox1.HotKey))
-                                                          {
-                                                              Runtime.Instance.Settings.Hotkey.Add(
-                                                                  this.hotKeyMimicTextBox1.HotKey);
-                                                          }
-                                                          else
-                                                          {
-                                                              Runtime.Instance.Settings.Hotkey[0] =
-                                                                  this.hotKeyMimicTextBox1.HotKey;
-                                                          }
-                                                          this.hotkeysChanged = true;
-                                                      };
-            this.hotKeyMimicTextBox2.HotKeyChanged += (s, e) =>
-                                                      {
-                                                          if (
-                                                              !Runtime.Instance.Settings.Hotkey.Contains(
-                                                                  this.hotKeyMimicTextBox2.HotKey))
-                                                          {
-                                                              Runtime.Instance.Settings.Hotkey.Add(
-                                                                  this.hotKeyMimicTextBox2.HotKey);
-                                                          }
-                                                          else
-                                                          {
-                                                              Runtime.Instance.Settings.Hotkey[1] =
-                                                                  this.hotKeyMimicTextBox2.HotKey;
-                                                          }
-                                                          this.hotkeysChanged = true;
-                                                      };
-            this.hotKeyMimicTextBox3.HotKeyChanged += (s, e) =>
-                                                      {
-                                                          if (
-                                                              !Runtime.Instance.Settings.Hotkey.Contains(
-                                                                  this.hotKeyMimicTextBox3.HotKey))
-                                                          {
-                                                              Runtime.Instance.Settings.Hotkey.Add(
-                                                                  this.hotKeyMimicTextBox3.HotKey);
-                                                          }
-                                                          else
-                                                          {
-                                                              Runtime.Instance.Settings.Hotkey[0] =
-                                                                  this.hotKeyMimicTextBox3.HotKey;
-                                                          }
-                                                          this.hotkeysChanged = true;
-                                                      };
-            this.hotKeyMimicTextBox4.HotKeyChanged += (s, e) =>
-                                                      {
-                                                          if (
-                                                              !Runtime.Instance.Settings.Hotkey.Contains(
-                                                                  this.hotKeyMimicTextBox4.HotKey))
-                                                          {
-                                                              Runtime.Instance.Settings.Hotkey.Add(
-                                                                  this.hotKeyMimicTextBox4.HotKey);
-                                                          }
-                                                          else
-                                                          {
-                                                              Runtime.Instance.Settings.Hotkey[0] =
-                                                                  this.hotKeyMimicTextBox4.HotKey;
-                                                          }
-                                                          this.hotkeysChanged = true;
-                                                      };
+                Runtime.Instance.Settings.GetHotKeyByFunction(HotKeyFunction.UnhideAllWindows);
+            this.hotKeyMimicTextBox1.HotKeyChanged += this.OnHotKeyChanged;
+            this.hotKeyMimicTextBox2.HotKeyChanged += this.OnHotKeyChanged;
+            this.hotKeyMimicTextBox3.HotKeyChanged += this.OnHotKeyChanged;
+            this.hotKeyMimicTextBox4.HotKeyChanged += this.OnHotKeyChanged;
 
-            this.glowPanel1.EffectColor = Runtime.Instance.Settings.PasswordIsSet ? Color.LimeGreen : Color.Firebrick;
-            if (!Runtime.Instance.Settings.PasswordIsSet)
-            {
-                this.password.TextChanged += (s, e) =>
-                                             {
-                                                 bool isSet = !string.IsNullOrWhiteSpace(this.password.Text);
-                                                 this.glowPanel1.EffectColor = isSet ? Color.LimeGreen : Color.Firebrick;
-                                                 this.password.AccessibleDescription = isSet
-                                                     ? "The password has been configured."
-                                                     : "The password has not been set.";
-                                                 this.glowPanel1.AccessibleDescription = isSet
-                                                     ? "The password has been configured."
-                                                     : "The password has not been set.";
-                                                 this.requirePasswordOnShow.Enabled = isSet;
-                                             };
-            }
-            this.password.AccessibleDescription = Runtime.Instance.Settings.PasswordIsSet
-                ? "The password has been configured."
-                : "The password has not been set.";
-            this.glowPanel1.AccessibleDescription = Runtime.Instance.Settings.PasswordIsSet
-                ? "The password has been configured."
-                : "The password has not been set.";
-            this.clearPassword.AccessibleDescription = "Check to have your password cleared when closing.";
+
+            this.AddConfigurationSections();
             this.FormClosing += (s, e) =>
-                                {
-                                    if (this.password.ClearPassword)
-                                        Runtime.Instance.Settings.HashedPassword = string.Empty;
-                                    else if (this.password.Password != string.Empty)
-                                        Runtime.Instance.Settings.HashedPassword = this.password.Password;
-                                    ExternalReferences.RegisterAll();
-                                };
+            {
+                //if (this.password.ClearPassword)
+                //    Runtime.Instance.Settings.HashedPassword = string.Empty;
+                //else if (this.password.Password != string.Empty)
+                //    Runtime.Instance.Settings.HashedPassword = this.password.Password;
+            };
             this.InitializeToolTips(null);
         }
+
         #endregion
 
         #region Declarations
-        private bool hotkeysChanged;
 
-        private Updater updater;
+        #region Private Declarations
+
+        private bool FlagHotKeysAsChanged;
+
+        #endregion
+
         #endregion
 
         #region Properties
+
         public TabPage ActivePage
         {
-            get
-            {
-                return this.tabControl.SelectedTab;
-            }
+            get { return this.tabControl.SelectedTab; }
         }
+
         #endregion
 
+        private void OnHotKeyChanged(object sender, EventArgs e)
+        {
+            HotKey hotKey = (sender as HotKeyMimicTextBox).HotKey;
+            Runtime.Instance.Settings.HotKeys[hotKey.Function] = hotKey;
+            if (this.FlagHotKeysAsChanged)
+                return;
+            this.FlagHotKeysAsChanged = true;
+            this.FormClosing += (s, e1) =>
+            {
+                ExternalReferences.UnregisterAll();
+                ExternalReferences.RegisterAll();
+            };
+        }
+
         #region Methods & Functions
+
         private void InitializeToolTips(Control.ControlCollection container)
         {
             if (container == null)
@@ -169,11 +91,13 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        private void tabControl_Selected(object sender, TabControlEventArgs e) {}
+        private void tabControl_Selected(object sender, TabControlEventArgs e)
+        {
+        }
 
         private void password_TextChanged(object sender, EventArgs e)
         {
-            this.clearPassword.Visible = !string.IsNullOrWhiteSpace(this.password.Password);
+            //this.clearPassword.Visible = !string.IsNullOrWhiteSpace(this.password.Password);
         }
 
         private void HideTooltip(object sender, EventArgs e)
@@ -186,35 +110,48 @@ namespace theDiary.Tools.HideMyWindow
             this.tooltipLabel.Text = ((Control) sender).AccessibleDescription;
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            using (this.updater = new Updater())
-            {
-                this.updater.Notification +=
-                    (s, ne) => this.listBox1.Items.Add(string.Format("[{0}]\t{1}", ne.NotificationDate, ne.Message));
-                this.updater.Updating += (s, ne) =>
-                                         {
-                                             this.listBox1.Items.Add(string.Format("[{0}]\t{1}", ne.NotificationDate,
-                                                 ne.Message));
-                                             if (ne.Completed)
-                                             {
-                                                 if (ne.Success)
-                                                 {
-                                                     this.listBox1.Items.Add(
-                                                         string.Format("[{0}]\t{1} Updates available.",
-                                                             ne.NotificationDate, ne.Count));
-                                                 }
-                                                 else
-                                                 {
-                                                     this.listBox1.Items.Add(string.Format("[{0}]\tError: {1}",
-                                                         ne.NotificationDate, ne.Error.Message));
-                                                 }
-                                             }
-                                         };
 
-                this.updater.GetAvailableUpdates();
-            }
+        private IEnumerable<IConfigurationSection> GetConfigurationSections()
+        {
+            return
+                this.GetType()
+                    .Assembly.GetTypes()
+                    .Where(
+                        type =>
+                            type.GetInterfaces().Any(interfaceType => interfaceType == typeof (IConfigurationSection)))
+                    .Select<Type, IConfigurationSection>(
+                        type => (IConfigurationSection) System.Activator.CreateInstance(type));
         }
-        #endregion
+
+        private void AddConfigurationSection(IConfigurationSection section)
+        {
+            if (this.tabControl.TabPages.ContainsKey(section.SectionName))
+                return;
+
+            Control control = (Control) section;
+            TabPage configurationPage = new TabPage(section.SectionName);
+            configurationPage.Controls.Add(control);
+            this.tabControl.Selected += (s, e) =>
+            {
+                if (this.tabControl.SelectedTab.Text == section.SectionName)
+                    section.Activated(s, e);
+            };
+            this.tabControl.TabPages.Add(configurationPage);
+            control.Dock = DockStyle.Fill;
+        }
+
+        private void TabControl_Selected(object sender, TabControlEventArgs e)
+        {
+            
+        }
+
+        private void AddConfigurationSections()
+        {
+            IEnumerable<IConfigurationSection> sections = this.GetConfigurationSections().ToArray();
+            foreach(var section in sections)
+                this.AddConfigurationSection(section);
+        }
+
+    #endregion
     }
 }

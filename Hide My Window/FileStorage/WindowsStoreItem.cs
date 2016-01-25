@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Serialization;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+    using System.Xml.Serialization;
+
     public class WindowsStoreItem : IEquatable<WindowsStoreItem>
     {
-        #region Public Constructors
+        #region Constructors
+
         public WindowsStoreItem()
         {
             if (this.Handle == IntPtr.Zero)
@@ -15,9 +14,7 @@ namespace theDiary.Tools.HideMyWindow
 
             WindowInfo window = WindowInfo.Find(this.Handle);
         }
-        #endregion
 
-        #region Internal Constructors
         internal WindowsStoreItem(WindowInfo window)
         {
             this.Handle = window.Handle;
@@ -29,76 +26,70 @@ namespace theDiary.Tools.HideMyWindow
             this.LastState = window.CurrentState.ToInt64();
             this.RegisterHandlers(window);
         }
+
         #endregion
 
         #region Declarations
+
+        #region Private Declarations
+
         private bool handlersRegistered;
 
         private WindowStates state;
+
+        #endregion
+
+        #endregion
+
+        #region Interface Implementations
+
+        public bool Equals(WindowsStoreItem other)
+        {
+            if (other == null)
+                return false;
+
+            return this.HandleValue == other.HandleValue;
+        }
+
         #endregion
 
         #region Properties
-        [XmlAttribute]
-        public long LastState
-        {
-            get;
-            set;
-        }
 
         [XmlAttribute]
-        public long HandleValue
-        {
-            get;
-            set;
-        }
+        public long LastState { get; set; }
+
+        [XmlAttribute]
+        public long HandleValue { get; set; }
 
         [XmlIgnore]
         public IntPtr Handle
         {
-            get
-            {
-                return new IntPtr(this.HandleValue);
-            }
-            set
-            {
-                this.HandleValue = value.ToInt64();
-            }
+            get { return new IntPtr(this.HandleValue); }
+            set { this.HandleValue = value.ToInt64(); }
         }
 
         [XmlIgnore]
         public bool IsHidden
         {
-            get
-            {
-                return this.State.HasFlag(WindowStates.Hidden);
-            }
+            get { return this.State.HasFlag(WindowStates.Hidden); }
         }
 
         [XmlIgnore]
         public bool IsPinned
         {
-            get
-            {
-                return this.State.HasFlag(WindowStates.Pinned);
-            }
+            get { return this.State.HasFlag(WindowStates.Pinned); }
         }
 
         [XmlIgnore]
         public bool IsPasswordProtected
         {
-            get
-            {
-                return this.State.HasFlag(WindowStates.Protected);
-            }
+            get { return this.State.HasFlag(WindowStates.Protected); }
         }
 
         [XmlAttribute]
         public WindowStates State
         {
-            get
-            {
-                return this.state;
-            }
+            get { return this.state; }
             set
             {
                 if (this.state == value)
@@ -108,9 +99,11 @@ namespace theDiary.Tools.HideMyWindow
                     this.StateChanged(this, EventArgs.Empty);
             }
         }
+
         #endregion
 
         #region Methods & Functions
+
         public event EventHandler StateChanged;
 
         public void RegisterHandlers(WindowInfo window = null)
@@ -133,16 +126,7 @@ namespace theDiary.Tools.HideMyWindow
             this.StateChanged += (s, e) => { HiddenWindowStore.Save(Runtime.Instance.Store); };
             this.handlersRegistered = true;
         }
-        #endregion
 
-        #region Interface Implementations
-        public bool Equals(WindowsStoreItem other)
-        {
-            if (other == null)
-                return false;
-
-            return this.HandleValue == other.HandleValue;
-        }
         #endregion
     }
 }

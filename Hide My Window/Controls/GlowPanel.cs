@@ -1,48 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Windows.Forms;
+
     public class GlowPanel : Panel
     {
-        #region Public Constructors
+        #region Constructors
+
         public GlowPanel()
         {
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
         }
+
         #endregion
 
         #region Declarations
+
+        #region Private Declarations
+
         private Color effectColor = SystemColors.ButtonShadow;
         private bool effectEnabled;
         private int featherEffect = 50;
         private int glowSize = 7;
         private EffectTarget target = EffectTarget.Controls;
         private EffectTrigger trigger = EffectTrigger.Hover | EffectTrigger.Focus;
+
+        #endregion
+
         #endregion
 
         #region Properties
+
         [Category("Appearance")]
         [Description("Get or Set the thickness of the Glow")]
         [DefaultValue(typeof (int), "7")]
         public int GlowThickness
         {
-            get
-            {
-                return (this.glowSize - 1) / 2;
-            }
+            get { return (this.glowSize - 1)/2; }
             set
             {
-                if (this.glowSize == (value * 2) + 1)
+                if (this.glowSize == (value*2) + 1)
                     return;
 
-                this.glowSize = (value * 2) + 1;
+                this.glowSize = (value*2) + 1;
                 this.Invalidate();
             }
         }
@@ -52,10 +56,7 @@ namespace theDiary.Tools.HideMyWindow
         [DefaultValue(50)]
         public int FeatherEffect
         {
-            get
-            {
-                return this.featherEffect;
-            }
+            get { return this.featherEffect; }
             set
             {
                 if (value < 0
@@ -73,10 +74,7 @@ namespace theDiary.Tools.HideMyWindow
         [DefaultValue(typeof (int), "6")]
         public EffectTrigger Trigger
         {
-            get
-            {
-                return this.trigger;
-            }
+            get { return this.trigger; }
             set
             {
                 if (this.trigger == value)
@@ -92,10 +90,7 @@ namespace theDiary.Tools.HideMyWindow
         [DefaultValue(typeof (int), "1")]
         public EffectTarget Target
         {
-            get
-            {
-                return this.target;
-            }
+            get { return this.target; }
             set
             {
                 if (this.target == value)
@@ -111,10 +106,7 @@ namespace theDiary.Tools.HideMyWindow
         [DefaultValue(typeof (Color), "Maroon")]
         public Color EffectColor
         {
-            get
-            {
-                return this.effectColor;
-            }
+            get { return this.effectColor; }
             set
             {
                 if (this.effectColor == value)
@@ -129,10 +121,7 @@ namespace theDiary.Tools.HideMyWindow
         [DefaultValue(false)]
         public bool EffectEnabled
         {
-            get
-            {
-                return this.effectEnabled;
-            }
+            get { return this.effectEnabled; }
             set
             {
                 if (this.effectEnabled == value)
@@ -141,9 +130,11 @@ namespace theDiary.Tools.HideMyWindow
                 this.Invalidate();
             }
         }
+
         #endregion
 
         #region Methods & Functions
+
         private void DrawGlow(Control control, PaintEventArgs e)
         {
             if (!this.Enabled
@@ -166,7 +157,7 @@ namespace theDiary.Tools.HideMyWindow
                 //Draw multiple rectangles with increasing thickness and transparency
                 for (int i = 1; i < glowSteps; i = i + 2)
                 {
-                    int aGlow = (glowFeather - ((glowFeather / glowSteps) * i));
+                    int aGlow = (glowFeather - ((glowFeather/glowSteps)*i));
                     using (Pen pen = new Pen(Color.FromArgb(aGlow, this.effectColor), i))
                     {
                         pen.LineJoin = LineJoin.Round;
@@ -235,7 +226,7 @@ namespace theDiary.Tools.HideMyWindow
                 {
                     if (
                         ((Control) sender).ClientRectangle.Contains(
-                            ((Control) sender).PointToClient(Control.MousePosition)))
+                            ((Control) sender).PointToClient(MousePosition)))
                         this.DrawGlow((Control) sender, e);
                 }
             }
@@ -250,13 +241,16 @@ namespace theDiary.Tools.HideMyWindow
                 {
                     if (
                         ((Control) sender).ClientRectangle.Contains(
-                            ((Control) sender).PointToClient(Control.MousePosition)))
+                            ((Control) sender).PointToClient(MousePosition)))
                         this.DrawGlow((Control) sender, e);
                 }
             }
         }
 
-        private void Control_MouseEnter(object sender, EventArgs e) {}
+        private void Control_MouseEnter(object sender, EventArgs e)
+        {
+        }
+
         #endregion
     }
 

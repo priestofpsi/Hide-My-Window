@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+    using System.Drawing;
+
     public class IconEventArgs : EventArgs
 
     {
-        #region Public Constructors
-        public IconEventArgs() {}
+        #region Constructors
+
+        public IconEventArgs()
+        {
+        }
 
         public IconEventArgs(Icon icon)
             : this()
@@ -19,22 +20,18 @@ namespace theDiary.Tools.HideMyWindow
 
             this.Icon = icon;
         }
+
         #endregion
 
         #region Properties
-        public Icon Icon
-        {
-            get;
-            set;
-        }
+
+        public Icon Icon { get; set; }
 
         public bool HasIcon
         {
-            get
-            {
-                return this.Icon != null;
-            }
+            get { return this.Icon != null; }
         }
+
         #endregion
     }
 }

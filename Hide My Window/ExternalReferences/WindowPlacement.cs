@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-
-namespace theDiary.Tools.HideMyWindow
+﻿namespace theDiary.Tools.HideMyWindow
 {
+    using System;
+    using System.Drawing;
+    using System.Runtime.InteropServices;
+
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     internal struct WindowPlacement

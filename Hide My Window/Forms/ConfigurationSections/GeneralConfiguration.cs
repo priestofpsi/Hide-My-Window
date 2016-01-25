@@ -1,40 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-
+﻿
 namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
 {
+    using System;
+    using System.Drawing;
+    using System.Windows.Forms;
+
     public partial class GeneralConfiguration : UserControl, IConfigurationSection
     {
-        #region Public Constructors
+        #region Constructors
+
         public GeneralConfiguration()
         {
             this.InitializeComponent();
         }
+
         #endregion
 
         #region Properties
+
         public bool ConfigurationChanged
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
         public string SectionName
         {
-            get
-            {
-                return "General";
-            }
+            get { return "General"; }
         }
+
         #endregion
 
         #region Interface Implementations
-        public void Activated(object sender, EventArgs e) {}
+
+        public void Activated(object sender, EventArgs e)
+        {
+            
+        }
 
         public void LoadConfiguration(object sender, EventArgs e)
         {
@@ -57,17 +58,17 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
             if (!Runtime.Instance.Settings.PasswordIsSet)
             {
                 this.password.TextChanged += (s, e1) =>
-                                             {
-                                                 bool isSet = !string.IsNullOrWhiteSpace(this.password.Text);
-                                                 this.glowPanel1.EffectColor = isSet ? Color.LimeGreen : Color.Firebrick;
-                                                 this.password.AccessibleDescription = isSet
-                                                     ? "The password has been configured."
-                                                     : "The password has not been set.";
-                                                 this.glowPanel1.AccessibleDescription = isSet
-                                                     ? "The password has been configured."
-                                                     : "The password has not been set.";
-                                                 this.requirePasswordOnShow.Enabled = isSet;
-                                             };
+                {
+                    bool isSet = !string.IsNullOrWhiteSpace(this.password.Text);
+                    this.glowPanel1.EffectColor = isSet ? Color.LimeGreen : Color.Firebrick;
+                    this.password.AccessibleDescription = isSet
+                        ? "The password has been configured."
+                        : "The password has not been set.";
+                    this.glowPanel1.AccessibleDescription = isSet
+                        ? "The password has been configured."
+                        : "The password has not been set.";
+                    this.requirePasswordOnShow.Enabled = isSet;
+                };
             }
             this.password.AccessibleDescription = Runtime.Instance.Settings.PasswordIsSet
                 ? "The password has been configured."
@@ -78,9 +79,14 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
             this.clearPassword.AccessibleDescription = "Check to have your password cleared when closing.";
         }
 
-        public void ResetConfiguration(object sender, EventArgs e) {}
+        public void ResetConfiguration(object sender, EventArgs e)
+        {
+        }
 
-        public void SaveConfiguration(object sender, EventArgs e) {}
+        public void SaveConfiguration(object sender, EventArgs e)
+        {
+        }
+
         #endregion
     }
 }

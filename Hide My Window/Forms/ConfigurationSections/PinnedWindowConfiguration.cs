@@ -1,39 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
+﻿namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
 {
+    using System;
+    using System.Windows.Forms;
+
     public partial class PinnedWindowConfiguration : UserControl, IConfigurationSection
     {
-        #region Public Constructors
+        #region Constructors
+
         public PinnedWindowConfiguration()
         {
             this.InitializeComponent();
         }
+
         #endregion
 
         #region Properties
+
         public bool ConfigurationChanged
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
         public string SectionName
         {
-            get
-            {
-                return "Pinned Windows";
-            }
+            get { return "Pinned Windows"; }
         }
+
         #endregion
 
         #region Interface Implementations
-        public void Activated(object sender, EventArgs e) {}
+
+        public void Activated(object sender, EventArgs e)
+        {
+        }
 
         public void LoadConfiguration(object sender, EventArgs e)
         {
@@ -50,6 +49,7 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
         {
             throw new NotImplementedException();
         }
+
         #endregion
     }
 }
