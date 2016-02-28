@@ -15,19 +15,6 @@
         public ConfigurationForm()
         {
             this.InitializeComponent();
-            this.hotKeyMimicTextBox1.HotKey =
-                Runtime.Instance.Settings.GetHotKeyByFunction(HotKeyFunction.HideCurrentWindow);
-            this.hotKeyMimicTextBox2.HotKey =
-                Runtime.Instance.Settings.GetHotKeyByFunction(HotKeyFunction.UnhideLastWindow);
-            this.hotKeyMimicTextBox3.HotKey =
-                Runtime.Instance.Settings.GetHotKeyByFunction(HotKeyFunction.ToggleLastWindow);
-            this.hotKeyMimicTextBox4.HotKey =
-                Runtime.Instance.Settings.GetHotKeyByFunction(HotKeyFunction.UnhideAllWindows);
-            this.hotKeyMimicTextBox1.HotKeyChanged += this.OnHotKeyChanged;
-            this.hotKeyMimicTextBox2.HotKeyChanged += this.OnHotKeyChanged;
-            this.hotKeyMimicTextBox3.HotKeyChanged += this.OnHotKeyChanged;
-            this.hotKeyMimicTextBox4.HotKeyChanged += this.OnHotKeyChanged;
-
 
             this.AddConfigurationSections();
             this.FormClosing += (s, e) =>
@@ -60,21 +47,7 @@
         }
 
         #endregion
-
-        private void OnHotKeyChanged(object sender, EventArgs e)
-        {
-            HotKey hotKey = (sender as HotKeyMimicTextBox).HotKey;
-            Runtime.Instance.Settings.HotKeys[hotKey.Function] = hotKey;
-            if (this.FlagHotKeysAsChanged)
-                return;
-            this.FlagHotKeysAsChanged = true;
-            this.FormClosing += (s, e1) =>
-            {
-                ExternalReferences.UnregisterAll();
-                ExternalReferences.RegisterAll();
-            };
-        }
-
+        
         #region Methods & Functions
 
         private void InitializeToolTips(Control.ControlCollection container)
@@ -84,10 +57,14 @@
 
             foreach (Control control in container)
             {
-                control.MouseEnter += this.ShowTooltip;
-                control.MouseLeave += this.HideTooltip;
+                if (!string.IsNullOrWhiteSpace(control.AccessibleDescription))
+                {
 
-                this.InitializeToolTips(control.Controls);
+                    control.MouseEnter += this.ShowTooltip;
+                    control.MouseLeave += this.HideTooltip;
+                }
+                else
+                    this.InitializeToolTips(control.Controls);
             }
         }
 
@@ -138,6 +115,9 @@
             };
             this.tabControl.TabPages.Add(configurationPage);
             control.Dock = DockStyle.Fill;
+            section.LoadConfiguration(this, EventArgs.Empty);
+            this.FormClosing += (s, e) => section.SaveConfiguration(s, e);
+            this.FormClosed += (s,e) => Runtime.Instance.Settings.Save();
         }
 
         private void TabControl_Selected(object sender, TabControlEventArgs e)

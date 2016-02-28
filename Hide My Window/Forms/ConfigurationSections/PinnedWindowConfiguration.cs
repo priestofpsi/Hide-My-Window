@@ -36,18 +36,29 @@
 
         public void LoadConfiguration(object sender, EventArgs e)
         {
+            this.modifyWindowText.CheckStateChanged += (s, e1) =>
+            {
+                this.windowTitlePrefix.Enabled = this.modifyWindowText.Checked;
+                this.windowTitleSuffix.Enabled = this.modifyWindowText.Checked;
+            };
             this.pinnedHideWhenMinimized.DataBindings.Add(new Binding("Checked",
                 Runtime.Instance.Settings.PinnedSettings, "HideOnMinimize"));
+            this.modifyWindowText.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings.PinnedSettings,
+                "ModifyWindowTitle"));
+            this.windowTitlePrefix.DataBindings.Add(new Binding("Text", Runtime.Instance.Settings.PinnedSettings,
+                "PrefixWindowText"));
+            this.windowTitleSuffix.DataBindings.Add(new Binding("Text", Runtime.Instance.Settings.PinnedSettings,
+                "SufixWindowText"));
         }
 
         public void ResetConfiguration(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void SaveConfiguration(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Runtime.Instance.Settings.PinnedSettings.HideOnMinimize = this.pinnedHideWhenMinimized.Checked;
         }
 
         #endregion

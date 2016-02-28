@@ -152,7 +152,7 @@
             // 
             // minimizeToTaskbar
             // 
-            this.minimizeToTaskbar.AccessibleDescription = "Closing the window will send the application to the Tool Tray.";
+            this.minimizeToTaskbar.AccessibleDescription = "Minimizing the window will send the application to the Tool Tray.";
             this.minimizeToTaskbar.AutoSize = true;
             this.minimizeToTaskbar.Location = new System.Drawing.Point(3, 3);
             this.minimizeToTaskbar.Name = "minimizeToTaskbar";

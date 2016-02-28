@@ -163,6 +163,12 @@
     <Compile Include="Forms\ConfigurationSections\GeneralConfiguration.Designer.cs">
       <DependentUpon>GeneralConfiguration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ConfigurationSections\HotKeysConfiguration.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\ConfigurationSections\HotKeysConfiguration.Designer.cs">
+      <DependentUpon>HotKeysConfiguration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ConfigurationSections\IConfigurationSection.cs" />
     <Compile Include="Forms\ConfigurationSections\PinnedWindowConfiguration.cs">
       <SubType>UserControl</SubType>
@@ -252,6 +258,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConfigurationSections\GeneralConfiguration.resx">
       <DependentUpon>GeneralConfiguration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ConfigurationSections\HotKeysConfiguration.resx">
+      <DependentUpon>HotKeysConfiguration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConfigurationSections\PinnedWindowConfiguration.resx">
       <DependentUpon>PinnedWindowConfiguration.cs</DependentUpon>

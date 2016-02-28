@@ -30,10 +30,10 @@
         {
             this.pinnedHideWhenMinimized = new System.Windows.Forms.CheckBox();
             this.modifyWindowText = new System.Windows.Forms.CheckBox();
-            this.watermarkTextBox1 = new theDiary.Tools.HideMyWindow.WatermarkTextBox();
-            this.watermarkTextBox2 = new theDiary.Tools.HideMyWindow.WatermarkTextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.windowTitleSuffix = new theDiary.Tools.HideMyWindow.WatermarkTextBox();
+            this.windowTitlePrefix = new theDiary.Tools.HideMyWindow.WatermarkTextBox();
             this.SuspendLayout();
             // 
             // pinnedHideWhenMinimized
@@ -51,9 +51,8 @@
             // 
             // modifyWindowText
             // 
-            this.modifyWindowText.AccessibleDescription = "Pinned windows will automatically hide when minimized.";
+            this.modifyWindowText.AccessibleDescription = "Modify the Title of a pinned Window.";
             this.modifyWindowText.AutoSize = true;
-            this.modifyWindowText.Enabled = false;
             this.modifyWindowText.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.modifyWindowText.Location = new System.Drawing.Point(3, 27);
             this.modifyWindowText.Name = "modifyWindowText";
@@ -62,28 +61,6 @@
             this.modifyWindowText.Text = "Modify Window Title";
             this.modifyWindowText.UseCompatibleTextRendering = true;
             this.modifyWindowText.UseVisualStyleBackColor = true;
-            // 
-            // watermarkTextBox1
-            // 
-            this.watermarkTextBox1.Location = new System.Drawing.Point(3, 51);
-            this.watermarkTextBox1.Name = "watermarkTextBox1";
-            this.watermarkTextBox1.Size = new System.Drawing.Size(147, 20);
-            this.watermarkTextBox1.TabIndex = 4;
-            this.watermarkTextBox1.WaterMark = "Window Title Prefix";
-            this.watermarkTextBox1.WaterMarkActiveForeColor = System.Drawing.Color.Gray;
-            this.watermarkTextBox1.WaterMarkFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.watermarkTextBox1.WaterMarkForeColor = System.Drawing.Color.LightGray;
-            // 
-            // watermarkTextBox2
-            // 
-            this.watermarkTextBox2.Location = new System.Drawing.Point(157, 52);
-            this.watermarkTextBox2.Name = "watermarkTextBox2";
-            this.watermarkTextBox2.Size = new System.Drawing.Size(147, 20);
-            this.watermarkTextBox2.TabIndex = 5;
-            this.watermarkTextBox2.WaterMark = "Window Title Suffix";
-            this.watermarkTextBox2.WaterMarkActiveForeColor = System.Drawing.Color.Gray;
-            this.watermarkTextBox2.WaterMarkFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.watermarkTextBox2.WaterMarkForeColor = System.Drawing.Color.LightGray;
             // 
             // checkBox1
             // 
@@ -113,14 +90,40 @@
             this.comboBox1.Size = new System.Drawing.Size(121, 21);
             this.comboBox1.TabIndex = 8;
             // 
+            // windowTitleSuffix
+            // 
+            this.windowTitleSuffix.AccessibleDescription = "The suffix to append to the Title of the pinned Window.";
+            this.windowTitleSuffix.Enabled = false;
+            this.windowTitleSuffix.Location = new System.Drawing.Point(157, 52);
+            this.windowTitleSuffix.Name = "windowTitleSuffix";
+            this.windowTitleSuffix.Size = new System.Drawing.Size(147, 20);
+            this.windowTitleSuffix.TabIndex = 5;
+            this.windowTitleSuffix.WaterMark = "Window Title Suffix";
+            this.windowTitleSuffix.WaterMarkActiveForeColor = System.Drawing.Color.Gray;
+            this.windowTitleSuffix.WaterMarkFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.windowTitleSuffix.WaterMarkForeColor = System.Drawing.Color.LightGray;
+            // 
+            // windowTitlePrefix
+            // 
+            this.windowTitlePrefix.AccessibleDescription = "The prefix to append to the Title of the pinned Window.";
+            this.windowTitlePrefix.Enabled = false;
+            this.windowTitlePrefix.Location = new System.Drawing.Point(3, 51);
+            this.windowTitlePrefix.Name = "windowTitlePrefix";
+            this.windowTitlePrefix.Size = new System.Drawing.Size(147, 20);
+            this.windowTitlePrefix.TabIndex = 4;
+            this.windowTitlePrefix.WaterMark = "Window Title Prefix";
+            this.windowTitlePrefix.WaterMarkActiveForeColor = System.Drawing.Color.Gray;
+            this.windowTitlePrefix.WaterMarkFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.windowTitlePrefix.WaterMarkForeColor = System.Drawing.Color.LightGray;
+            // 
             // PinnedWindowConfiguration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.watermarkTextBox2);
-            this.Controls.Add(this.watermarkTextBox1);
+            this.Controls.Add(this.windowTitleSuffix);
+            this.Controls.Add(this.windowTitlePrefix);
             this.Controls.Add(this.modifyWindowText);
             this.Controls.Add(this.pinnedHideWhenMinimized);
             this.Name = "PinnedWindowConfiguration";
@@ -134,8 +137,8 @@
 
         private System.Windows.Forms.CheckBox pinnedHideWhenMinimized;
         private System.Windows.Forms.CheckBox modifyWindowText;
-        private WatermarkTextBox watermarkTextBox1;
-        private WatermarkTextBox watermarkTextBox2;
+        private WatermarkTextBox windowTitlePrefix;
+        private WatermarkTextBox windowTitleSuffix;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.ComboBox comboBox1;
     }

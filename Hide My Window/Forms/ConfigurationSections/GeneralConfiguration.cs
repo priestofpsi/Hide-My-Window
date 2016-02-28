@@ -31,7 +31,7 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
         #endregion
 
         #region Interface Implementations
-
+        
         public void Activated(object sender, EventArgs e)
         {
             
@@ -85,6 +85,13 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
 
         public void SaveConfiguration(object sender, EventArgs e)
         {
+            Runtime.Instance.Settings.MinimizeToTaskBar = this.minimizeToTaskbar.Checked;
+            Runtime.Instance.Settings.StartInTaskBar = this.startInTaskbar.Checked;
+            Runtime.Instance.Settings.RestoreWindowsOnExit = this.restoreWindowsOnExit.Checked;
+            Runtime.Instance.Settings.CloseToTaskBar = this.closeToTaskbar.Checked;
+            Runtime.Instance.Settings.ConfirmApplicationExit = this.confirmWhenExiting.Checked;
+            Runtime.Instance.Settings.RequirePasswordOnShow = this.restoreWindowsOnExit.Checked;
+            Runtime.Instance.Settings.AutoStartWithWindows = this.startWithWindows.Checked;
         }
 
         #endregion

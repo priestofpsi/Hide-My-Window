@@ -35,18 +35,11 @@
             this.tooltipLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.save = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.tabHotKeys = new System.Windows.Forms.TabPage();
-            this.hotKeyMimicTextBox1 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
-            this.hotKeyMimicTextBox2 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
-            this.hotKeyMimicTextBox3 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
-            this.hotKeyMimicTextBox4 = new theDiary.Tools.HideMyWindow.HotKeyMimicTextBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.tabHotKeys.SuspendLayout();
-            this.tabControl.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -110,67 +103,8 @@
             this.panel2.Size = new System.Drawing.Size(627, 328);
             this.panel2.TabIndex = 2;
             // 
-            // tabHotKeys
-            // 
-            this.tabHotKeys.Controls.Add(this.hotKeyMimicTextBox4);
-            this.tabHotKeys.Controls.Add(this.hotKeyMimicTextBox3);
-            this.tabHotKeys.Controls.Add(this.hotKeyMimicTextBox2);
-            this.tabHotKeys.Controls.Add(this.hotKeyMimicTextBox1);
-            this.tabHotKeys.Location = new System.Drawing.Point(4, 22);
-            this.tabHotKeys.Name = "tabHotKeys";
-            this.tabHotKeys.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHotKeys.Size = new System.Drawing.Size(609, 292);
-            this.tabHotKeys.TabIndex = 1;
-            this.tabHotKeys.Text = "Hot Keys";
-            this.tabHotKeys.UseVisualStyleBackColor = true;
-            // 
-            // hotKeyMimicTextBox1
-            // 
-            this.hotKeyMimicTextBox1.AutoSize = true;
-            this.hotKeyMimicTextBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.hotKeyMimicTextBox1.HotKey = null;
-            this.hotKeyMimicTextBox1.Location = new System.Drawing.Point(3, 3);
-            this.hotKeyMimicTextBox1.Margin = new System.Windows.Forms.Padding(0);
-            this.hotKeyMimicTextBox1.Name = "hotKeyMimicTextBox1";
-            this.hotKeyMimicTextBox1.Size = new System.Drawing.Size(285, 23);
-            this.hotKeyMimicTextBox1.TabIndex = 1;
-            // 
-            // hotKeyMimicTextBox2
-            // 
-            this.hotKeyMimicTextBox2.AutoSize = true;
-            this.hotKeyMimicTextBox2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.hotKeyMimicTextBox2.HotKey = null;
-            this.hotKeyMimicTextBox2.Location = new System.Drawing.Point(3, 26);
-            this.hotKeyMimicTextBox2.Margin = new System.Windows.Forms.Padding(0);
-            this.hotKeyMimicTextBox2.Name = "hotKeyMimicTextBox2";
-            this.hotKeyMimicTextBox2.Size = new System.Drawing.Size(285, 23);
-            this.hotKeyMimicTextBox2.TabIndex = 2;
-            // 
-            // hotKeyMimicTextBox3
-            // 
-            this.hotKeyMimicTextBox3.AutoSize = true;
-            this.hotKeyMimicTextBox3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.hotKeyMimicTextBox3.HotKey = null;
-            this.hotKeyMimicTextBox3.Location = new System.Drawing.Point(3, 49);
-            this.hotKeyMimicTextBox3.Margin = new System.Windows.Forms.Padding(0);
-            this.hotKeyMimicTextBox3.Name = "hotKeyMimicTextBox3";
-            this.hotKeyMimicTextBox3.Size = new System.Drawing.Size(285, 23);
-            this.hotKeyMimicTextBox3.TabIndex = 3;
-            // 
-            // hotKeyMimicTextBox4
-            // 
-            this.hotKeyMimicTextBox4.AutoSize = true;
-            this.hotKeyMimicTextBox4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.hotKeyMimicTextBox4.HotKey = null;
-            this.hotKeyMimicTextBox4.Location = new System.Drawing.Point(3, 72);
-            this.hotKeyMimicTextBox4.Margin = new System.Windows.Forms.Padding(0);
-            this.hotKeyMimicTextBox4.Name = "hotKeyMimicTextBox4";
-            this.hotKeyMimicTextBox4.Size = new System.Drawing.Size(285, 23);
-            this.hotKeyMimicTextBox4.TabIndex = 4;
-            // 
             // tabControl
             // 
-            this.tabControl.Controls.Add(this.tabHotKeys);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(5, 5);
             this.tabControl.Name = "tabControl";
@@ -198,9 +132,6 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.panel2.ResumeLayout(false);
-            this.tabHotKeys.ResumeLayout(false);
-            this.tabHotKeys.PerformLayout();
-            this.tabControl.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -213,10 +144,5 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tooltipLabel;
         private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage tabHotKeys;
-        private HotKeyMimicTextBox hotKeyMimicTextBox4;
-        private HotKeyMimicTextBox hotKeyMimicTextBox3;
-        private HotKeyMimicTextBox hotKeyMimicTextBox2;
-        private HotKeyMimicTextBox hotKeyMimicTextBox1;
     }
 }

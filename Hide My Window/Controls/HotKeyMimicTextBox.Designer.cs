@@ -34,7 +34,8 @@
             // 
             // txtHotKey
             // 
-            this.txtHotKey.Location = new System.Drawing.Point(123, 0);
+            this.txtHotKey.BackColor = System.Drawing.SystemColors.Window;
+            this.txtHotKey.Location = new System.Drawing.Point(123, 3);
             this.txtHotKey.Name = "txtHotKey";
             this.txtHotKey.ReadOnly = true;
             this.txtHotKey.Size = new System.Drawing.Size(159, 20);
@@ -63,7 +64,7 @@
             this.Controls.Add(this.txtHotKey);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "HotKeyMimicTextBox";
-            this.Size = new System.Drawing.Size(285, 23);
+            this.Size = new System.Drawing.Size(285, 26);
             this.ResumeLayout(false);
             this.PerformLayout();
 
