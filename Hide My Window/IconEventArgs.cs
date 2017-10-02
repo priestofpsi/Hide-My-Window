@@ -3,8 +3,8 @@
     using System;
     using System.Drawing;
 
-    public class IconEventArgs : EventArgs
-
+    public class IconEventArgs
+        : EventArgs
     {
         #region Constructors
 

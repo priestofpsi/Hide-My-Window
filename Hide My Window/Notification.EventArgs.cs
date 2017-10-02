@@ -48,6 +48,19 @@
         /// </summary>
         public string Message { get; protected set; }
 
+        public string Title
+        {
+            get;
+            set;
+        }
+
+        public NotificationType Type
+        {
+            get; set;
+        }
+
         #endregion
     }
+
+    
 }

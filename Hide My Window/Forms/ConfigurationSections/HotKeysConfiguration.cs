@@ -70,8 +70,8 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
             this.FlagHotKeysAsChanged = true;
             this.ParentForm.FormClosing += (s, e1) =>
             {
-                ExternalReferences.UnregisterAll();
-                ExternalReferences.RegisterAll();
+                GlobalHotKeyManager.UnregisterAll();
+                GlobalHotKeyManager.RegisterAll();
             };
         }
     }

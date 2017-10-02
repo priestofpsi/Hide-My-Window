@@ -95,11 +95,15 @@
                     .Assembly.GetTypes()
                     .Where(
                         type =>
-                            type.GetInterfaces().Any(interfaceType => interfaceType == typeof (IConfigurationSection)))
+                            type.GetInterfaces().Any(interfaceType => interfaceType == typeof (IConfigurationSection)) && type.GetConstructors().Length > 0)
                     .Select<Type, IConfigurationSection>(
-                        type => (IConfigurationSection) System.Activator.CreateInstance(type));
+                        type => this.MakeConfigurationSection(type));
         }
 
+        private IConfigurationSection MakeConfigurationSection(Type type)
+        {
+            return (IConfigurationSection) System.Activator.CreateInstance(type);
+        }
         private void AddConfigurationSection(IConfigurationSection section)
         {
             if (this.tabControl.TabPages.ContainsKey(section.SectionName))

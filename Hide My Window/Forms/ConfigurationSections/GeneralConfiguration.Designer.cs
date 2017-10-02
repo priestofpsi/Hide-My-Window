@@ -38,6 +38,7 @@
             this.restoreWindowsOnExit = new System.Windows.Forms.CheckBox();
             this.closeToTaskbar = new System.Windows.Forms.CheckBox();
             this.minimizeToTaskbar = new System.Windows.Forms.CheckBox();
+            this.enableNotifications = new System.Windows.Forms.CheckBox();
             this.glowPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,7 +46,7 @@
             // 
             this.startWithWindows.AccessibleDescription = "Hide My Window will start up when logging into Windows.";
             this.startWithWindows.AutoSize = true;
-            this.startWithWindows.Location = new System.Drawing.Point(3, 147);
+            this.startWithWindows.Location = new System.Drawing.Point(3, 145);
             this.startWithWindows.Name = "startWithWindows";
             this.startWithWindows.Size = new System.Drawing.Size(119, 18);
             this.startWithWindows.TabIndex = 18;
@@ -60,7 +61,7 @@
             this.glowPanel1.EffectEnabled = true;
             this.glowPanel1.FeatherEffect = 100;
             this.glowPanel1.GlowThickness = 5;
-            this.glowPanel1.Location = new System.Drawing.Point(3, 171);
+            this.glowPanel1.Location = new System.Drawing.Point(3, 193);
             this.glowPanel1.Name = "glowPanel1";
             this.glowPanel1.Padding = new System.Windows.Forms.Padding(5);
             this.glowPanel1.Size = new System.Drawing.Size(201, 30);
@@ -84,7 +85,7 @@
             // clearPassword
             // 
             this.clearPassword.AutoSize = true;
-            this.clearPassword.Location = new System.Drawing.Point(211, 176);
+            this.clearPassword.Location = new System.Drawing.Point(211, 198);
             this.clearPassword.Name = "clearPassword";
             this.clearPassword.Size = new System.Drawing.Size(99, 17);
             this.clearPassword.TabIndex = 16;
@@ -95,7 +96,7 @@
             // 
             this.requirePasswordOnShow.AccessibleName = "When showing from the Tool Tray the application will confirm password.";
             this.requirePasswordOnShow.AutoSize = true;
-            this.requirePasswordOnShow.Location = new System.Drawing.Point(3, 123);
+            this.requirePasswordOnShow.Location = new System.Drawing.Point(3, 169);
             this.requirePasswordOnShow.Name = "requirePasswordOnShow";
             this.requirePasswordOnShow.Size = new System.Drawing.Size(192, 18);
             this.requirePasswordOnShow.TabIndex = 15;
@@ -162,10 +163,23 @@
             this.minimizeToTaskbar.UseCompatibleTextRendering = true;
             this.minimizeToTaskbar.UseVisualStyleBackColor = true;
             // 
+            // enableNotifications
+            // 
+            this.enableNotifications.AccessibleDescription = "Application will start in the Tool Tray.";
+            this.enableNotifications.AutoSize = true;
+            this.enableNotifications.Location = new System.Drawing.Point(3, 121);
+            this.enableNotifications.Name = "enableNotifications";
+            this.enableNotifications.Size = new System.Drawing.Size(123, 18);
+            this.enableNotifications.TabIndex = 19;
+            this.enableNotifications.Text = "Enable Notifications";
+            this.enableNotifications.UseCompatibleTextRendering = true;
+            this.enableNotifications.UseVisualStyleBackColor = true;
+            // 
             // GeneralConfiguration
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.enableNotifications);
             this.Controls.Add(this.startWithWindows);
             this.Controls.Add(this.glowPanel1);
             this.Controls.Add(this.clearPassword);
@@ -176,7 +190,7 @@
             this.Controls.Add(this.closeToTaskbar);
             this.Controls.Add(this.minimizeToTaskbar);
             this.Name = "GeneralConfiguration";
-            this.Size = new System.Drawing.Size(309, 207);
+            this.Size = new System.Drawing.Size(309, 241);
             this.glowPanel1.ResumeLayout(false);
             this.glowPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -196,5 +210,6 @@
         private System.Windows.Forms.CheckBox restoreWindowsOnExit;
         private System.Windows.Forms.CheckBox closeToTaskbar;
         private System.Windows.Forms.CheckBox minimizeToTaskbar;
+        private System.Windows.Forms.CheckBox enableNotifications;
     }
 }

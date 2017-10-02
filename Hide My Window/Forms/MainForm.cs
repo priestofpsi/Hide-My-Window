@@ -5,6 +5,7 @@
     using System.Diagnostics;
     using System.Drawing;
     using System.Linq;
+    using System.Reflection;
     using System.Security.Permissions;
     using System.Threading.Tasks;
     using System.Windows.Forms;
@@ -27,6 +28,11 @@
                 this.notifyIcon.Icon = e.Icon;
             };
             Runtime.Instance.Store.Removed += (s, e) => this.HiddenWindowsChanged(s, EventArgs.Empty);
+            this.Load += (s, e) =>
+            {                
+                if (Runtime.Instance.Settings.StartInTaskBar)
+                    this.MinimizeToTray();
+            };
         }
 
         #endregion
@@ -45,20 +51,22 @@
 
         public event EventHandler HiddenWindowsChanged;
 
+        public event NotificationEventHandler Notification;
+
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         protected override void WndProc(ref Message m)
         {
             bool passThrough = true;
             switch (m.Msg)
             {
-                case ExternalReferences.WmHotkey:
-                    this.HotKeyPressed((short) m.WParam);
+                case GlobalHotKeyManager.HotKeyPressedMessageIdentifier:
+                    this.HotKeyPressed((short)m.WParam, (WindowInfo.CurrentWindow == null) ? IntPtr.Zero : WindowInfo.CurrentWindow.Handle);
                     passThrough = false;
                     break;
 
-                case ExternalReferences.WmSyscommand:
+                case GlobalHotKeyManager.WindowCommandMessageIdentifier:
                     int command = m.WParam.ToInt32() & 0xfff0;
-                    if (command == ExternalReferences.ScMinimize
+                    if (command == GlobalHotKeyManager.MinimizeMessageIdentifier
                         && Runtime.Instance.Settings.MinimizeToTaskBar)
                     {
                         this.MinimizeToTray();
@@ -150,15 +158,18 @@
                     this.unlockWindow.Image = ActionResource.unlockwindow_small;
                     this.lockWindow.Image = ActionResource.lockwindow_small;
                     this.showWindow.Image = ActionResource.show_small;
+                    this.hideWindow.Image = ActionResource.hide_small;
                     this.pinWindow.Image = ActionResource.tack_small;
-                    this.renameWindow.Image = ActionResource.tack_small;
+                    this.renameWindow.Image = ActionResource.rename_small;
                     break;
 
                 case false:
                     this.unlockWindow.Image = ActionResource.unlockwindow;
                     this.lockWindow.Image = ActionResource.lockwindow;
                     this.showWindow.Image = ActionResource.show;
-                    this.renameWindow.Image = ActionResource.tack;
+                    this.hideWindow.Image = ActionResource.hide;
+                    this.pinWindow.Image = ActionResource.tack;
+                    this.renameWindow.Image = ActionResource.rename;
                     break;
             }
         }
@@ -169,9 +180,11 @@
                 ? ToolStripItemDisplayStyle.Image
                 : ToolStripItemDisplayStyle.ImageAndText;
             this.showWindow.DisplayStyle = style;
+            this.hideWindow.DisplayStyle = style;
             this.unlockWindow.DisplayStyle = style;
             this.lockWindow.DisplayStyle = style;
             this.pinWindow.DisplayStyle = style;
+            this.renameWindow.DisplayStyle = style;
         }
 
         private void showToolbarText_Click(object sender, EventArgs e)
@@ -250,8 +263,8 @@
                     e.Cancel = true;
                     return;
                 }
-                if (Runtime.Instance.Settings.RestoreWindowsOnExit)
-                    this.UnhideAllWindows(this, EventArgs.Empty);
+                if (Runtime.Instance.Settings.RestoreWindowsOnExit && Runtime.Instance.Store.Count > 0)
+                    WindowInfo.All.All(window => window.Show(true));
 
                 Runtime.Instance.Settings.LastState = new FormState(this);
             }
@@ -294,22 +307,22 @@
 
         private void notifyIcon_DoubleClick(object sender, EventArgs e)
         {
-            bool canShow = !Runtime.Instance.Settings.RequirePasswordOnShow;
+            bool canShow = !(Runtime.Instance.Settings.PasswordIsSet && Runtime.Instance.Settings.RequirePasswordOnShow);
             if (!canShow)
             {
                 using (UnlockForm password = new UnlockForm("Hide My Window"))
                     canShow = (password.ShowDialog(this) == DialogResult.OK && password.PasswordMatched);
+                if (!canShow)
+                    this.Notification?.Invoke(this, new NotificationEventArgs("Incorrect Password") { Type = NotificationType.Error });
             }
-
-            if (!canShow)
-                return;
-            this.RestoreFromTray();
+            if (canShow)
+                this.RestoreFromTray();
         }
 
         private void ToggleView(object sender, EventArgs e)
         {
             ToolStripMenuItem item = sender as ToolStripMenuItem;
-            this.SetHiddenWindowsView((View) item.Tag);
+            this.SetHiddenWindowsView((View)item.Tag);
         }
 
         private void SetHiddenWindowsView(View view)
@@ -360,13 +373,18 @@
                 return;
 
             this.initializing = FormInitState.Initializing;
-            ExternalReferences.MainHandle = this.Handle;
-            ExternalReferences.RegisterAll();
+            GlobalHotKeyManager.RegisterAll(this.Handle);
             this.FormClosing += this.Form1_FormClosing;
             this.hiddenWindows.SelectedIndexChanged +=
-                (s, e) => { this.DoInvoke(() => this.show.Enabled = this.hiddenWindows.SelectedItems.Count != 0); };
+                (s, e) =>
+                {
+                    this.DoInvoke(() => this.show.Enabled = this.hiddenWindows.SelectedItems.Count != 0);
+                };
             this.HiddenWindowsChanged += this.OnHiddenWindowsChanged;
-            this.VisibleChanged += (s, e) => { this.DoInvoke(() => this.notifyIcon.Visible = !this.Visible); };
+            this.VisibleChanged += (s, e) =>
+            {
+                this.DoInvoke(() => this.notifyIcon.Visible = !this.Visible);
+            };
         }
 
         private void OnHiddenWindowsChanged(object sender, EventArgs e)
@@ -401,8 +419,8 @@
             this.statusStrip1.VisibleChanged +=
                 (s, e) => Runtime.Instance.Settings.HideStatusbar = !this.statusStrip1.Visible;
             Runtime.Instance.Settings.LastState.SetFormState(this);
-            if (Runtime.Instance.Settings.StartInTaskBar)
-                this.Shown += (s, e) => this.MinimizeToTray();
+            //if (Runtime.Instance.Settings.StartInTaskBar)
+            //    this.Shown += (s, e) => this.MinimizeToTray();
 
             this.Shown += (s, e) =>
             {
@@ -419,8 +437,11 @@
                         item.RegisterHandlers(window);
                     }
                 });
-                this.hiddenWindows_SelectedIndexChanged(s, e);
+                                
+                this.SetToolbarIcons();
                 this.SetToolbarText();
+
+                this.hiddenWindows_SelectedIndexChanged(s, e);
 
                 if (!Program.IsConfigured)
                     this.openConfigurationForm_Click(this, EventArgs.Empty);
@@ -455,6 +476,7 @@
                 if (!e.Window.IsPinned)
                     this.hiddenWindows.Items.RemoveByKey(e.Window.Key);
                 this.HiddenWindowsChanged?.Invoke(this, new EventArgs());
+                this.Notification?.Invoke(this, new NotificationEventArgs("Window Restored") { Type = NotificationType.Info });
             });
         }
 
@@ -470,8 +492,37 @@
                     this.hiddenWindows.Items.Add(item);
                     e.Window.ApplicationExited += this.RemoveClosedApplication;
                 }
-
                 this.HiddenWindowsChanged?.Invoke(this, new EventArgs());
+                this.Notification?.Invoke(this, new NotificationEventArgs("Window Hidden") { Type = NotificationType.Info });
+            });
+        }
+
+        internal void EnableNotifications(bool attach)
+        {
+            if (attach)
+            {
+                this.Notification += this.ShowNotification;
+            }
+            else
+            {
+                this.Notification -= this.ShowNotification;
+            }
+        }
+
+        private void ShowNotification(object sender, NotificationEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(e.Message))
+                return;
+
+            this.DoInvoke(() =>
+            {
+                bool trayIconState = this.notifyIcon.Visible;
+                if (!trayIconState)
+                    this.notifyIcon.Visible = true;
+                this.notifyIcon.ShowBalloonTip(2500, e.Title ?? Application.ProductName, e.Message, (ToolTipIcon)(int)e.Type);
+
+                if (!trayIconState)
+                    this.notifyIcon.Visible = false;
             });
         }
 
@@ -500,12 +551,13 @@
             this.notifyIcon.Visible = true;
         }
 
-        private void HotKeyPressed(short id)
+        private void HotKeyPressed(short id, IntPtr currentWindowHandle)
         {
             switch (Runtime.Instance.Settings.HotKeys.GetFunction(id))
             {
                 case HotKeyFunction.HideCurrentWindow:
-                    WindowInfo.CurrentWindow?.Hide();
+                    if (!currentWindowHandle.Equals(IntPtr.Zero))
+                        WindowInfo.Find(currentWindowHandle).Hide();
                     break;
                 case HotKeyFunction.UnhideAllWindows:
                     WindowInfo.All.AsParallel().ForAll(window => window.Show());
@@ -521,7 +573,16 @@
             }
         }
 
+        private void notifyIcon_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            MethodInfo mi = typeof(NotifyIcon).GetMethod("ShowContextMenu", BindingFlags.Instance | BindingFlags.NonPublic);
+            mi.Invoke(notifyIcon, null);
+        }
         #endregion
+
     }
 
     public enum FormInitState

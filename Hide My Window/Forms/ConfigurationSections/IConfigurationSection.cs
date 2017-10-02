@@ -2,10 +2,16 @@
 {
     using System;
 
+    /// <summary>
+    /// Specifies the properties and methods that define a Configurable Section within the application.
+    /// </summary>
     public interface IConfigurationSection
     {
         #region Properties
 
+        /// <summary>
+        /// Gets the name identifing the section.
+        /// </summary>
         string SectionName { get; }
 
         bool ConfigurationChanged { get; }
@@ -23,5 +29,14 @@
         void LoadConfiguration(object sender, EventArgs e);
 
         #endregion
+    }
+
+    public interface IConfigurationSection<T>
+        : IConfigurationSection
+    {
+        /// <summary>
+        /// Gets the object that contains the values used into the configuration.
+        /// </summary>
+        T ConfigurationSection { get; }
     }
 }

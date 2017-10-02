@@ -62,6 +62,7 @@ namespace theDiary.Tools.HideMyWindow
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.trayiconContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.imageListBig = new System.Windows.Forms.ImageList(this.components);
             this.imageListSmall = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -89,8 +90,10 @@ namespace theDiary.Tools.HideMyWindow
             this.unprotectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.trayiconContextMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.hiddenWindowsContextMenu.SuspendLayout();
@@ -350,9 +353,18 @@ namespace theDiary.Tools.HideMyWindow
             // 
             // notifyIcon
             // 
+            this.notifyIcon.ContextMenuStrip = this.trayiconContextMenu;
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "Hide My Window";
             this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
+            this.notifyIcon.MouseUp += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseUp);
+            // 
+            // trayiconContextMenu
+            // 
+            this.trayiconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exitToolStripMenuItem1});
+            this.trayiconContextMenu.Name = "trayiconContextMenu";
+            this.trayiconContextMenu.Size = new System.Drawing.Size(153, 48);
             // 
             // imageListBig
             // 
@@ -602,6 +614,13 @@ namespace theDiary.Tools.HideMyWindow
             this.renameToolStripMenuItem.Text = "&Rename";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
+            // exitToolStripMenuItem1
+            // 
+            this.exitToolStripMenuItem1.Name = "exitToolStripMenuItem1";
+            this.exitToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem1.Text = "E&xit";
+            this.exitToolStripMenuItem1.Click += new System.EventHandler(this.ExitApplication);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -623,6 +642,7 @@ namespace theDiary.Tools.HideMyWindow
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.trayiconContextMenu.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -691,6 +711,8 @@ namespace theDiary.Tools.HideMyWindow
         private ToolStripStatusLabel ItemsCount;
         private ToolStripMenuItem hideWindowToolStripMenuItem;
         private ToolStripStatusLabel labelNotifications;
+        private ContextMenuStrip trayiconContextMenu;
+        private ToolStripMenuItem exitToolStripMenuItem1;
     }
 }
 

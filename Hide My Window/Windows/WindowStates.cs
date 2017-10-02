@@ -2,6 +2,9 @@
 {
     using System;
 
+    /// <summary>
+    /// Indicates the possible states that a captured <see cref="WindowInfo"/> instance can have.
+    /// </summary>
     [Flags]
     public enum WindowStates
     {

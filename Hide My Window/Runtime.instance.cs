@@ -57,5 +57,13 @@
         }
 
         #endregion
+
+        public short GlobalHotKeyApplicationId
+        {
+            get{
+                return 2134;
+           }
+        }
+        
     }
 }

@@ -35,44 +35,15 @@
 
         private bool autoStartWithWindows;
         private FormState lastState;
-        private PinnedApplicationSettings pinnedSettings;
-
+        private PinnedApplications pinnedSettings;
+        private bool enableNotifications;
         #endregion
 
         #endregion
 
         #region Child Classes
 
-        public class PinnedApplicationSettings
-        {
-            #region Constructors
-
-            public PinnedApplicationSettings()
-            {
-                this.HideOnMinimize = true;
-            }
-
-            #endregion
-
-            #region Properties
-
-            [XmlAttribute]
-            public bool HideOnMinimize { get; set; }
-
-            [XmlAttribute]
-            public bool AddIconOverlay { get; set; }
-
-            [XmlAttribute]
-            public bool ModifyWindowTitle { get; set; }
-
-            [XmlAttribute]
-            public string PrefixWindowText { get; set; }
-
-            [XmlAttribute]
-            public string SufixWindowText { get; set; }
-
-            #endregion
-        }
+        
 
         #endregion
 
@@ -159,17 +130,33 @@
         }
 
         [XmlElement]
-        public PinnedApplicationSettings PinnedSettings
+        public PinnedApplications PinnedSettings
         {
             get
             {
                 if (this.pinnedSettings == null)
-                    this.pinnedSettings = new PinnedApplicationSettings();
+                    this.pinnedSettings = new PinnedApplications();
                 return this.pinnedSettings;
             }
             set { this.pinnedSettings = value; }
         }
 
+        [XmlAttribute]
+        public bool EnableNotifications
+        {
+            get
+            {
+                return this.enableNotifications;
+            }
+            set
+            {
+                if (this.enableNotifications == value)
+                    return;
+
+                this.enableNotifications = value;
+                Program.MainForm.EnableNotifications(value);
+            }
+        }
         #endregion
 
         #region Methods & Functions

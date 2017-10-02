@@ -30,15 +30,6 @@
         #endregion
 
         #endregion
-
-        //}
-
-        //public static string AsReadable3(this string text)
-        //{
-        //    return ReadableRegEx2.Replace(text, (m) => string.Format("{0} {1}", replace2(m.Groups[1]), replace2(m.Groups[2])));
-
-        //}
-
         #region Methods & Functions
 
         public static bool IsNumber(this string value)

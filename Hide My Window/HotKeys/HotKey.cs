@@ -70,7 +70,7 @@
 
         #endregion
 
-        [XmlIgnore] internal short Id;
+        [XmlIgnore] internal int Id;
 
         #region Properties
 
@@ -156,13 +156,13 @@
             if (this.Id != 0)
                 this.Unregister();
 
-            this.Id = ExternalReferences.RegisterGlobalHotKey(this.Id, this.ModifierKeys, this.Key);
+            this.Id = GlobalHotKeyManager.RegisterGlobalHotKey(this.Id, this.ModifierKeys, this.Key);
             return this.Id != 0;
         }
 
         internal void Unregister()
         {
-            ExternalReferences.UnregisterGlobalHotKey(this.Id);
+            GlobalHotKeyManager.UnregisterGlobalHotKey(this.Id);
         }
 
         public override int GetHashCode()

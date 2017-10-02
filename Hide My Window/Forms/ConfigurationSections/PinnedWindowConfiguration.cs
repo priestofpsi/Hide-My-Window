@@ -3,7 +3,7 @@
     using System;
     using System.Windows.Forms;
 
-    public partial class PinnedWindowConfiguration : UserControl, IConfigurationSection
+    public partial class PinnedWindowConfiguration : UserControl, IConfigurationSection<PinnedApplications>
     {
         #region Constructors
 
@@ -15,6 +15,13 @@
         #endregion
 
         #region Properties
+        public PinnedApplications ConfigurationSection
+        {
+            get
+            {
+                return Runtime.Instance.Settings.PinnedSettings;
+            }
+        }
 
         public bool ConfigurationChanged
         {
@@ -41,14 +48,10 @@
                 this.windowTitlePrefix.Enabled = this.modifyWindowText.Checked;
                 this.windowTitleSuffix.Enabled = this.modifyWindowText.Checked;
             };
-            this.pinnedHideWhenMinimized.DataBindings.Add(new Binding("Checked",
-                Runtime.Instance.Settings.PinnedSettings, "HideOnMinimize"));
-            this.modifyWindowText.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings.PinnedSettings,
-                "ModifyWindowTitle"));
-            this.windowTitlePrefix.DataBindings.Add(new Binding("Text", Runtime.Instance.Settings.PinnedSettings,
-                "PrefixWindowText"));
-            this.windowTitleSuffix.DataBindings.Add(new Binding("Text", Runtime.Instance.Settings.PinnedSettings,
-                "SufixWindowText"));
+            this.pinnedHideWhenMinimized.Checked = Runtime.Instance.Settings.PinnedSettings.HideOnMinimize;
+            this.modifyWindowText.Checked = Runtime.Instance.Settings.PinnedSettings.ModifyWindowTitle;
+            this.windowTitlePrefix.Text = Runtime.Instance.Settings.PinnedSettings.PrefixWindowText;
+            this.windowTitleSuffix.Text = Runtime.Instance.Settings.PinnedSettings.SufixWindowText;
         }
 
         public void ResetConfiguration(object sender, EventArgs e)
@@ -58,7 +61,11 @@
 
         public void SaveConfiguration(object sender, EventArgs e)
         {
-            Runtime.Instance.Settings.PinnedSettings.HideOnMinimize = this.pinnedHideWhenMinimized.Checked;
+            this.SetConfigurationFromControl(this.pinnedHideWhenMinimized, "Checked", "HideOnMinimize");
+            this.SetConfigurationFromControl(this.modifyWindowText, "Checked", "ModifyWindowTitle");
+            this.SetConfigurationFromControl(this.windowTitlePrefix, "Text", "PrefixWindowText");
+            this.SetConfigurationFromControl(this.windowTitleSuffix, "Text", "SufixWindowText");
+            this.SetConfigurationFromControl(this.addIconOverlay, "Checked", "AddIconOverlay");
         }
 
         #endregion

@@ -84,6 +84,7 @@
         /// </summary>
         public event WindowEventHandler Shown;
 
+        public event WindowEventHandler Error;
         #endregion
     }
 }

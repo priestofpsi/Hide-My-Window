@@ -9,9 +9,11 @@
     public class HiddenWindowStore : IsolatedStorageFileBase, IList<WindowsStoreItem>
     {
         #region Constructors
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HiddenWindowStore"/> class.
+        /// </summary>
         public HiddenWindowStore()
-            : base(StorageFileName)
+            : base(HiddenWindowStore.StorageFileName)
         {
             this.Added += this.Items_Added;
             this.Removed += this.Items_Removed;

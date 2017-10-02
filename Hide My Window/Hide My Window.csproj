@@ -38,7 +38,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -47,6 +47,7 @@
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <DocumentationFile>bin\Debug\Hide My Window.XML</DocumentationFile>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <NoWarn>1574</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -149,13 +150,18 @@
     </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="Extensions.Text.cs" />
+    <Compile Include="ExternalReferences\ExternalReferences.ChildClasses.cs" />
+    <Compile Include="ExternalReferences\ExternalReferences.External.cs" />
     <Compile Include="ExternalReferences\ShowWindowCommands.cs" />
+    <Compile Include="ExternalReferences\SupplementaryWindowAttributes.cs" />
     <Compile Include="ExternalReferences\WindowPlacement.cs" />
     <Compile Include="ExternalReferences\WindowPlacementFlags.cs" />
+    <Compile Include="ExternalReferences\WindowPositionFlags.cs" />
     <Compile Include="FileStorage\IIsolatedStorageFile.Extensions.cs" />
     <Compile Include="FileStorage\IsolatedStorageFileBase.cs" />
     <Compile Include="FileStorage\IsolatedStorageFileBase.Static.cs" />
     <Compile Include="FileStorage\LoadFileResult.cs" />
+    <Compile Include="FileStorage\Settings.PinnedApplications.cs" />
     <Compile Include="FileStorage\WindowsStoreItem.cs" />
     <Compile Include="Forms\ConfigurationSections\GeneralConfiguration.cs">
       <SubType>UserControl</SubType>
@@ -170,6 +176,7 @@
       <DependentUpon>HotKeysConfiguration.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ConfigurationSections\IConfigurationSection.cs" />
+    <Compile Include="Forms\ConfigurationSections\IConfigurationSection.Extensions.cs" />
     <Compile Include="Forms\ConfigurationSections\PinnedWindowConfiguration.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -204,7 +211,7 @@
       <DependentUpon>ConfigurationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ExternalReferences\ExternalReferences.cs" />
-    <Compile Include="ExternalReferences\ExternalReferences.HotKeys.cs" />
+    <Compile Include="HotKeys\GlobalHotKeyManager.cs" />
     <Compile Include="ExternalReferences\ExternalReferences.Window.cs" />
     <Compile Include="Controls\WindowListViewItem.cs" />
     <Compile Include="HotKeys\HotKeyBindingList.cs" />
@@ -219,6 +226,7 @@
     <Compile Include="HotKeys\HotModifierKeys.cs" />
     <Compile Include="Notification.Delegates.cs" />
     <Compile Include="Notification.EventArgs.cs" />
+    <Compile Include="NotificationType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Runtime.instance.cs" />
@@ -281,7 +289,6 @@
     <EmbeddedResource Include="Forms\UnlockForm.resx">
       <DependentUpon>UnlockForm.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

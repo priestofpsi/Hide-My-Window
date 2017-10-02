@@ -39,6 +39,7 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
 
         public void LoadConfiguration(object sender, EventArgs e)
         {
+            this.enableNotifications.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "EnableNotifications"));
             this.minimizeToTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings,
                 "MinimizeToTaskBar"));
             this.closeToTaskbar.DataBindings.Add(new Binding("Checked", Runtime.Instance.Settings, "CloseToTaskBar"));
@@ -85,13 +86,13 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
 
         public void SaveConfiguration(object sender, EventArgs e)
         {
-            Runtime.Instance.Settings.MinimizeToTaskBar = this.minimizeToTaskbar.Checked;
-            Runtime.Instance.Settings.StartInTaskBar = this.startInTaskbar.Checked;
-            Runtime.Instance.Settings.RestoreWindowsOnExit = this.restoreWindowsOnExit.Checked;
-            Runtime.Instance.Settings.CloseToTaskBar = this.closeToTaskbar.Checked;
-            Runtime.Instance.Settings.ConfirmApplicationExit = this.confirmWhenExiting.Checked;
-            Runtime.Instance.Settings.RequirePasswordOnShow = this.restoreWindowsOnExit.Checked;
-            Runtime.Instance.Settings.AutoStartWithWindows = this.startWithWindows.Checked;
+            //Runtime.Instance.Settings.MinimizeToTaskBar = this.minimizeToTaskbar.Checked;
+            //Runtime.Instance.Settings.StartInTaskBar = this.startInTaskbar.Checked;
+            //Runtime.Instance.Settings.RestoreWindowsOnExit = this.restoreWindowsOnExit.Checked;
+            //Runtime.Instance.Settings.CloseToTaskBar = this.closeToTaskbar.Checked;
+            //Runtime.Instance.Settings.ConfirmApplicationExit = this.confirmWhenExiting.Checked;
+            //Runtime.Instance.Settings.RequirePasswordOnShow = this.restoreWindowsOnExit.Checked;
+            //Runtime.Instance.Settings.AutoStartWithWindows = this.startWithWindows.Checked;
         }
 
         #endregion

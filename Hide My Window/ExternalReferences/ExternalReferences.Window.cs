@@ -7,161 +7,123 @@
     using System.Runtime.InteropServices;
     using System.Text;
 
-    internal static partial class ExternalReferences
+    internal static partial class NativeMethods
     {
-        #region Declarations
-
-        #region Static Declarations
-
-        internal const int WindowsMessageSetIcon = 0x80;
-
-        internal const int IconSmall = 0,
-            IconBig = 1;
-
-        internal const int GwlStyle = -16,
-            GwlExStyle = -20;
-
-        internal const long WindowStateVisible = 0x10000000,
-            WindowStateMaximize = 0x01000000,
-            WindowStateBorder = 0x00800000,
-            WindowStateChild = 0x40000000,
-            WindowStateExApplicationWindow = 0x00040000,
-            WindowStateExToolWindow = 0x00000080;
-
-        #endregion
-
-        #endregion
-
         #region Methods & Functions
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern bool SetWindowText(IntPtr hwnd, string lpString);
-
-        public static void RestoreWindowText(this WindowInfo window)
+        internal static WindowInfo GetForegroundWindow()
         {
-            SetWindowText(window.Handle, window.OriginalTitle);
+            IntPtr hWnd = NativeMethods.GetForegroundWindowHandle();
+            if (hWnd == IntPtr.Zero)
+                return null;
+
+            return WindowInfo.Find(hWnd);
         }
 
-        public static void SetWindowText(this WindowInfo window, string text)
-        {
-            SetWindowText(window.Handle, text);
-        }
-
-        public static void SetWindowText(this WindowInfo window, string prefix, string suffix)
-        {
-            SetWindowText(window.Handle,
-                string.Format("{0}{2}{1}", prefix, suffix, window.OriginalTitle));
-        }
-
-        public static void SetWindowIcon(this WindowInfo window, Icon icon)
-        {
-            SendMessage(window.Handle, WindowsMessageSetIcon, IconSmall,
-                icon.Handle);
-            SendMessage(window.Handle, WindowsMessageSetIcon, IconBig,
-                icon.Handle);
-        }
-
-        [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hwnd, int message, int wParam, IntPtr lParam);
-
-        private static WindowPlacement GetPlacement(IntPtr hwnd)
-        {
-            WindowPlacement placement = new WindowPlacement();
-            placement.length = Marshal.SizeOf(placement);
-            GetWindowPlacement(hwnd, ref placement);
-            return placement;
-        }
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-        [DllImport("user32.dll")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        public static void ShowToFront(string windowName)
-        {
-            IntPtr firstInstance = FindWindow(null, windowName);
-            ShowWindow(firstInstance, 1);
-            SetForegroundWindow(firstInstance);
-        }
-
-        [DllImport("user32.dll", SetLastError = true, EntryPoint = "SetWindowLong")]
-        [SuppressMessage("Microsoft.Portability", "CA1901:PInvokeDeclarationsShouldBePortable", MessageId = "return",
-            Justification = "This declaration is not used on 64-bit Windows.")]
-        [SuppressMessage("Microsoft.Portability", "CA1901:PInvokeDeclarationsShouldBePortable", MessageId = "2",
-            Justification = "This declaration is not used on 64-bit Windows.")]
-        private static extern IntPtr SetWindowLongPtr32(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll", SetLastError = true, EntryPoint = "SetWindowLongPtr")]
-        [SuppressMessage("Microsoft.Interoperability", "CA1400:PInvokeEntryPointsShouldExist",
-            Justification = "Entry point does exist on 64-bit Windows.")]
-        private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll", SetLastError = true, EntryPoint = "GetWindowLong")]
-        [SuppressMessage("Microsoft.Portability", "CA1901:PInvokeDeclarationsShouldBePortable", MessageId = "return",
-            Justification = "This declaration is not used on 64-bit Windows.")]
-        [SuppressMessage("Microsoft.Portability", "CA1901:PInvokeDeclarationsShouldBePortable", MessageId = "2",
-            Justification = "This declaration is not used on 64-bit Windows.")]
-        private static extern IntPtr GetWindowLongPtr32(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll", SetLastError = true, EntryPoint = "GetWindowLongPtr")]
-        [SuppressMessage("Microsoft.Interoperability", "CA1400:PInvokeEntryPointsShouldExist",
-            Justification = "Entry point does exist on 64-bit Windows.")]
-        private static extern IntPtr GetWindowLongPtr64(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        [DllImport("user32.dll")]
-        internal static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
-
-        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-
-        [DllImport("user32.dll", EntryPoint = "GetWindowTextLength", SetLastError = true)]
-        private static extern int GetWindowTextLength(IntPtr hwnd);
-
+        /// <summary>
+        /// Changes an attribute of the specified window. The function also sets a value at the specified offset in the extra window memory.
+        /// </summary>
+        /// <remarks>This method will execute according to the underlying system architecture.</remarks>
+        /// <param name="hWnd">A handle to the window and, indirectly, the class to which the window belongs.</param>
+        /// <param name="nIndex">The zero-based offset to the value to be set. Valid values are in the range zero through the number of bytes of extra window memory, 
+        /// minus the size of an integer. To set any other value, specify one of the following values.</param>
+        /// <param name="dwNewLong"></param>
+        /// <returns>If the function succeeds, the return value is the previous value of the specified 32-bit integer; otherwise  the return value is zero.</returns>
         internal static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
         {
+            IntPtr returnValue;
             if (IntPtr.Size == 4)
-                return SetWindowLongPtr32(hWnd, nIndex, dwNewLong);
-            return SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
+                returnValue = NativeMethods.SetWindowLongPtr32(hWnd, nIndex, dwNewLong);
+            returnValue = NativeMethods.SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
+
+            System.Drawing.Size size = NativeMethods.GetWindowSize(hWnd);
+            System.Drawing.Point location = NativeMethods.GetWindowPosition(hWnd);
+            SetWindowPos(hWnd, IntPtr.Zero, location.Y, location.X, size.Width, size.Height, WindowPositionFlags.FrameChanged);
+
+            return returnValue;
         }
 
         internal static IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
         {
             if (IntPtr.Size == 4)
-                return GetWindowLongPtr32(hWnd, nIndex);
-            return GetWindowLongPtr64(hWnd, nIndex);
+                return NativeMethods.GetWindowLongPtr32(hWnd, nIndex);
+            return NativeMethods.GetWindowLongPtr64(hWnd, nIndex);
+        }
+
+        public static void RestoreWindowText(this WindowInfo window)
+        {
+            NativeMethods.SetWindowText(window.Handle, window.OriginalTitle);
+        }
+
+        public static void SetWindowText(this WindowInfo window, string text)
+        {
+            NativeMethods.SetWindowText(window.Handle, text);
+        }
+
+        public static void SetWindowText(this WindowInfo window, string prefix, string suffix)
+        {
+            NativeMethods.SetWindowText(window.Handle,
+                string.Format("{0}{2}{1}", prefix, suffix, window.OriginalTitle));
+        }
+
+        public static void SetWindowIcon(this WindowInfo window, Icon icon)
+        {
+            NativeMethods.SendMessage(window.Handle, NativeMethods.WindowsMessageSetIcon, NativeMethods.WindowSmallIcon, icon.Handle);
+            NativeMethods.SendMessage(window.Handle, NativeMethods.WindowsMessageSetIcon, NativeMethods.WindowLargeIcon, icon.Handle);
+        }
+
+        public static System.Drawing.Point GetWindowPosition(IntPtr hWnd)
+        {
+            NativeMethods.WindowRect rect = new NativeMethods.WindowRect();
+            if (!NativeMethods.GetWindowRect(hWnd, ref rect))
+                throw new InvalidOperationException("Unable to get the position of the Window.");
+
+            return new Point(rect.Top, rect.Left);
+        }
+
+        public static System.Drawing.Size GetWindowSize(IntPtr hWnd)
+        {
+            NativeMethods.WindowRect rect = new NativeMethods.WindowRect();
+            if (!NativeMethods.GetWindowRect(hWnd, ref rect))
+                throw new InvalidOperationException("Unable to get the size of the Window.");
+
+            return new Size(rect.Right - rect.Left, rect.Bottom - rect.Top);
+        }
+
+        internal static WindowPlacement GetWindowPlacement(IntPtr hWnd)
+        {
+            return WindowPlacement.Load(hWnd);
         }
 
         internal static string GetWindowText(IntPtr hWnd)
         {
-            int textLength = GetWindowTextLength(hWnd);
+            int textLength = NativeMethods.GetWindowTextLength(hWnd);
             StringBuilder returnValue = new StringBuilder(textLength + 1);
-            int a = GetWindowText(hWnd, returnValue, returnValue.Capacity);
+            int a = NativeMethods.GetWindowText(hWnd, returnValue, returnValue.Capacity);
 
             return returnValue.ToString();
         }
 
+        internal static Process GetWindowProcess(WindowInfo window)
+        {
+            return NativeMethods.GetWindowProcess(window.Handle);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="Process"/> that owns a window handle.
+        /// </summary>
+        /// <param name="hWnd">The handle identifing the window.</param>
+        /// <returns>A <see cref="Process"/> instances that the associated window handle belongs to.</returns>
         internal static Process GetWindowProcess(IntPtr hWnd)
         {
             uint processId;
-            uint callResult = GetWindowThreadProcessId(hWnd, out processId);
+            uint callResult = NativeMethods.GetWindowThreadProcessId(hWnd, out processId);
             Process returnValue = Process.GetProcessById((int) processId);
-
-            //returnValue.EnableRaisingEvents = true;
 
             return returnValue;
         }
 
         #endregion
+
+        
     }
 }

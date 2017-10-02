@@ -5,13 +5,13 @@
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
-    internal static partial class ExternalReferences
+    internal static partial class NativeMethods
     {
         #region Methods & Functions
 
         internal static IntPtr CurrentState(IntPtr handle)
         {
-            return GetWindowLongPtr64(handle, GwlStyle);
+            return GetWindowLongPtr64(handle, WindowNewStyle);
         }
 
         private static long GetOriginalStateStyle(this WindowInfo window)
@@ -26,99 +26,46 @@
 
         internal static bool HideWindow(WindowInfo window)
         {
+            IntPtr hWnd = window.Handle;
             window.OriginalState =
-                GetWindowLongPtr(window.Handle, GwlStyle).ToInt64();
+                NativeMethods.GetWindowLongPtr(hWnd, WindowNewStyle).ToInt64();
 
             long style = window.GetOriginalStateStyle();
 
-            ShowWindow(window.Handle, (int) ShowWindowCommands.Hide); // hide the window
-            SetWindowLongPtr(window.Handle, GwlStyle, new IntPtr(style));
-            ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
+            NativeMethods.SetWindowState(hWnd, WindowShowCommand.Hide); // hide the window
+            NativeMethods.SetWindowLongPtr(hWnd, WindowNewStyle, new IntPtr(style));
+            NativeMethods.SetWindowState(hWnd, WindowShowCommand.ShowCurrentWithNoActivation);
 
             // show the window for the new style to
-            bool returnValue = ShowWindow(window.Handle, (int) ShowWindowCommands.Hide);
+            bool returnValue = NativeMethods.ShowWindow(hWnd, WindowShowCommand.Hide);
             if (!returnValue)
-                ShowWindow(window);
+                NativeMethods.ShowWindow(window);
 
             return returnValue;
         }
 
         internal static void ShowWindow(WindowInfo window)
         {
-            IntPtr style1 = GetWindowLongPtr(window.Handle, GwlStyle);
-
-            ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
-
-            // show the window for the new style to
-            SetWindowLongPtr(window.Handle, GwlStyle,
-                new IntPtr(window.OriginalState)); // set the style
-            ShowWindow(window.Handle, (int) ShowWindowCommands.Hide);
-
-            // show the window for the new style to
-            ShowWindow(window.Handle, (int) ShowWindowCommands.ShowNA);
-
-            // show the window for the new style to
-            window.OriginalState = 0;
-        }
-
-        public static void SetWindowState(IntPtr hWnd, ShowWindowCommands state)
-        {
-            ShowWindow(hWnd, (int) state);
-        }
-
-        [DllImport("user32.dll")]
-        public static extern int GetWindowText(IntPtr hWnd, string text, int count);
-
-        [DllImport("user32.dll")]
-        public static extern int GetWindowModuleFileName(IntPtr hWnd, out string fileName, uint maxLength);
-
-        internal static short RegisterGlobalHotKey(short oldId, HotModifierKeys modifierKeys, Keys hotKey)
-        {
-            if (oldId != 0)
-                UnregisterGlobalHotKey(oldId);
-
-            try
+            lock (window)
             {
-                short newId = (short) Runtime.Instance.randomizer.Next(short.MinValue, short.MaxValue);
-                if (
-                    !RegisterHotKey(MainHandle, newId, (uint) modifierKeys,
-                        (uint) hotKey))
-                    return 0;
-                return newId;
-            }
-            catch
-            {
-                return 0;
+                IntPtr hWnd = window.Handle;
+                IntPtr style1 = NativeMethods.GetWindowLongPtr(hWnd, WindowNewStyle);
+
+                NativeMethods.SetWindowState(hWnd, WindowShowCommand.ShowCurrentWithNoActivation);
+                NativeMethods.SetWindowLongPtr(hWnd, WindowNewStyle, new IntPtr(window.OriginalState));
+                NativeMethods.SetWindowState(hWnd, WindowShowCommand.Hide);
+                NativeMethods.ShowWindow(hWnd, (int) WindowShowCommand.ShowCurrentWithNoActivation);
+                window.OriginalState = 0;
             }
         }
 
-        internal static void UnregisterGlobalHotKey(short id)
+        public static void SetWindowState(IntPtr hWnd, WindowShowCommand state)
         {
-            UnregisterHotKey(MainHandle, id);
+            NativeMethods.ShowWindow(hWnd, (int) state);
         }
 
-        internal static HotKey AddOrFind(HotKeyFunction hotKeyFunction)
-        {
-            HotKey hkey = Runtime.Instance.Settings.HotKeys.ToList().Find(x => x.Function == hotKeyFunction);
-            if (hkey == null)
-            {
-                Runtime.Instance.Settings.HotKeys.Add(hkey = new HotKey(hotKeyFunction));
-            }
 
-            return hkey;
-        }
-
-        internal static void RegisterAll()
-        {
-            foreach (HotKey hotkey in Runtime.Instance.Settings.HotKeys)
-                hotkey.Register();
-        }
-
-        internal static void UnregisterAll()
-        {
-            foreach (HotKey hotkey in Runtime.Instance.Settings.HotKeys)
-                hotkey.Unregister();
-        }
+        
 
         #endregion
     }
