@@ -32,18 +32,11 @@
         #endregion
 
         #region Private Declarations
-
         private bool autoStartWithWindows;
         private FormState lastState;
         private PinnedApplications pinnedSettings;
         private bool enableNotifications;
         #endregion
-
-        #endregion
-
-        #region Child Classes
-
-        
 
         #endregion
 
@@ -240,7 +233,6 @@
             this.RaiseNotification(this, new NotificationEventArgs("Resetting"));
 
             Runtime.Instance.Settings = this.LoadFile();
-
 
             this.RaiseNotification(this, new NotificationEventArgs("Reset"));
         }

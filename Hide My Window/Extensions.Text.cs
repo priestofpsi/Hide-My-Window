@@ -30,6 +30,7 @@
         #endregion
 
         #endregion
+
         #region Methods & Functions
 
         public static bool IsNumber(this string value)

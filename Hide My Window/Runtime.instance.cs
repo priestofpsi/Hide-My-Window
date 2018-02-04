@@ -1,26 +1,21 @@
-﻿namespace theDiary.Tools.HideMyWindow
-{
-    using System;
+﻿using System;
 
+namespace theDiary.Tools.HideMyWindow
+{
     public partial class Runtime
     {
-        #region Declarations
-
         #region Private Declarations
-
+        private const int globalHotKeyApplicationId = 2134;
+        private readonly object syncObject = new object();
         private SettingsStore settingsStore;
         private HiddenWindowStore store;
-
         private volatile WindowInfoManager windowManager = new WindowInfoManager();
-
         #endregion
 
-        #endregion
-
-        internal Random randomizer = new Random();
-
-        #region Methods & Functions
-
+        #region Public Event Declarations
+        /// <summary>
+        /// The event that is raised when the application has opened.
+        /// </summary>
         public event WindowEventHandler ApplicationOpened;
 
         #endregion
@@ -31,39 +26,56 @@
         {
             get
             {
-                if (this.settingsStore == null)
-                    this.settingsStore = SettingsStore.Load();
+                lock (this.syncObject)
+                {
+                    if (this.settingsStore == null)
+                        this.settingsStore = SettingsStore.Load();
 
-                return this.settingsStore;
+                    return this.settingsStore;
+                }
             }
-            internal set { this.settingsStore = value; }
+            internal set
+            {
+                lock(this.syncObject)
+                    this.settingsStore = value;
+            }
         }
 
         public HiddenWindowStore Store
         {
             get
             {
-                if (this.store == null)
-                    this.store = HiddenWindowStore.Load();
+                lock (this.syncObject)
+                {
+                    if (this.store == null)
+                        this.store = HiddenWindowStore.Load();
 
-                return this.store;
+                    return this.store;
+                }
             }
-            internal set { this.store = value; }
+            internal set
+            {
+                lock (this.syncObject)
+                    this.store = value;
+            }
         }
 
         public WindowInfoManager WindowManager
         {
-            get { return this.windowManager; }
+            get
+            {
+                lock (this.syncObject)
+                    return this.windowManager;
+            }
         }
-
-        #endregion
 
         public short GlobalHotKeyApplicationId
         {
-            get{
-                return 2134;
-           }
+            get
+            {
+                return Runtime.globalHotKeyApplicationId;
+            }
         }
-        
+        #endregion
     }
 }

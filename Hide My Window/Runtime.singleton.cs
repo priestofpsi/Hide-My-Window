@@ -2,29 +2,26 @@
 {
     public partial class Runtime
     {
-        #region Declarations
-
         #region Static Declarations
-
         private static volatile Runtime instance;
-        private static readonly object syncObject = new object();
-
-        #endregion
-
+        private static readonly object singletonSync = new object();
         #endregion
 
         #region Properties
 
+        /// <summary>
+        /// Gets a thread safe instance of the <see cref="Runtime"/> class.
+        /// </summary>
         public static Runtime Instance
         {
             get
             {
-                lock (syncObject)
+                lock (Runtime.singletonSync)
                 {
-                    if (instance == null)
-                        instance = new Runtime();
+                    if (Runtime.instance == null)
+                        Runtime.instance = new Runtime();
 
-                    return instance;
+                    return Runtime.instance;
                 }
             }
         }

@@ -20,10 +20,18 @@
         }
 
         #endregion
-        
+
+        #region Event Declarations
+        /// <summary>
+        /// The event that is raised when a <see cref="WindowInfo"/> has been added to the <see cref="HiddenWindowStore"/> collection.
+        /// </summary>
         public event WindowEventHandler Added;
 
+        /// <summary>
+        /// The event that is raised when a <see cref="WindowInfo"/> has been removed to the <see cref="HiddenWindowStore"/> collection.
+        /// </summary>
         public event WindowEventHandler Removed;
+        #endregion
 
         #region Declarations
 
@@ -42,10 +50,12 @@
         #endregion
 
         #region Properties
-
-        public int Count
+        /// <summary>
+        /// Indicates if the <see cref="HiddenWindowStore"/> contains any items.
+        /// </summary>
+        private bool CanCheckProcesses
         {
-            get { return this.items.Count; }
+            get { return this.items.ToArray().Length > 0; }
         }
 
         bool ICollection<WindowsStoreItem>.IsReadOnly
@@ -59,12 +69,7 @@
 
             set { this.items[index] = value; }
         }
-
-        private bool CanCheckProcesses
-        {
-            get { return this.items.ToArray().Length > 0; }
-        }
-
+        
         public WindowsStoreItem this[IntPtr handle]
         {
             get { return this.items.FirstOrDefault(item => item.Handle == handle); }
@@ -75,6 +80,13 @@
             get { return this[window.Handle]; }
         }
 
+        /// <summary>
+        /// Gets the number of contained <see cref="WindowInfo"/> instances.
+        /// </summary>
+        public int Count
+        {
+            get { return this.items.Count; }
+        }
         #endregion
 
         #region Methods & Functions        

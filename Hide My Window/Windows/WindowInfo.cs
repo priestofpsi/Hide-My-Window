@@ -19,6 +19,10 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WindowInfo"/> class, from the pointer specified by <paramref name="wHnd"/>.
+        /// </summary>
+        /// <param name="wHnd">A pointer to the Window Handle.</param>
         private WindowInfo(IntPtr wHnd)
         {
             this.ApplicationProcess = NativeMethods.GetWindowProcess(wHnd);
@@ -53,6 +57,23 @@
         #endregion
 
         #region Properties
+
+        private bool HasIconOverlay
+        {
+            get
+            {
+                return this.originalApplicationIcon != null;
+            }
+        }
+
+        private bool IsHandleFromHideMyWindow
+        {
+            get
+            {
+                return NativeMethods.GetWindowProcess(this.Handle).Id == Process.GetCurrentProcess().Id;
+            }
+        }
+
         private bool HasHiddenRegistered
         {
             get
@@ -228,22 +249,6 @@
             get
             {
                 return this.ApplicationProcess.GetApplicationIcon();
-            }
-        }
-
-        private bool HasIconOverlay
-        {
-            get
-            {
-                return this.originalApplicationIcon != null;
-            }
-        }
-
-        private bool IsHandleFromHideMyWindow
-        {
-            get
-            {
-                return NativeMethods.GetWindowProcess(this.Handle).Id == Process.GetCurrentProcess().Id;
             }
         }
         #endregion
@@ -551,6 +556,7 @@
         }
         #endregion
 
+        #region Static Methods & Functions
         /// <summary>
         ///     Gets the window that currently is focused.
         /// </summary>
@@ -606,7 +612,6 @@
             }
             return (windowInfo != null && windowInfo.IsValid);
         }
-
-
+        #endregion
     }
 }

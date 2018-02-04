@@ -1,28 +1,19 @@
-﻿namespace theDiary.Tools.HideMyWindow
-{
-    using System;
-    using System.Linq;
-    using System.Reflection;
-    using System.Security.Cryptography;
-    using System.Text;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 
+namespace theDiary.Tools.HideMyWindow
+{
     internal static class Extensions
     {
-        #region Methods & Functions
+        #region Public Extension Methods & Functions
 
         public static string GetMd5Hash(this string value)
         {
             using (MD5 hash = MD5.Create())
                 return hash.ComputeHash(Encoding.UTF8.GetBytes(value)).GetHashString();
-        }
-
-        private static string GetHashString(this byte[] value)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in value)
-                sb.Append(b.ToString("X2"));
-
-            return sb.ToString();
         }
 
         public static bool TryGetCustomAttribute<TAttribute>(this ICustomAttributeProvider provider, bool inherited,
@@ -50,6 +41,17 @@
             return instance.GetType().GetCustomAttribute<TAttribute>(inherited);
         }
 
+        #endregion
+
+        #region Private Extension Methods & Functions
+        private static string GetHashString(this byte[] value)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in value)
+                sb.Append(b.ToString("X2"));
+
+            return sb.ToString();
+        }
         #endregion
     }
 }
