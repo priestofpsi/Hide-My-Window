@@ -15,11 +15,15 @@
         public HiddenWindowStore()
             : base(HiddenWindowStore.StorageFileName)
         {
-            this.Added += this.Items_Added;
-            this.Removed += this.Items_Removed;
+            this.Added += HiddenWindowStore.Save;
+            this.Removed += HiddenWindowStore.Save;
         }
 
         #endregion
+        
+        public event WindowEventHandler Added;
+
+        public event WindowEventHandler Removed;
 
         #region Declarations
 
@@ -73,42 +77,31 @@
 
         #endregion
 
-        #region Methods & Functions
+        #region Methods & Functions        
 
-        private void Items_Removed(object sender, EventArgs e)
+        private static void Save(object sender, EventArgs e)
         {
-            Save(this);
-        }
-
-        private void Items_Added(object sender, EventArgs e)
-        {
-            Save(this);
+            HiddenWindowStore.Save((HiddenWindowStore) sender);
         }
 
         internal static void Save(HiddenWindowStore store)
         {
-            RaiseFileNotification(store, new FileEventArgs(StorageFileName, FileEventTypes.Saving));
+            HiddenWindowStore.RaiseFileNotification(store, new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Saving));
 
             store.SaveFile();
-            RaiseFileNotification(store, new FileEventArgs(StorageFileName));
+            HiddenWindowStore.RaiseFileNotification(store, new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Saved));
         }
 
         internal static HiddenWindowStore Load()
         {
-            RaiseFileNotification(new FileEventArgs(StorageFileName, FileEventTypes.Opening));
-
             bool wasCreated;
+            HiddenWindowStore.RaiseFileNotification(new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Opening));
             HiddenWindowStore returnValue = LoadFile<HiddenWindowStore>(out wasCreated);
-            ;
 
-            RaiseFileNotification(new FileEventArgs(StorageFileName, FileEventTypes.Loaded));
+            HiddenWindowStore.RaiseFileNotification(new FileEventArgs(HiddenWindowStore.StorageFileName, FileEventTypes.Loaded));
             return returnValue;
         }
-
-        public event WindowEventHandler Added;
-
-        public event WindowEventHandler Removed;
-
+        
         public WindowsStoreItem Add(IntPtr handle)
         {
             WindowsStoreItem returnValue = null;
@@ -123,14 +116,10 @@
                 WindowInfo window = WindowInfo.Find(handle);
                 returnValue = new WindowsStoreItem(window);
                 this.items.Add(returnValue);
-                if (this.Added != null)
-                {
-                    WindowInfoEventArgs e = new WindowInfoEventArgs(window);
-                    this.Added(this, e);
-                }
+                this.Added?.Invoke(this, new WindowInfoEventArgs(window));
             }
-            if (returnValue != null)
-                returnValue.RegisterHandlers();
+            returnValue?.RegisterHandlers();
+
             return returnValue;
         }
 
@@ -140,14 +129,12 @@
             WindowsStoreItem match = this.items.FirstOrDefault(item => item.Handle == handle);
             if (match == null)
                 return false;
-            bool returnValue = this.items.Remove(match);
-
-            if (this.Removed != null && returnValue)
+            if (this.items.Remove(match))
             {
-                WindowInfoEventArgs e = new WindowInfoEventArgs(WindowInfo.Find(handle));
-                this.Removed(this, e);
+                this.Removed?.Invoke(this, new WindowInfoEventArgs(WindowInfo.Find(handle)));
+                return true;
             }
-            return returnValue;
+            return false;
         }
 
         public void ForEach(Action<long> action)

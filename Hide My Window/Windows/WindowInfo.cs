@@ -39,10 +39,10 @@
         #region Declarations
 
         #region Private Declarations
-
+        private event WindowEventHandler hiddenEventHandler;
         private readonly object syncObject = new object();
         private bool hasAutomationEvents;
-        private bool hasHiddenRegistered;
+        
         private bool isPinned;
         private string title;
         private UnlockWindowDelegate unlockWindowHandler;
@@ -53,6 +53,14 @@
         #endregion
 
         #region Properties
+        private bool HasHiddenRegistered
+        {
+            get
+            {
+                lock(this.syncObject)
+                    return this.hiddenEventHandler != null;
+            }
+        }
 
         internal string Key
         {
@@ -72,6 +80,9 @@
             get;
         }
 
+        /// <summary>
+        /// Gets the pointer to the underlying windows form.
+        /// </summary>
         public IntPtr Handle
         {
             get; internal set;
@@ -114,7 +125,6 @@
             }
         }
 
-
         public bool IsPasswordProtected
         {
             get
@@ -144,7 +154,7 @@
                     this.Unpinned?.Invoke(this, new WindowInfoEventArgs(this));
                 Task.Run(() => this.ApplyPinnedSettings());
             }
-        }        
+        }
 
         public string OriginalTitle
         {
@@ -227,7 +237,7 @@
             {
                 return this.originalApplicationIcon != null;
             }
-        }        
+        }
 
         private bool IsHandleFromHideMyWindow
         {
@@ -236,15 +246,16 @@
                 return NativeMethods.GetWindowProcess(this.Handle).Id == Process.GetCurrentProcess().Id;
             }
         }
-
-
-
-
         #endregion
 
         #region Methods & Functions      
 
         #region Public Methods & Functions
+        /// <summary>
+        /// Locks the specified <c>Window</c>, so that it can't be shown with out confirmation.
+        /// </summary>
+        /// <param name="handler">The delegate that performs the authentication.</param>
+        /// <exception cref="ArgumentNullException">thrown if the <paramref name="handler"/> is <c>Null</c>.</exception>
         public void Lock(UnlockWindowDelegate handler)
         {
             if (handler == null)
@@ -262,7 +273,7 @@
         /// <summary>
         /// Toggles the associated <c>Window</c> to be either <c>Hidden</c> or <c>Not Hidden</c>.
         /// </summary>
-        public void Toggle()
+        public void ToggleHidden()
         {
             if (this.CanHide)
                 this.Hide();
@@ -270,6 +281,17 @@
                 this.Show();
         }
 
+        /// <summary>
+        /// Toggles the associated <c>Window</c> to be either Pinned or Not Pinned.
+        /// </summary>
+        public void TogglePinned()
+        {
+            this.IsPinned = !this.IsPinned;
+        }
+
+        /// <summary>
+        /// Executes the delegate used to unlock a <c>Window</c>, if the <see cref="WindowInfo"/> instance has been marked as locked.
+        /// </summary>
         public void Unlock()
         {
             if (this.unlockWindowHandler == null)
@@ -280,7 +302,6 @@
             this.Unlocked?.Invoke(this, new WindowInfoEventArgs(this));
             Task.Run(() => this.ApplyPinnedSettings());
         }
-        
 
         /// <summary>
         ///     The method used to hide a Window associated to a <see cref="WindowInfo" /> instance.
@@ -297,7 +318,7 @@
                 var hideWindowTask = Task.Run<bool>(() => NativeMethods.HideWindow(this));
                 hideWindowTask.Wait();
                 returnValue = hideWindowTask.Result;
-                    
+
             }
             catch
             {
@@ -306,7 +327,7 @@
             finally
             {
                 if (returnValue)
-                    this.Hidden?.Invoke(this, new WindowInfoEventArgs(this));
+                    this.hiddenEventHandler?.Invoke(this, new WindowInfoEventArgs(this));
                 else
                     this.Error?.Invoke(this, new WindowInfoEventArgs(this));
             }
@@ -330,9 +351,9 @@
         public override bool Equals(object obj)
         {
             if (obj is WindowInfo)
-                return ((WindowInfo) obj).Handle.Equals(this.Handle);
+                return ((WindowInfo)obj).Handle.Equals(this.Handle);
             if (obj is IntPtr)
-                return ((IntPtr) obj) == this.Handle;
+                return ((IntPtr)obj) == this.Handle;
 
             return false;
         }
@@ -415,7 +436,7 @@
 
             }
         }
-        
+
         private void ApplicationProcessExited(object sender, EventArgs e)
         {
             this.ApplicationExited?.Invoke(sender, new WindowInfoEventArgs(this));
@@ -457,7 +478,7 @@
         {
             WindowPlacement windowplacement = WindowPlacement.Load(this.Handle);
             WindowPattern windowPattern =
-                (WindowPattern) this.AutomationElement.GetCurrentPattern(WindowPattern.Pattern);
+                (WindowPattern)this.AutomationElement.GetCurrentPattern(WindowPattern.Pattern);
             WindowVisualState visualState = ((windowplacement.Flags & WindowPlacementFlags.RestoreToMaximize) > 0)
                 ? WindowVisualState.Maximized
                 : WindowVisualState.Normal;
@@ -470,7 +491,7 @@
         {
             this.Minimized?.Invoke(sender, new WindowInfoEventArgs(this));
 
-            if ((WindowVisualState) e.NewValue == WindowVisualState.Minimized)
+            if ((WindowVisualState)e.NewValue == WindowVisualState.Minimized)
                 this.Hide();
         }
         #endregion
@@ -563,29 +584,29 @@
         public static WindowInfo Find(IntPtr handle)
         {
             WindowInfo returnValue = WindowInfoManager.Find(handle) ?? new WindowInfo(handle);
-            if (!returnValue.hasHiddenRegistered)
-            {
-                returnValue.Hidden += ReturnValue_Hidden;
-                returnValue.hasHiddenRegistered = true;
-            }
+            if (!returnValue.HasHiddenRegistered)
+                returnValue.Hidden += (s, e) => Runtime.Instance.WindowManager.Register(e.Window);
+
             return returnValue;
         }
 
         private static void ReturnValue_Hidden(object sender, WindowInfoEventArgs e)
         {
-            Runtime.Instance.WindowManager.Register(e.Window);
+
         }
 
-        public static WindowInfo Find(WindowsStoreItem storeItem)
+        internal static bool TryFind(WindowsStoreItem storeItem, out WindowInfo windowInfo)
         {
-            WindowInfo returnValue = Find(storeItem.Handle);
-
-            returnValue.OriginalState = storeItem.LastState;
-            returnValue.isPinned = storeItem.IsPinned;
-
-            return returnValue;
+            windowInfo = null;
+            if (storeItem != null)
+            {
+                windowInfo = WindowInfo.Find(storeItem.Handle);
+                windowInfo.OriginalState = storeItem.LastState;
+                windowInfo.isPinned = storeItem.IsPinned;
+            }
+            return (windowInfo != null && windowInfo.IsValid);
         }
 
-       
+
     }
 }

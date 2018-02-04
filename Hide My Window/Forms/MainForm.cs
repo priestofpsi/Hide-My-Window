@@ -234,8 +234,7 @@
         {
             this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item =>
             {
-                item.Window.IsPinned =
-                    !item.Window.IsPinned;
+                item.Window.TogglePinned();
                 item.Update();
             });
             this.hiddenWindows_SelectedIndexChanged(sender, e);
@@ -279,7 +278,7 @@
                     {
                         this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>()
                             .ToList()
-                            .ForEach(item => item.Window.Toggle());
+                            .ForEach(item => item.Window.ToggleHidden());
                     });
                 this.hiddenWindows_SelectedIndexChanged(sender, e);
             });
@@ -426,8 +425,8 @@
             {
                 Runtime.Instance.Store.All(item =>
                 {
-                    WindowInfo window = WindowInfo.Find(item);
-                    if (window.IsValid
+                    WindowInfo window;
+                    if (WindowInfo.TryFind(item, out window) 
                         && Runtime.Instance.WindowManager.Register(item.Handle))
                     {
                         if (item.IsPasswordProtected)
@@ -563,7 +562,7 @@
                     WindowInfo.All.AsParallel().ForAll(window => window.Show());
                     break;
                 case HotKeyFunction.ToggleLastWindow:
-                    WindowInfo.Last?.Toggle();
+                    WindowInfo.Last?.ToggleHidden();
                     break;
                 case HotKeyFunction.UnhideLastWindow:
                     Runtime.Instance.WindowManager.GetLastWindow()?.Show();

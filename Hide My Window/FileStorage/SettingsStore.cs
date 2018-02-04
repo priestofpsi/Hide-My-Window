@@ -197,14 +197,16 @@
 
         internal static void Save(SettingsStore settingsStore)
         {
-            RaiseFileNotification(settingsStore, new FileEventArgs(StorageFileName, FileEventTypes.Saving));
+            SettingsStore.RaiseFileNotification(settingsStore, new FileEventArgs(SettingsStore.StorageFileName, FileEventTypes.Saving));
+
             settingsStore.SaveFile();
-            RaiseFileNotification(null, new FileEventArgs(StorageFileName));
+
+            SettingsStore.RaiseFileNotification(settingsStore, new FileEventArgs(SettingsStore.StorageFileName, FileEventTypes.Saved));
         }
 
         internal static SettingsStore Load()
         {
-            RaiseFileNotification(null, new FileEventArgs(StorageFileName, FileEventTypes.Opening));
+            SettingsStore.RaiseFileNotification(null, new FileEventArgs(StorageFileName, FileEventTypes.Opening));
             bool wasCreated;
             SettingsStore returnValue = LoadFile<SettingsStore>(out wasCreated);
             if (returnValue.HotKeys.Count == 0)
@@ -215,7 +217,8 @@
             }
 
             Program.IsConfigured = (wasCreated || returnValue.HotKeys.Count != 0);
-            RaiseFileNotification(null, new FileEventArgs(StorageFileName, FileEventTypes.Loaded));
+            SettingsStore.RaiseFileNotification(null, new FileEventArgs(StorageFileName, FileEventTypes.Loaded));
+
             return returnValue;
         }
 

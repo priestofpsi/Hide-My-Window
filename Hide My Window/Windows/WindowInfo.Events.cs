@@ -68,11 +68,23 @@
         ///     The event that is raised when the Window associated with a <see cref="WindowInfo" /> instance is about to hide.
         /// </summary>
         public event WindowEventHandler Hidding;
-
+        
         /// <summary>
         ///     The event that is raised when the Window associated with a <see cref="WindowInfo" /> instance has been hidden.
         /// </summary>
-        public event WindowEventHandler Hidden;
+        public event WindowEventHandler Hidden
+        {
+            add
+            {
+                lock(this.syncObject)
+                    this.hiddenEventHandler += value;
+            }
+            remove
+            {
+                lock(this.syncObject)                    
+                    this.hiddenEventHandler -= value;                
+            }
+        }
 
         /// <summary>
         ///     The event that is raised when the Window associated with a <see cref="WindowInfo" /> instance is about to show.
