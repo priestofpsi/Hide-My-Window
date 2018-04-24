@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace theDiary.Tools.HideMyWindow
 {
+    /// <summary>
+    /// Contains the event data for State event changes for <see cref="IWindowStateProvider"/> implementations.
+    /// </summary>
     public class WindowStateEventArgs 
         : EventArgs
     {
@@ -16,6 +19,7 @@ namespace theDiary.Tools.HideMyWindow
         /// </summary>
         /// <param name="provider">An instance of the <see cref="IWindowStateProvider"/>.</param>
         public WindowStateEventArgs(IWindowStateProvider provider)
+            : base()
         {
             this.Handle = provider.GetWindowHandle();
             this.State = provider.GetState();

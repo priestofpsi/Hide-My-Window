@@ -97,6 +97,13 @@
         /// </summary>
         public event WindowEventHandler Registered;
 
+        public event WindowEventHandler WindowHidden;
+
+        public event WindowEventHandler WindowShown;
+
+        public event WindowEventHandler WindowPinned;
+        public event WindowEventHandler WindowUnpinned;
+
         /// <summary>
         ///     The event that is raised when a Window has been unregistered.
         /// </summary>
@@ -149,14 +156,28 @@
 
         private async void RegisterAsync(WindowInfo window)
         {
-            await Task.Run(() =>
+            await Task.Run((Action)(() =>
             {
                 this.LastWindow = window;
                 window.Shown += this.Window_Shown;
+                window.Hidden += this.Window_Hidden;
+                window.Pinned += this.Window_Pinned;
+                window.Unpinned += this.Window_Unpinned;
+
                 Runtime.Instance.Store.Add(window.Handle);
-                if (this.Registered != null)
-                    this.Registered(this, new WindowInfoEventArgs(window));
-            });
+                this.WindowHidden?.Invoke(this, new WindowInfoEventArgs(window));
+                this.Registered?.Invoke(this, new WindowInfoEventArgs(window));                
+            }));
+        }
+
+        private void Window_Unpinned(object sender, WindowInfoEventArgs e)
+        {
+            this.WindowUnpinned?.Invoke(sender, e);
+        }
+
+        private void Window_Pinned(object sender, WindowInfoEventArgs e)
+        {
+            this.WindowPinned?.Invoke(sender, e);
         }
 
         public bool Register(WindowInfo window)
@@ -188,11 +209,14 @@
         private async void UnregisterAsync(WindowInfo window)
         {
             await Task.Run(() =>
-            {
-                window.Shown -= this.Window_Shown;
+            {                
                 Runtime.Instance.Store.Remove(window.Handle);
-                if (this.UnRegistered != null)
-                    this.UnRegistered(this, new WindowInfoEventArgs(window));
+                this.UnRegistered?.Invoke(this, new WindowInfoEventArgs(window));
+
+                window.Shown -= this.Window_Shown;
+                window.Hidden -= this.Window_Hidden;
+                window.Pinned -= this.Window_Pinned;
+                window.Unpinned -= this.Window_Unpinned;
             });
         }
 
@@ -216,8 +240,14 @@
 
         private void Window_Shown(object sender, WindowInfoEventArgs e)
         {
+            this.WindowShown?.Invoke(this, e);
             if (!e.Window.IsPinned)
                 this.UnRegister(e.Window);
+        }
+
+        private void Window_Hidden(object sender, WindowInfoEventArgs e)
+        {
+            this.WindowHidden?.Invoke(this, e);
         }
 
         private void CheckApplicationProcesses()

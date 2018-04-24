@@ -2,6 +2,7 @@
 {
     using Collections.Generic;
     using Linq;
+    using System.Security.Cryptography;
     using Text;
     using Text.RegularExpressions;
 
@@ -335,6 +336,7 @@
             @char = value[index - 1];
             return true;
         }
+
 
         #endregion
 

@@ -1,12 +1,16 @@
-﻿namespace theDiary.Tools.HideMyWindow
-{
-    using System.Drawing;
-    using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
-    public class HiddenWindowsListView : ListView
+namespace theDiary.Tools.HideMyWindow
+{
+    public class HiddenWindowsListView 
+        : ListView
     {
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HiddenWindowsListView"/> control.
+        /// </summary>
         public HiddenWindowsListView()
         {
             //this.LabelEdit = true;

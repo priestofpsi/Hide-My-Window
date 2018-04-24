@@ -11,8 +11,8 @@ Use it, don't use it... it helps me hide my porn quickly when needed (j/k) :)
 
 
 Default Hot Keys
-Hide Active Window - CTRL+ALT+H 
-Show Last Hidden Window - CTRL+ALT+S
+Hide Active Window - CTRL+SHIFT+H 
+Show Last Hidden Window - CTRL+SHIFT+S
 
 Features
 Application Icon of the Hidden Window

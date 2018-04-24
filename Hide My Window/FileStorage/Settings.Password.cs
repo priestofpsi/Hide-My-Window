@@ -1,14 +1,25 @@
-﻿namespace theDiary.Tools.HideMyWindow
-{
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Xml;
-    using System.Xml.Schema;
-    using System.Xml.Serialization;
+﻿using System;
+using System.Security.Cryptography;
+using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
-    public class PasswordSettings : IXmlSerializable
+namespace theDiary.Tools.HideMyWindow
+{
+    public class PasswordSettings
+        : IXmlSerializable
     {
-        #region Declarations
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PasswordSettings"/> class.
+        /// </summary>
+        public PasswordSettings()
+            : base()
+        {
+
+        }
+        #endregion
 
         #region Private Declarations
 
@@ -16,17 +27,27 @@
 
         #endregion
 
-        #endregion
-
         #region Properties
 
+        /// <summary>
+        /// Gets or sets a value indicating if a password is required for windows when they are been showen.
+        /// </summary>
         public bool RequirePasswordOnShow { get; set; }
 
+        /// <summary>
+        /// Gets a value indicating if a password has been set.
+        /// </summary>
         public bool HasPassword
         {
-            get { return !string.IsNullOrEmpty(this.password); }
+            get
+            {
+                return !string.IsNullOrEmpty(this.password);
+            }
         }
 
+        /// <summary>
+        /// Gets or sets the password used when toggling a window.
+        /// </summary>
         public string Password
         {
             get { return this.password; }
@@ -39,36 +60,28 @@
 
         public bool CheckPassword(string password)
         {
-            if (!this.HasPassword
-                && string.IsNullOrEmpty(password))
+            if (!this.HasPassword && string.IsNullOrEmpty(password))
                 return true;
 
-            using (MD5 hash = MD5.Create())
-            {
-                return
-                    this.Password.Equals(
-                        GetHashString(hash.ComputeHash(Encoding.UTF8.GetBytes(password))));
-            }
+            return this.Password.Equals(PasswordSettings.GetHashedPassword(password));
         }
 
+        #endregion
+
+        #region Private Methods & Functions
         private void SetPassword(string password)
         {
-            if (string.IsNullOrEmpty(password))
-                this.password = password;
-            else
-            {
-                using (MD5 hash = MD5.Create())
-                    this.password = GetHashString(hash.ComputeHash(Encoding.UTF8.GetBytes(password)));
-            }
+            this.password = string.IsNullOrEmpty(password) ? string.Empty : PasswordSettings.GetHashedPassword(password);
         }
+        #endregion
 
-        private static string GetHashString(byte[] value)
+        #region Private Static Methods & Functions
+        private static string GetHashedPassword(string password)
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in value)
-                sb.Append(b.ToString("X2"));
+            if (string.IsNullOrEmpty(password))
+                throw new ArgumentNullException(nameof(password));
 
-            return sb.ToString();
+            return password.GetMd5Hash();
         }
 
         #endregion

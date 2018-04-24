@@ -15,8 +15,8 @@
         #region Constructors
 
         public MainForm()
-        {
-            this.InitializeComponent();
+        {            
+            this.InitializeComponent();            
             this.InitializeFormHandlers();
             this.InitializeFormFromSettings();
             this.Icon = Runtime.Instance.Settings.ApplicationIcon;
@@ -29,9 +29,11 @@
             };
             Runtime.Instance.Store.Removed += (s, e) => this.HiddenWindowsChanged(s, EventArgs.Empty);
             this.Load += (s, e) =>
-            {                
+            {               
+
                 if (Runtime.Instance.Settings.StartInTaskBar)
                     this.MinimizeToTray();
+                
             };
         }
 
@@ -45,9 +47,24 @@
 
         #endregion
 
+        public FormInitState FormState
+        {
+            get
+            {
+                return this.initializing;
+            }
+            set
+            {
+                if (this.initializing == value)
+                    return;
+                this.initializing = value;
+                Runtime.Instance.RaiseFormStateChanged(this, new FormInitializeEventArgs(this.initializing));
+            }
+        }
         #endregion
 
         #region Methods & Functions
+        public event EventHandler<FormInitializeEventArgs> InitializeStateChanged;
 
         public event EventHandler HiddenWindowsChanged;
 
@@ -84,7 +101,7 @@
 
         private void hiddenWindows_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.DoInvoke(() =>
+            this.Invoke(() =>
             {
                 this.statusLabel.Text = string.Format("{0} items selected",
                     this.hiddenWindows.SelectedItems.Count);
@@ -129,7 +146,7 @@
         private bool UnlockWindow(WindowInfo window)
         {
             using (UnlockForm password = new UnlockForm(window.Title))
-                return (password.ShowDialog(this) == DialogResult.OK && password.PasswordMatched);
+                return (password.ShowDialog(this) == DialogResult.OK && password.IsMatched);
         }
 
         private void unlockWindow_Click(object sender, EventArgs e)
@@ -273,13 +290,11 @@
         {
             Task task = Task.Run(() =>
             {
-                this.DoInvoke(
-                    () =>
+                /*this.Invoke( () =>
                     {
-                        this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>()
-                            .ToList()
-                            .ForEach(item => item.Window.ToggleHidden());
-                    });
+                        this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item => item.Window.ToggleHidden());
+                    }); */
+                this.Invoke(()=> this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().Select<WindowListViewItem, WindowInfo>(a=>a.Window).AsParallel().ForAll(window => this.Invoke(window.ToggleHidden)));
                 this.hiddenWindows_SelectedIndexChanged(sender, e);
             });
         }
@@ -288,13 +303,13 @@
         {
             Task task = Task.Run(() =>
             {
-                this.DoInvoke(
-                    () =>
+                /*this.Invoke( () => 
                     {
                         this.hiddenWindows.Items.Cast<WindowListViewItem>()
                             .ToList()
                             .ForEach(item => item.Window.Show());
-                    });
+                    });*/
+                this.Invoke(() => WindowInfo.All.AsParallel().ForAll(window => this.Invoke(()=>window.Show())));
                 this.hiddenWindows_SelectedIndexChanged(sender, e);
             });
         }
@@ -310,9 +325,9 @@
             if (!canShow)
             {
                 using (UnlockForm password = new UnlockForm("Hide My Window"))
-                    canShow = (password.ShowDialog(this) == DialogResult.OK && password.PasswordMatched);
+                    canShow = (password.ShowDialog(this) == DialogResult.OK && password.IsMatched);
                 if (!canShow)
-                    this.Notification?.Invoke(this, new NotificationEventArgs("Incorrect Password") { Type = NotificationType.Error });
+                    this.Notification?.Invoke(this, new NotificationEventArgs("Incorrect Password", NotificationType.Error));
             }
             if (canShow)
                 this.RestoreFromTray();
@@ -368,27 +383,20 @@
 
         private void InitializeFormHandlers()
         {
-            if (this.initializing == FormInitState.Initialized)
+            if (this.FormState == FormInitState.Initialized)
                 return;
 
-            this.initializing = FormInitState.Initializing;
+            this.FormState = FormInitState.Initializing;
             GlobalHotKeyManager.RegisterAll(this.Handle);
             this.FormClosing += this.Form1_FormClosing;
-            this.hiddenWindows.SelectedIndexChanged +=
-                (s, e) =>
-                {
-                    this.DoInvoke(() => this.show.Enabled = this.hiddenWindows.SelectedItems.Count != 0);
-                };
+            this.hiddenWindows.SelectedIndexChanged += (s, e) => this.Invoke(() => this.show.Enabled = this.hiddenWindows.SelectedItems.Count != 0);
             this.HiddenWindowsChanged += this.OnHiddenWindowsChanged;
-            this.VisibleChanged += (s, e) =>
-            {
-                this.DoInvoke(() => this.notifyIcon.Visible = !this.Visible);
-            };
+            this.VisibleChanged += (s, e) => this.Invoke(() => this.notifyIcon.Visible = !this.Visible);
         }
 
         private void OnHiddenWindowsChanged(object sender, EventArgs e)
         {
-            this.DoInvoke(() =>
+            this.Invoke(() =>
             {
                 this.showAll.Enabled = this.hiddenWindows.Items.Count != 0;
                 this.ItemsCount.Text = string.Format("{0} items", this.hiddenWindows.Items.Count);
@@ -397,21 +405,9 @@
             });
         }
 
-        private void DoInvoke(Action action)
-        {
-            if (action == null)
-                return;
-            if (this.InvokeRequired)
-            {
-                this.Invoke(action);
-                return;
-            }
-            action();
-        }
-
         private void InitializeFormFromSettings()
         {
-            if (this.initializing == FormInitState.Initialized)
+            if (this.FormState == FormInitState.Initialized)
                 return;
             this.SetHiddenWindowsView(Runtime.Instance.Settings.CurrentView);
             this.statusStrip1.Visible = !Runtime.Instance.Settings.HideStatusbar;
@@ -447,7 +443,12 @@
             };
             Runtime.Instance.WindowManager.Registered += this.Store_Added;
             Runtime.Instance.WindowManager.UnRegistered += this.Store_Removed;
-            this.initializing = FormInitState.Initialized;
+            Runtime.Instance.WindowManager.WindowHidden += (s,e)=> this.Notification?.Invoke(this, new NotificationEventArgs("Window Hidden", $"The window '{e.Window.Title}' has been hidden.", NotificationType.General));
+            Runtime.Instance.WindowManager.WindowShown += (s, e) => this.Notification?.Invoke(this, new NotificationEventArgs("Window Restored", $"The window '{e.Window.Title}' has been restored.", NotificationType.General));
+
+            Runtime.Instance.WindowManager.WindowPinned += (s, e) => this.Notification?.Invoke(this, new NotificationEventArgs("Window Pinned", $"The window '{e.Window.Title}' has been pinned.", NotificationType.Info));
+            Runtime.Instance.WindowManager.WindowUnpinned += (s, e) => this.Notification?.Invoke(this, new NotificationEventArgs("Window Unpinned", $"The window '{e.Window.Title}' has been unpinned.", NotificationType.Info));
+            this.FormState = FormInitState.Initialized;
         }
 
 
@@ -470,18 +471,17 @@
 
         private void Store_Removed(object sender, WindowInfoEventArgs e)
         {
-            this.DoInvoke(() =>
+            this.Invoke(() =>
             {
                 if (!e.Window.IsPinned)
                     this.hiddenWindows.Items.RemoveByKey(e.Window.Key);
                 this.HiddenWindowsChanged?.Invoke(this, new EventArgs());
-                this.Notification?.Invoke(this, new NotificationEventArgs("Window Restored") { Type = NotificationType.Info });
             });
         }
 
         private void Store_Added(object sender, WindowInfoEventArgs e)
         {
-            this.DoInvoke(() =>
+            this.Invoke(() =>
             {
                 WindowListViewItem item = new WindowListViewItem(e.Window);
                 this.SetWindowImageList(e.Window, false);
@@ -492,7 +492,6 @@
                     e.Window.ApplicationExited += this.RemoveClosedApplication;
                 }
                 this.HiddenWindowsChanged?.Invoke(this, new EventArgs());
-                this.Notification?.Invoke(this, new NotificationEventArgs("Window Hidden") { Type = NotificationType.Info });
             });
         }
 
@@ -513,13 +512,14 @@
             if (string.IsNullOrWhiteSpace(e.Message))
                 return;
 
-            this.DoInvoke(() =>
+            this.Invoke(() =>
             {
                 bool trayIconState = this.notifyIcon.Visible;
                 if (!trayIconState)
                     this.notifyIcon.Visible = true;
-                this.notifyIcon.ShowBalloonTip(2500, e.Title ?? Application.ProductName, e.Message, (ToolTipIcon)(int)e.Type);
 
+                e.RaiseNotification(this.notifyIcon.ShowBalloonTip);
+                Runtime.Instance.WriteDebug(nameof(ShowNotification), e.Message, "Notifications");
                 if (!trayIconState)
                     this.notifyIcon.Visible = false;
             });
@@ -527,7 +527,7 @@
 
         private void RemoveClosedApplication(object sender, WindowInfoEventArgs e)
         {
-            this.DoInvoke(() =>
+            this.Invoke(() =>
             {
                 string key = e.Handle.ToInt64().ToString();
                 if (!this.hiddenWindows.Items.ContainsKey(key))
@@ -552,14 +552,17 @@
 
         private void HotKeyPressed(short id, IntPtr currentWindowHandle)
         {
-            switch (Runtime.Instance.Settings.HotKeys.GetFunction(id))
+            HotKeyFunction functionCalled = Runtime.Instance.Settings.HotKeys.GetFunction(id);
+            Runtime.Instance.WriteDebug(nameof(HotKeyPressed), nameof(functionCalled), functionCalled, "HotKeys");
+            switch (functionCalled)
             {
                 case HotKeyFunction.HideCurrentWindow:
                     if (!currentWindowHandle.Equals(IntPtr.Zero))
                         WindowInfo.Find(currentWindowHandle).Hide();
                     break;
                 case HotKeyFunction.UnhideAllWindows:
-                    WindowInfo.All.AsParallel().ForAll(window => window.Show());
+                    //WindowInfo.All.AsParallel().ForAll(window => window.Show());
+                    this.UnhideAllWindows(this, new EventArgs());
                     break;
                 case HotKeyFunction.ToggleLastWindow:
                     WindowInfo.Last?.ToggleHidden();
@@ -584,14 +587,7 @@
 
     }
 
-    public enum FormInitState
-    {
-        NotInitialized,
-
-        Initializing,
-
-        Initialized
-    }
+    
 
     public delegate bool UnlockWindowDelegate(WindowInfo window);
 }

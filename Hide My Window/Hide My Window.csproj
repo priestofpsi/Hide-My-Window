@@ -118,6 +118,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -157,6 +158,8 @@
     <Compile Include="ExternalReferences\WindowPlacement.cs" />
     <Compile Include="ExternalReferences\WindowPlacementFlags.cs" />
     <Compile Include="ExternalReferences\WindowPositionFlags.cs" />
+    <Compile Include="FileStorage\FileEvent.Delegates.cs" />
+    <Compile Include="FileStorage\FileEvent.FileEventTypes.cs" />
     <Compile Include="FileStorage\IIsolatedStorageFile.Extensions.cs" />
     <Compile Include="FileStorage\IsolatedStorageFileBase.cs" />
     <Compile Include="FileStorage\IsolatedStorageFileBase.Static.cs" />
@@ -192,6 +195,7 @@
     <Compile Include="Controls\WatermarkTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Forms\FormInitState.cs" />
     <Compile Include="Graphics\Graphics.Extensions.cs" />
     <Compile Include="Graphics\ImageOverlayPosition.cs" />
     <Compile Include="IconEventArgs.cs" />
@@ -237,7 +241,7 @@
     <Compile Include="Forms\UnlockForm.Designer.cs">
       <DependentUpon>UnlockForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FileStorage\FileEventArgs.cs" />
+    <Compile Include="FileStorage\FileEvent.EventArgs.cs" />
     <Compile Include="FileStorage\HiddenWindowStore.cs" />
     <Compile Include="FileStorage\Settings.Appearance.cs" />
     <Compile Include="FileStorage\SettingsStore.cs" />
@@ -245,7 +249,7 @@
     <Compile Include="FileStorage\Settings.Password.cs" />
     <Compile Include="Windows\IWindowState.Delegates.cs" />
     <Compile Include="Windows\WindowInfoManager.cs" />
-    <Compile Include="Windows\IWindowState.cs" />
+    <Compile Include="Windows\IWindowStateProvider.cs" />
     <Compile Include="Windows\WindowEventArgs.cs" />
     <Compile Include="Windows\WindowInfo.cs" />
     <Compile Include="Windows\WindowInfo.Delegates.cs" />

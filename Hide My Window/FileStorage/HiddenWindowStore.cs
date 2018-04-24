@@ -1,12 +1,14 @@
-﻿namespace theDiary.Tools.HideMyWindow
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Xml.Serialization;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Serialization;
 
-    public class HiddenWindowStore : IsolatedStorageFileBase, IList<WindowsStoreItem>
+namespace theDiary.Tools.HideMyWindow
+{
+
+    public class HiddenWindowStore 
+        : IsolatedStorageFileBase, IList<WindowsStoreItem>
     {
         #region Constructors
         /// <summary>

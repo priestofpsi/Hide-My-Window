@@ -12,29 +12,50 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
 {
     public partial class HotKeysConfiguration : UserControl, IConfigurationSection
     {
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HotKeysConfiguration"/> control.
+        /// </summary>
         public HotKeysConfiguration()
         {
             InitializeComponent();
         }
+        #endregion
+        
+        #region Private Declarations
+        private bool flagHotKeysAsChanged;
+        #endregion
 
+        #region Public Properties
+        /// <summary>
+        /// Gets a value indicating if the configuration for the <see cref="HotKeysConfiguration"/> control has changed.
+        /// </summary>
         public bool ConfigurationChanged
         {
             get
             {
-                throw new NotImplementedException();
+                return this.flagHotKeysAsChanged;
             }
         }
 
+        /// <summary>
+        /// Gets the name identifying the section of the <see cref="IConfigurationSection"/> instance.
+        /// </summary>
         public string SectionName
         {
-            get { return "Hot Keys"; }
+            get
+            {
+                return "Hot Keys";
+            }
         }
+        #endregion
 
         public void Activated(object sender, EventArgs e)
         {
-            
+
         }
-        private bool FlagHotKeysAsChanged;
+
+
         public void LoadConfiguration(object sender, EventArgs e)
         {
             this.hotKeyMimicTextBox1.HotKey =
@@ -53,21 +74,22 @@ namespace theDiary.Tools.HideMyWindow.Forms.ConfigurationSections
 
         public void ResetConfiguration(object sender, EventArgs e)
         {
-            
+
         }
 
         public void SaveConfiguration(object sender, EventArgs e)
         {
-            
+
         }
 
         private void OnHotKeyChanged(object sender, EventArgs e)
         {
             HotKey hotKey = (sender as HotKeyMimicTextBox).HotKey;
             Runtime.Instance.Settings.HotKeys[hotKey.Function] = hotKey;
-            if (this.FlagHotKeysAsChanged)
+            if (this.flagHotKeysAsChanged)
                 return;
-            this.FlagHotKeysAsChanged = true;
+
+            this.flagHotKeysAsChanged = true;
             this.ParentForm.FormClosing += (s, e1) =>
             {
                 GlobalHotKeyManager.UnregisterAll();

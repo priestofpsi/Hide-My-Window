@@ -2,14 +2,12 @@
 
 namespace theDiary.Tools.HideMyWindow
 {
+    
     /// <summary>
-    /// The delegate that handles the events for a <see cref="IsolatedStorageFileBase" /> instance.
+    /// Represents the information for an action been performed on a file.
     /// </summary>
-    /// <param name="sender">The source of the event.</param>
-    /// <param name="e">An instance of <see cref=""FileEventArgs/> containing the details of the event.</param>
-    public delegate void FileEventHandler(object sender, FileEventArgs e);
-
-    public class FileEventArgs : EventArgs
+    public class FileEventArgs 
+        : EventArgs
     {
         #region Constructors
 
@@ -31,6 +29,11 @@ namespace theDiary.Tools.HideMyWindow
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileEventArgs"/> class, with the specified <paramref name="fileName"/> value and <paramref name="event"/>.
+        /// </summary>
+        /// <param name="fileName">A <see cref="String"/> containing the filename of associated to the event been raised.</param>
+        /// <param name="event">A valuer of <see cref="FileEventTypes"/> indicating the type of action been performed on the <paramref name="fileName"/>.</param>
         public FileEventArgs(string fileName, FileEventTypes @event)
             : this()
         {
@@ -42,10 +45,19 @@ namespace theDiary.Tools.HideMyWindow
 
         #region Properties
 
+        /// <summary>
+        /// Gets the name of the file associated to the event.
+        /// </summary>
         public string FileName { get; private set; }
 
+        /// <summary>
+        /// Gets a value of <see cref="FileEventTypes".
+        /// </summary>
         public FileEventTypes Event { get; }
 
+        /// <summary>
+        /// Gets a <see cref="String"/> representation of the <c>Event</c>.
+        /// </summary>
         public string EventText
         {
             get
@@ -60,28 +72,5 @@ namespace theDiary.Tools.HideMyWindow
         #endregion
     }
 
-    public enum FileEventTypes
-    {
-        None,
-
-        Creating,
-
-        Created,
-
-        Opening,
-
-        Opened,
-
-        Loading,
-
-        Loaded,
-
-        Saving,
-
-        Saved,
-
-        Deleting,
-
-        Deleted
-    }
+    
 }

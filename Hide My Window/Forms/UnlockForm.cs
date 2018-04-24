@@ -7,39 +7,43 @@
     {
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnlockForm"/> class.
+        /// </summary>
         public UnlockForm()
         {
             this.InitializeComponent();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnlockForm"/> class with the specified <paramref name="title"/>.
+        /// </summary>
+        /// <param name="title">A <see cref="String"/> value to use as the <c>Title</c> of the form.</param>
         public UnlockForm(string title)
             : this()
         {
-            this.Text = string.Format("Unlock - {0}", title);
+            if (!string.IsNullOrWhiteSpace(title))
+                this.Text = $"Unlock - {title}";
         }
 
         #endregion
 
         #region Properties
 
-        public bool PasswordMatched
+        /// <summary>
+        /// Gets a value indicating if the value entered is a match.
+        /// </summary>
+        public bool IsMatched
         {
-            get { return this.passwordTextBox1.Password.GetMd5Hash().Equals(Runtime.Instance.Settings.Password); }
+            get
+            {
+                return this.passwordTextBox1.Password.GetMd5Hash().Equals(Runtime.Instance.Settings.Password);
+            }
         }
 
         #endregion
 
         #region Methods & Functions
-
-        private static string GetHashString(byte[] value)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in value)
-                sb.Append(b.ToString("X2"));
-
-            return sb.ToString();
-        }
-
         private void UnlockForm_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)

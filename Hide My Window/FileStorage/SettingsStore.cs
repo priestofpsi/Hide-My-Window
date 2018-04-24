@@ -147,7 +147,16 @@
                     return;
 
                 this.enableNotifications = value;
-                Program.MainForm.EnableNotifications(value);
+                //Program.MainForm.EnableNotifications(value);
+                Runtime.Instance.MainFormStateChanged += (s, e) => { ((MainForm)s).EnableNotifications(value); };
+                //if (Program.MainForm == null)
+                //{
+                //    Runtime.Instance.MainFormStateChanged += (s, e) => { ((MainForm)s).EnableNotifications(value); };
+                //}
+                //else{
+                //    Runtime.Instance.GetMainForm().EnableNotifications(value);
+                //}
+                
             }
         }
         #endregion
@@ -176,7 +185,7 @@
             RegistryKey key;
             AssemblyTitleAttribute attribute;
             Assembly.GetEntryAssembly().TryGetCustomAttribute(out attribute);
-            bool hasKey = TryGetRegistryEntry(RegistryStartPath, attribute.Title, out key);
+            bool hasKey = SettingsStore.TryGetRegistryEntry(SettingsStore.RegistryStartPath, attribute.Title, out key);
             bool checkAutoStartWithWindows = this.AutoStartWithWindows;
             if ((!checkAutoStartWithWindows && hasKey)
                 || (checkAutoStartWithWindows && !hasKey))
@@ -219,6 +228,9 @@
 
         #region Interface Implementations
 
+        /// <summary>
+        /// Saves the <see cref="SettingsStore"/>, storing any changed values.
+        /// </summary>
         public override void Save()
         {
             this.RaiseNotification(this, new NotificationEventArgs("Saving"));
@@ -228,6 +240,9 @@
             this.RaiseNotification(this, new NotificationEventArgs("Saved"));
         }
 
+        /// <summary>
+        /// Resets the <see cref="SettingsStore"/> to its original values, discarding any changes made.
+        /// </summary>
         public override void Reset()
         {
             this.RaiseNotification(this, new NotificationEventArgs("Resetting"));

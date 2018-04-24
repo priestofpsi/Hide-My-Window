@@ -29,7 +29,19 @@
 
         #endregion
 
-        #region Properties
+        #region Public Event Declarations
+        /// <summary>
+        /// The event that is raised when the application icon has changed.
+        /// </summary>
+        public event EventHandler<IconEventArgs> ApplicationIconChanged;
+
+        /// <summary>
+        /// The event that is raised when prior to changing the application icon.
+        /// </summary>
+        public event MessageBoxHandler ConfirmIconOverride;
+        #endregion
+
+        #region Public Properties
 
         public Icon ApplicationIcon
         {
@@ -65,15 +77,25 @@
 
         #region Methods & Functions
 
+        /// <summary>
+        /// Sets the application to use the default icon, specified by <c>DefaultApplicationIcon</c>.
+        /// </summary>
         public void ClearIcon()
         {
             this.ApplicationIconPath = null;
         }
 
+        /// <summary>
+        /// Sets the icon used by the application.
+        /// </summary>
+        /// <param name="iconPath">A <see cref="String"/> value with the path to the icon to be used.</param>
+        /// <exception cref="ArgumentNullException">thrown if the <paramref name="iconPath"/> is <c>Null</c> or <c>Empty</c>.</exception>
+        /// <exception cref="FileNotFoundException">thrown if the file specified by <paramref name="iconPath"/> does not exist.</exception>
         public void SetIcon(string iconPath)
         {
             if (string.IsNullOrWhiteSpace(iconPath))
                 throw new ArgumentNullException("iconPath");
+
             if (!File.Exists(iconPath))
                 throw new FileNotFoundException("iconPath");
 
@@ -95,11 +117,6 @@
                 this.ApplicationIconPath = iconPath;
             }
         }
-
-        public event EventHandler<IconEventArgs> ApplicationIconChanged;
-
-        public event MessageBoxHandler ConfirmIconOverride;
-
         #endregion
     }
 }

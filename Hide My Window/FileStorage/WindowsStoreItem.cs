@@ -3,10 +3,14 @@
     using System;
     using System.Xml.Serialization;
 
-    public class WindowsStoreItem : IEquatable<WindowsStoreItem>
+    public class WindowsStoreItem 
+        : IEquatable<WindowsStoreItem>
     {
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WindowsStoreItem"/> class.
+        /// </summary>
         public WindowsStoreItem()
         {
             if (this.Handle == IntPtr.Zero)
@@ -15,6 +19,10 @@
             WindowInfo window = WindowInfo.Find(this.Handle);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the<see cref="WindowsStoreItem"/> class from the specified <paramref name="window"/> instance.
+        /// </summary>
+        /// <param name="window">An instance of <see cref="WindowInfo"/> used to initialize the <see cref="WindowsStoreItem"/>.</param>
         internal WindowsStoreItem(WindowInfo window)
         {
             this.Handle = window.Handle;
@@ -29,27 +37,18 @@
 
         #endregion
 
-        #region Declarations
+        #region Event Declarations
+        /// <summary>
+        /// The event that is raised when the <c>State</c> of the <see cref="WindowsStoreItem"/> changes.
+        /// </summary>
+        public event EventHandler StateChanged;
+        #endregion
 
         #region Private Declarations
 
         private bool handlersRegistered;
 
         private WindowStates state;
-
-        #endregion
-
-        #endregion
-
-        #region Interface Implementations
-
-        public bool Equals(WindowsStoreItem other)
-        {
-            if (other == null)
-                return false;
-
-            return this.HandleValue == other.HandleValue;
-        }
 
         #endregion
 
@@ -68,24 +67,36 @@
             set { this.HandleValue = value.ToInt64(); }
         }
 
+        /// <summary>
+        /// Indicates if the stored <see cref="WindowInfo"/> in the <see cref="WindowsStoreItem"/> is <c>Hidden</c> or not.
+        /// </summary>
         [XmlIgnore]
         public bool IsHidden
         {
             get { return this.State.HasFlag(WindowStates.Hidden); }
         }
 
+        /// <summary>
+        /// Indicates if the stored <see cref="WindowInfo"/> in the <see cref="WindowsStoreItem"/> is <c>Pinned</c> or not.
+        /// </summary>
         [XmlIgnore]
         public bool IsPinned
         {
             get { return this.State.HasFlag(WindowStates.Pinned); }
         }
 
+        /// <summary>
+        ///Indicates if the stored <see cref="WindowInfo"/> in the <see cref="WindowsStoreItem"/> is <c>Password Protected</c> or not.
+        /// </summary>
         [XmlIgnore]
         public bool IsPasswordProtected
         {
             get { return this.State.HasFlag(WindowStates.Protected); }
         }
 
+        /// <summary>
+        /// Gets or sets a flagged value of <see cref="WindowStates"/> indicating the current state of the <see cref="WindowInfo"/> item stored in the <see cref="WindowsStoreItem"/>.
+        /// </summary>
         [XmlAttribute]
         public WindowStates State
         {
@@ -104,7 +115,15 @@
 
         #region Methods & Functions
 
-        public event EventHandler StateChanged;
+        public bool Equals(WindowsStoreItem other)
+        {
+            if (other == null)
+                return false;
+
+            return this.HandleValue == other.HandleValue;
+        }
+
+        
 
         public void RegisterHandlers(WindowInfo window = null)
         {

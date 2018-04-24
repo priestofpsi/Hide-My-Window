@@ -1,11 +1,17 @@
-﻿namespace theDiary.Tools.HideMyWindow
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.IsolatedStorage;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
+
+using System.Diagnostics;
+using System.Collections.Concurrent;
+
+namespace theDiary.Tools.HideMyWindow
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.IO.IsolatedStorage;
-    using System.Threading.Tasks;
-    using System.Xml.Serialization;
+    
 
     public static class IIsolatedStorageFileExtensions
     {
@@ -89,7 +95,8 @@
             }
         }
 
-        private static string GetFileName<T>(this T container) where T : class, IIsolatedStorageFile, new()
+        private static string GetFileName<T>(this T container) 
+            where T : class, IIsolatedStorageFile, new()
         {
             lock (syncObject)
             {
@@ -104,9 +111,11 @@
             }
         }
 
-        public static void SaveFile<T>(this T container) where T : class, IIsolatedStorageFile, new()
+        public static void SaveFile<T>(this T container) 
+            where T : class, IIsolatedStorageFile, new()
         {
-            Task task = Task.Run(() =>
+            //Task task = Task.Run(() =>
+            taskGroups.Append(() =>
             {
                 string fileName = container.GetFileName();
                 if (container == null)
@@ -119,18 +128,20 @@
                         xs.Serialize(tw, container);
                 }
             });
-            Task.WaitAll(task);
+            //Task.WaitAll(task);
         }
 
-        public static T LoadFile<T>(this T container) where T : class, IIsolatedStorageFile, new()
+        public static T LoadFile<T>(this T container) 
+            where T : class, IIsolatedStorageFile, new()
         {
             bool wasCreated;
             return container.LoadFile(out wasCreated);
         }
 
-        public static T LoadFile<T>(this T container, out bool wasCreated) where T : class, IIsolatedStorageFile, new()
+        public static T LoadFile<T>(this T container, out bool wasCreated) 
+            where T : class, IIsolatedStorageFile, new()
         {
-            Task<LoadFileResult<T>> task = Task.Run(() =>
+            Task<LoadFileResult<T>> task = Task.Run(() =>            
             {
                 T returnValue = null;
                 Stream stream = null;
@@ -170,5 +181,122 @@
         }
 
         #endregion
+
+        private static TaskGroup taskGroups = new TaskGroup();
     }
+
+    
+
+
+public interface IAppendable
+    {
+        void Append(Action action);
+    }
+
+    public class TaskGroup : IAppendable
+    {
+        public int CurrentlyQueuedTasks { get { return _currentlyQueued; } }
+
+        private readonly object _previousTaskMonitor;
+        private Task _previousTask;
+        private int _currentlyQueued;
+
+        public TaskGroup()
+        {
+            _previousTaskMonitor = new object();
+            _previousTask = Task.FromResult(false);
+        }
+
+        public void Append(Action action)
+        {
+            lock (_previousTaskMonitor)
+            {
+                Interlocked.Increment(ref _currentlyQueued);
+                _previousTask = _previousTask.ContinueWith(task =>
+                {
+                    try
+                    {
+                        action();
+                    }
+                    catch (Exception)
+                    {
+                        //TODO
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _currentlyQueued);
+                    }
+                });
+            }
+        }
+
+        public TResult Append<TResult>(Func<TResult> action)
+        {
+            
+            lock (_previousTaskMonitor)
+            {
+                Interlocked.Increment(ref _currentlyQueued);
+                TResult result = default(TResult);
+                _previousTask = _previousTask.ContinueWith<TResult>(task =>
+                {                    
+                    try
+                    {
+                        result = action();
+                    }
+                    catch (Exception)
+                    {
+                        //TODO
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _currentlyQueued);
+                    }
+                    return result;
+                });
+                return result;
+            }
+        }
+    }
+
+    public class QueueAppendable : IAppendable, IDisposable
+    {
+        public int CurrentlyQueuedTasks { get { return _Queue.Count; } }
+
+        BlockingCollection<Action> _Queue = new BlockingCollection<Action>();
+
+        public QueueAppendable()
+        {
+            Task.Factory.StartNew(() =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        var action = _Queue.Take();
+                        action();
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        break;
+                    }
+                    catch
+                    {
+                        // TODO log me
+                    }
+                }
+            });
+        }
+
+        public void Append(Action action)
+        {
+            _Queue.Add(action);
+        }
+
+        public void Dispose()
+        {
+            _Queue.CompleteAdding();
+        }
+    }
+
 }
+

@@ -1,15 +1,15 @@
-﻿namespace theDiary.Tools.HideMyWindow
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Windows.Automation;
-    using System.Windows.Forms;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Automation;
+using System.Windows.Forms;
 
+namespace theDiary.Tools.HideMyWindow
+{
     public partial class WindowInfo
     {
         #region Constructors
@@ -35,25 +35,21 @@
             this.Pinned += this.AddAutomationEvents;
             this.Unpinned += this.RemoveAutomationEvents;
             this.ApplicationProcess.Exited += this.ApplicationProcessExited;
-            this.OriginalTitle = NativeMethods.GetWindowText(this.Handle);
+            this.OriginalTitle = this.GetWindowText();
+            this.title = this.GetWindowText();
         }
 
         #endregion
-
-        #region Declarations
 
         #region Private Declarations
         private event WindowEventHandler hiddenEventHandler;
         private readonly object syncObject = new object();
         private bool hasAutomationEvents;
-        
         private bool isPinned;
         private string title;
         private UnlockWindowDelegate unlockWindowHandler;
         private string originalTitle;
         private Icon originalApplicationIcon;
-        #endregion
-
         #endregion
 
         #region Properties
@@ -78,7 +74,7 @@
         {
             get
             {
-                lock(this.syncObject)
+                lock (this.syncObject)
                     return this.hiddenEventHandler != null;
             }
         }
@@ -131,7 +127,7 @@
             {
                 return (!this.IsHandleFromHideMyWindow
                     && !this.Handle.Equals(GlobalHotKeyManager.MainFormHandle)
-                    && this.OriginalState == 0);
+                    && this.OriginalState.Equals(0));
             }
         }
 
@@ -181,18 +177,28 @@
         {
             get
             {
-                string returnValue = NativeMethods.GetWindowText(this.Handle);
-                if (!this.originalTitle.Equals(returnValue))
+                string returnValue = this.GetWindowText();
+                if (this.originalTitle == null || !this.originalTitle.Equals(returnValue))
                 {
                     this.TitleChanging?.Invoke(this, new WindowInfoEventArgs(this));
                     this.originalTitle = returnValue;
                     this.TitleChanged?.Invoke(this, new WindowInfoEventArgs(this));
                 }
-                return this.originalTitle;
+                return this.originalTitle ?? returnValue;
             }
             private set
             {
+                this.originalTitle = value;
             }
+        }
+        private string GetWindowText()
+        {
+            string returnValue = NativeMethods.GetWindowText(this.Handle);
+            if (string.IsNullOrWhiteSpace(returnValue) 
+                && this.AutomationElement.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Window)) != null)
+                returnValue = this.AutomationElement.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Window)).Current.Name;
+
+            return returnValue;
         }
 
         public string Title
@@ -200,7 +206,8 @@
             get
             {
                 if (string.IsNullOrWhiteSpace(this.title))
-                    return NativeMethods.GetWindowText(this.Handle);
+                    return this.GetWindowText();
+
                 return this.title;
             }
             set
@@ -218,7 +225,7 @@
         }
 
         /// <summary>
-        ///     Indicates if the <see cref="WindowInfo" /> instance is currently valid.
+        /// Indicates if the <see cref="WindowInfo" /> instance is currently valid.
         /// </summary>
         public bool IsValid
         {
@@ -236,6 +243,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the <see cref="Process"/> identifier for the application that hosts <c>Window</c>.
+        /// </summary>
         public int ApplicationId
         {
             get
@@ -244,10 +254,14 @@
             }
         }
 
+        /// <summary>
+        /// Gets the default <see cref="Icon"/> for the application that hosts <c>Window</c>.
+        /// </summary>
         public Icon ApplicationIcon
         {
             get
             {
+
                 return this.ApplicationProcess.GetApplicationIcon();
             }
         }
@@ -372,14 +386,15 @@
         #region Private Methods & Functions
         private void ApplyPinnedSettings()
         {
-            if (Runtime.Instance.Settings.PinnedSettings.AddIconOverlay)
-                this.SetWindowIcon();
-            if (Runtime.Instance.Settings.PinnedSettings.ModifyWindowTitle)
-                this.SetWindowText();
+            this.SetWindowIcon();
+            this.SetWindowText();
         }
 
         private void SetWindowText()
         {
+            if (!Runtime.Instance.Settings.PinnedSettings.ModifyWindowTitle)
+                return;
+
             StringBuilder suffix = new StringBuilder();
             if (this.IsPinned)
                 suffix.Append("- Pinned");
@@ -387,7 +402,7 @@
                 suffix.AppendFormat("{0}Locked", suffix.Length > 0 ? ":" : "- ");
             if (suffix.Length > 0)
             {
-                suffix.Append(Runtime.Instance.Settings.PinnedSettings.SufixWindowText ?? string.Empty);
+                suffix.Append(Runtime.Instance.Settings.PinnedSettings.SuffixWindowText ?? string.Empty);
                 this.SetWindowText(Runtime.Instance.Settings.PinnedSettings.PrefixWindowText, suffix.ToString());
             }
             else
@@ -396,6 +411,8 @@
 
         private void SetWindowIcon()
         {
+            if (!Runtime.Instance.Settings.PinnedSettings.AddIconOverlay)
+                return;
             try
             {
                 if (!this.IsPinned

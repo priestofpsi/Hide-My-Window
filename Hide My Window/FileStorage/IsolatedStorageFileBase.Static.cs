@@ -10,8 +10,6 @@
 
     public abstract partial class IsolatedStorageFileBase
     {
-        #region Declarations
-
         #region Static Declarations
 
         private static volatile Dictionary<Type, string> isolatedStorageFileNames = new Dictionary<Type, string>();
@@ -21,12 +19,11 @@
 
         #endregion
 
+        #region Static Event Declarations
+        public static event FileEventHandler FileNotification;
         #endregion
 
-        #region Methods & Functions
-
-        public static event FileEventHandler FileNotification;
-
+        #region Private Statyic Methods & Functions
         private static bool Exists<T>() where T : class, IIsolatedStorageFile, new()
         {
             return IsolatedStore.FileExists(GetFileName<T>());
@@ -58,13 +55,7 @@
             Delete<T>();
             return LoadFile<T>();
         }
-
-        public static T LoadFile<T>() where T : class, IIsolatedStorageFile, new()
-        {
-            bool wasCreated;
-            return LoadFile<T>(out wasCreated);
-        }
-
+        
         private static bool OpenFile<T>(FileMode mode, FileAccess access, FileShare share, out Stream stream)
             where T : class, IIsolatedStorageFile, new()
         {
@@ -90,16 +81,6 @@
             OpenFile<T>(mode, access, share, out returnValue);
 
             return returnValue;
-        }
-
-        protected static void RaiseFileNotification(object sender, FileEventArgs e)
-        {
-            FileNotification?.Invoke(sender, e);
-        }
-
-        protected static void RaiseFileNotification(FileEventArgs e)
-        {
-            RaiseFileNotification(null, e);
         }
 
         private static bool FailedToLoad<T>(bool? value = null) where T : class, IIsolatedStorageFile, new()
@@ -157,6 +138,24 @@
             where T : class, IIsolatedStorageFile, new()
         {
             return Task.Run(() => LoadFileWithResult<T>()).Result;
+        }
+        #endregion
+
+        #region Public and Protected Static Methods & Functions
+        protected static void RaiseFileNotification(object sender, FileEventArgs e)
+        {
+            IsolatedStorageFileBase.FileNotification?.Invoke(sender, e);
+        }
+
+        protected static void RaiseFileNotification(FileEventArgs e)
+        {
+            IsolatedStorageFileBase.RaiseFileNotification(null, e);
+        }
+
+        public static T LoadFile<T>() where T : class, IIsolatedStorageFile, new()
+        {
+            bool wasCreated;
+            return LoadFile<T>(out wasCreated);
         }
 
         public static T LoadFile<T>(out bool wasCreated) where T : class, IIsolatedStorageFile, new()
