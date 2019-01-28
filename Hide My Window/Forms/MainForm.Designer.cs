@@ -63,6 +63,7 @@ namespace theDiary.Tools.HideMyWindow
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayiconContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.exitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.imageListBig = new System.Windows.Forms.ImageList(this.components);
             this.imageListSmall = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -77,20 +78,19 @@ namespace theDiary.Tools.HideMyWindow
             this.actionImageListSmall = new System.Windows.Forms.ImageList(this.components);
             this.actionImageList = new System.Windows.Forms.ImageList(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.hiddenWindowsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.showWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hideWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripProtectSeperator = new System.Windows.Forms.ToolStripSeparator();
+            this.protectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unprotectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+            this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hiddenWindows = new theDiary.Tools.HideMyWindow.HiddenWindowsListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.hiddenWindowsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.showWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hideWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
-            this.protectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.unprotectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-            this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.trayiconContextMenu.SuspendLayout();
@@ -364,7 +364,14 @@ namespace theDiary.Tools.HideMyWindow
             this.trayiconContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem1});
             this.trayiconContextMenu.Name = "trayiconContextMenu";
-            this.trayiconContextMenu.Size = new System.Drawing.Size(153, 48);
+            this.trayiconContextMenu.Size = new System.Drawing.Size(93, 26);
+            // 
+            // exitToolStripMenuItem1
+            // 
+            this.exitToolStripMenuItem1.Name = "exitToolStripMenuItem1";
+            this.exitToolStripMenuItem1.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem1.Text = "E&xit";
+            this.exitToolStripMenuItem1.Click += new System.EventHandler(this.ExitApplication);
             // 
             // imageListBig
             // 
@@ -446,7 +453,7 @@ namespace theDiary.Tools.HideMyWindow
             this.renameWindow.Size = new System.Drawing.Size(68, 83);
             this.renameWindow.Text = "Rename";
             this.renameWindow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.renameWindow.ToolTipText = "A pinned window will not be removed from the list of hidden windows.";
+            this.renameWindow.ToolTipText = "Rename the current window.";
             this.renameWindow.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
@@ -507,54 +514,12 @@ namespace theDiary.Tools.HideMyWindow
             this.panel1.Size = new System.Drawing.Size(471, 216);
             this.panel1.TabIndex = 7;
             // 
-            // hiddenWindows
-            // 
-            this.hiddenWindows.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.hiddenWindows.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader3,
-            this.columnHeader4,
-            this.columnHeader2});
-            this.hiddenWindows.ContextMenuStrip = this.hiddenWindowsContextMenu;
-            this.hiddenWindows.LabelEdit = true;
-            this.hiddenWindows.LargeImageList = this.imageListBig;
-            this.hiddenWindows.Location = new System.Drawing.Point(12, 15);
-            this.hiddenWindows.Name = "hiddenWindows";
-            this.hiddenWindows.Size = new System.Drawing.Size(446, 188);
-            this.hiddenWindows.SmallImageList = this.imageListSmall;
-            this.hiddenWindows.TabIndex = 6;
-            this.hiddenWindows.UseCompatibleStateImageBehavior = false;
-            this.hiddenWindows.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.hiddenWindows_AfterLabelEdit);
-            this.hiddenWindows.DrawSubItem += new System.Windows.Forms.DrawListViewSubItemEventHandler(this.hiddenWindows_DrawSubItem);
-            this.hiddenWindows.SelectedIndexChanged += new System.EventHandler(this.hiddenWindows_SelectedIndexChanged);
-            this.hiddenWindows.DoubleClick += new System.EventHandler(this.ToggleHiddenWindows);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Title";
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "Protected";
-            this.columnHeader3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "Pinned";
-            this.columnHeader4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Path";
-            // 
             // hiddenWindowsContextMenu
             // 
             this.hiddenWindowsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showWindowToolStripMenuItem,
             this.hideWindowToolStripMenuItem,
-            this.toolStripMenuItem3,
+            this.toolStripProtectSeperator,
             this.protectToolStripMenuItem,
             this.unprotectToolStripMenuItem,
             this.toolStripMenuItem4,
@@ -580,10 +545,10 @@ namespace theDiary.Tools.HideMyWindow
             this.hideWindowToolStripMenuItem.Text = "&Hide Window";
             this.hideWindowToolStripMenuItem.Click += new System.EventHandler(this.ToggleHiddenWindows);
             // 
-            // toolStripMenuItem3
+            // toolStripProtectSeperator
             // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(147, 6);
+            this.toolStripProtectSeperator.Name = "toolStripProtectSeperator";
+            this.toolStripProtectSeperator.Size = new System.Drawing.Size(147, 6);
             // 
             // protectToolStripMenuItem
             // 
@@ -614,12 +579,46 @@ namespace theDiary.Tools.HideMyWindow
             this.renameToolStripMenuItem.Text = "&Rename";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
             // 
-            // exitToolStripMenuItem1
+            // hiddenWindows
             // 
-            this.exitToolStripMenuItem1.Name = "exitToolStripMenuItem1";
-            this.exitToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.exitToolStripMenuItem1.Text = "E&xit";
-            this.exitToolStripMenuItem1.Click += new System.EventHandler(this.ExitApplication);
+            this.hiddenWindows.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.hiddenWindows.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader3,
+            this.columnHeader4,
+            this.columnHeader2});
+            this.hiddenWindows.ContextMenuStrip = this.hiddenWindowsContextMenu;
+            this.hiddenWindows.LabelEdit = true;
+            this.hiddenWindows.LargeImageList = this.imageListBig;
+            this.hiddenWindows.Location = new System.Drawing.Point(12, 15);
+            this.hiddenWindows.Name = "hiddenWindows";
+            this.hiddenWindows.Size = new System.Drawing.Size(446, 188);
+            this.hiddenWindows.SmallImageList = this.imageListSmall;
+            this.hiddenWindows.TabIndex = 6;
+            this.hiddenWindows.UseCompatibleStateImageBehavior = false;
+            this.hiddenWindows.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.hiddenWindows_AfterLabelEdit);
+            this.hiddenWindows.SelectedIndexChanged += new System.EventHandler(this.hiddenWindows_SelectedIndexChanged);
+            this.hiddenWindows.DoubleClick += new System.EventHandler(this.ToggleHiddenWindows);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Title";
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Protected";
+            this.columnHeader3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Pinned";
+            this.columnHeader4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Path";
             // 
             // MainForm
             // 
@@ -692,7 +691,7 @@ namespace theDiary.Tools.HideMyWindow
         private ToolStripMenuItem smallToolbarIcons;
         private ContextMenuStrip hiddenWindowsContextMenu;
         private ToolStripMenuItem showWindowToolStripMenuItem;
-        private ToolStripSeparator toolStripMenuItem3;
+        private ToolStripSeparator toolStripProtectSeperator;
         private ToolStripMenuItem protectToolStripMenuItem;
         private ToolStripMenuItem unprotectToolStripMenuItem;
         private ColumnHeader columnHeader3;

@@ -11,7 +11,7 @@ using System.Collections.Concurrent;
 
 namespace theDiary.Tools.HideMyWindow
 {
-    
+
 
     public static class IIsolatedStorageFileExtensions
     {
@@ -84,7 +84,7 @@ namespace theDiary.Tools.HideMyWindow
         {
             lock (syncObject)
             {
-                Type type = typeof (T);
+                Type type = typeof(T);
                 if (!failedToLoad.ContainsKey(type))
                     failedToLoad.Add(type, false);
 
@@ -95,12 +95,12 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        private static string GetFileName<T>(this T container) 
+        private static string GetFileName<T>(this T container)
             where T : class, IIsolatedStorageFile, new()
         {
             lock (syncObject)
             {
-                Type type = typeof (T);
+                Type type = typeof(T);
                 if (!isolatedStorageFileNames.ContainsKey(type))
                 {
                     isolatedStorageFileNames.Add(type,
@@ -111,73 +111,75 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
-        public static void SaveFile<T>(this T container) 
+        public static void SaveFile<T>(this T container)
             where T : class, IIsolatedStorageFile, new()
         {
             //Task task = Task.Run(() =>
-            taskGroups.Append(() =>
-            {
-                string fileName = container.GetFileName();
-                if (container == null)
-                    container = container.LoadFile();
+            //taskGroups.Append(() =>
+            //{                
+            string fileName = container.GetFileName();
+            Runtime.Instance.WriteDebug(nameof(SaveFile), typeof(T).Name, $"Saving {fileName}", "File");
+            if (container == null)
+                container = container.LoadFile();
 
-                using (Stream stream = container.OpenFile(FileMode.OpenOrCreate, FileAccess.Write))
-                {
-                    XmlSerializer xs = new XmlSerializer(typeof (T));
-                    using (StreamWriter tw = new StreamWriter(stream))
-                        xs.Serialize(tw, container);
-                }
-            });
+            using (Stream stream = container.OpenFile(FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                XmlSerializer xs = new XmlSerializer(typeof(T));
+                using (StreamWriter tw = new StreamWriter(stream))
+                    xs.Serialize(tw, container);
+            }
+            Runtime.Instance.WriteDebug(nameof(SaveFile), typeof(T).Name, $"Saved {fileName}", "File");
+            //});
             //Task.WaitAll(task);
         }
 
-        public static T LoadFile<T>(this T container) 
+        public static T LoadFile<T>(this T container)
             where T : class, IIsolatedStorageFile, new()
         {
             bool wasCreated;
             return container.LoadFile(out wasCreated);
         }
 
-        public static T LoadFile<T>(this T container, out bool wasCreated) 
+        public static T LoadFile<T>(this T container, out bool wasCreated)
             where T : class, IIsolatedStorageFile, new()
         {
-            Task<LoadFileResult<T>> task = Task.Run(() =>            
+            //Task<LoadFileResult<T>> task = Task.Run(() =>            
+            //{
+            T returnValue = null;
+            Stream stream = null;
+            string fileName = container.GetFileName();
+            wasCreated = false;
+            try
             {
-                T returnValue = null;
-                Stream stream = null;
-                string fileName = container.GetFileName();
-                bool isNew = false;
-                try
+                wasCreated = container.OpenFile(FileMode.Open,
+                    FileAccess.ReadWrite, FileShare.ReadWrite, out stream);
+                XmlSerializer xs = new XmlSerializer(typeof(T));
+                using (StreamReader fileStream = new StreamReader(stream))
+                    returnValue = (T)xs.Deserialize(fileStream);
+            }
+            catch
+            {
+                if (container.FailedToLoad())
+                    returnValue = Activator.CreateInstance<T>();
+                else
                 {
-                    isNew = container.OpenFile(FileMode.Open,
-                        FileAccess.ReadWrite, FileShare.ReadWrite, out stream);
-                    XmlSerializer xs = new XmlSerializer(typeof (T));
-                    using (StreamReader fileStream = new StreamReader(stream))
-                        returnValue = (T) xs.Deserialize(fileStream);
+                    container.FailedToLoad(true);
+                    returnValue = container.Recreate();
                 }
-                catch
-                {
-                    if (container.FailedToLoad())
-                        returnValue = Activator.CreateInstance<T>();
-                    else
-                    {
-                        container.FailedToLoad(true);
-                        returnValue = container.Recreate();
-                    }
-                }
-                finally
-                {
-                    if (stream != null)
-                        stream.Dispose();
-                }
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Dispose();
+            }
 
-                return new LoadFileResult<T>(returnValue, isNew);
-            });
-            Task.WaitAll(task);
-            LoadFileResult<T> loadResult = task.Result;
+            //return new LoadFileResult<T>(returnValue, isNew);
+            //});
+            //Task.WaitAll(task);
+            //LoadFileResult<T> loadResult = task.Result;
 
-            wasCreated = loadResult.WasCreated;
-            return loadResult.Result;
+            //wasCreated = loadResult.WasCreated;
+            return returnValue;//loadResult.Result;
         }
 
         #endregion
@@ -185,10 +187,10 @@ namespace theDiary.Tools.HideMyWindow
         private static TaskGroup taskGroups = new TaskGroup();
     }
 
-    
 
 
-public interface IAppendable
+
+    public interface IAppendable
     {
         void Append(Action action);
     }
@@ -232,13 +234,13 @@ public interface IAppendable
 
         public TResult Append<TResult>(Func<TResult> action)
         {
-            
+
             lock (_previousTaskMonitor)
             {
                 Interlocked.Increment(ref _currentlyQueued);
                 TResult result = default(TResult);
                 _previousTask = _previousTask.ContinueWith<TResult>(task =>
-                {                    
+                {
                     try
                     {
                         result = action();

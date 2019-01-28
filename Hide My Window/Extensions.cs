@@ -52,6 +52,9 @@ namespace theDiary.Tools.HideMyWindow
         /// <exception cref="ObjectDisposedException">thrown if the <paramref name="control"/> is already disposed.</exception>
         public static object Invoke(this Control control, Action action)
         {
+            if (control.FindForm().IsDisposed || control.FindForm().Disposing)
+                return null;
+
             if (control == null)
                 throw new ArgumentNullException(nameof(control));
 

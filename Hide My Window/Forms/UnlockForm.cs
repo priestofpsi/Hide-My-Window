@@ -37,7 +37,11 @@
         {
             get
             {
-                return this.passwordTextBox1.Password.GetMd5Hash().Equals(Runtime.Instance.Settings.Password);
+                string storedPassword = Runtime.Instance.Settings.Password;
+                if (string.IsNullOrWhiteSpace(storedPassword))
+                    storedPassword = storedPassword??string.Empty.GetMd5Hash();
+
+                return this.passwordTextBox1.Password.GetMd5Hash().Equals(storedPassword);
             }
         }
 

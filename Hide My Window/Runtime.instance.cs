@@ -27,27 +27,26 @@ namespace theDiary.Tools.HideMyWindow
         private MainForm mainForm;
         #endregion
 
+        #region Public Event Definitions
+        /// <summary>
+        /// The event that is raised when the <c>State</c> changes for the <see cref="MainForm"/>.
+        /// </summary>
         public event EventHandler<FormInitializeEventArgs> MainFormStateChanged;
-
-        
-        public void RaiseFormStateChanged(object sender, FormInitializeEventArgs e)
-        {
-            this.MainFormStateChanged?.Invoke(sender, e);
-        }
+        #endregion
 
         #region Public Event Declarations
         /// <summary>
         /// The event that is raised when the application has opened.
         /// </summary>
         public event WindowEventHandler ApplicationOpened;
-        internal MainForm GetMainForm()
-        {
-            return this.mainForm;
-        }
+        
         #endregion
 
         #region Properties
 
+        /// <summary>
+        /// Gets a thread safe, self initializing instance of the <see cref="SettingsStore"/>.
+        /// </summary>
         public SettingsStore Settings
         {
             get
@@ -67,6 +66,9 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
+        /// <summary>
+        /// Gets a thread safe instance of the <see cref="HiddenWindowStore"/>.
+        /// </summary>
         public HiddenWindowStore Store
         {
             get
@@ -86,6 +88,9 @@ namespace theDiary.Tools.HideMyWindow
             }
         }
 
+        /// <summary>
+        /// Gets a thread safe instance of the <see cref="WindowInfoManager"/>.
+        /// </summary>
         public WindowInfoManager WindowManager
         {
             get
@@ -94,17 +99,14 @@ namespace theDiary.Tools.HideMyWindow
                     return this.windowManager;
             }
         }
-
-        public short GlobalHotKeyApplicationId
-        {
-            get
-            {
-                return Runtime.globalHotKeyApplicationId;
-            }
-        }
         #endregion
 
         #region Internal Methods & Functions
+        internal void RaiseFormStateChanged(object sender, FormInitializeEventArgs e)
+        {
+            this.MainFormStateChanged?.Invoke(sender, e);
+        }
+
         internal void WriteDebug(string methodName, string valueIdentifier, object value, string category = null)
         {
             if (!System.Diagnostics.Debugger.IsAttached)

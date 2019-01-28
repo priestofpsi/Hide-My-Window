@@ -20,21 +20,21 @@
             this.InitializeFormHandlers();
             this.InitializeFormFromSettings();
             this.Icon = Runtime.Instance.Settings.ApplicationIcon;
-            IsolatedStorageFileBase.FileNotification += (s, e) => this.labelNotifications.Text = e.EventText;
-            IsolatedStorageFileBase.FileNotification += (s, e) => this.labelNotifications.Text = e.EventText;
-            Runtime.Instance.Settings.ApplicationIconChanged += (s, e) =>
+            IsolatedStorageFileBase.FileNotification += (s, e) => this.Invoke(()=> this.labelNotifications.Text = e.EventText);
+            IsolatedStorageFileBase.FileNotification += (s, e) => this.Invoke(() => this.labelNotifications.Text = e.EventText);
+            Runtime.Instance.Settings.ApplicationIconChanged += (s, e) => this.Invoke(() =>
             {
                 this.Icon = e.Icon;
                 this.notifyIcon.Icon = e.Icon;
-            };
-            Runtime.Instance.Store.Removed += (s, e) => this.HiddenWindowsChanged(s, EventArgs.Empty);
-            this.Load += (s, e) =>
+            });
+            //Runtime.Instance.Store.Removed += (s, e) => this.HiddenWindowsChanged(s, EventArgs.Empty);
+            this.Load += (s, e) => this.Invoke(() =>
             {               
 
                 if (Runtime.Instance.Settings.StartInTaskBar)
                     this.MinimizeToTray();
                 
-            };
+            });
         }
 
         #endregion
@@ -43,7 +43,7 @@
 
         #region Private Declarations
 
-        private FormInitState initializing = FormInitState.NotInitialized;
+        private FormInitState formInitializationState = FormInitState.NotInitialized;
 
         #endregion
 
@@ -51,14 +51,14 @@
         {
             get
             {
-                return this.initializing;
+                return this.formInitializationState;
             }
             set
             {
-                if (this.initializing == value)
+                if (this.formInitializationState == value)
                     return;
-                this.initializing = value;
-                Runtime.Instance.RaiseFormStateChanged(this, new FormInitializeEventArgs(this.initializing));
+                this.formInitializationState = value;
+                Runtime.Instance.RaiseFormStateChanged(this, new FormInitializeEventArgs(this.formInitializationState));
             }
         }
         #endregion
@@ -225,7 +225,8 @@
             this.showWindowToolStripMenuItem.Visible = this.hiddenWindows.SelectedItems.Count > 0
                                                        && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>()
                                                            .Any(item => item.Window.CanShow);
-            this.protectToolStripMenuItem.Visible = this.hiddenWindows.SelectedItems.Count > 0
+            this.protectToolStripMenuItem.Visible = Runtime.Instance.Settings.PasswordIsSet 
+                                                    && this.hiddenWindows.SelectedItems.Count > 0
                                                     && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>()
                                                         .ToList()
                                                         .Any(item => !item.Window.IsPasswordProtected);
@@ -233,6 +234,7 @@
                                                       && this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>()
                                                           .ToList()
                                                           .Any(item => item.Window.IsPasswordProtected);
+            this.toolStripProtectSeperator.Visible = this.protectToolStripMenuItem.Visible || this.unprotectToolStripMenuItem.Visible;
         }
 
         private void renameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -256,12 +258,7 @@
             });
             this.hiddenWindows_SelectedIndexChanged(sender, e);
         }
-
-        private void hiddenWindows_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
-        {
-            Debug.WriteLine("On DrawSubItem");
-        }
-
+        
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing
@@ -290,28 +287,20 @@
         {
             Task task = Task.Run(() =>
             {
-                /*this.Invoke( () =>
-                    {
-                        this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().ToList().ForEach(item => item.Window.ToggleHidden());
-                    }); */
-                this.Invoke(()=> this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().Select<WindowListViewItem, WindowInfo>(a=>a.Window).AsParallel().ForAll(window => this.Invoke(window.ToggleHidden)));
-                this.hiddenWindows_SelectedIndexChanged(sender, e);
-            });
+                Runtime.Instance.WriteDebug(nameof(ToggleHiddenWindows), string.Empty, e, "HiddenWindows");
+                this.Invoke(() => this.hiddenWindows.SelectedItems.Cast<WindowListViewItem>().Select<WindowListViewItem, WindowInfo>(a => a.Window).ToList().ForEach(window => window.ToggleHidden()));
+
+            }).ContinueWith(t => this.hiddenWindows_SelectedIndexChanged(sender, e));
         }
 
         internal void UnhideAllWindows(object sender, EventArgs e)
         {
             Task task = Task.Run(() =>
             {
-                /*this.Invoke( () => 
-                    {
-                        this.hiddenWindows.Items.Cast<WindowListViewItem>()
-                            .ToList()
-                            .ForEach(item => item.Window.Show());
-                    });*/
-                this.Invoke(() => WindowInfo.All.AsParallel().ForAll(window => this.Invoke(()=>window.Show())));
-                this.hiddenWindows_SelectedIndexChanged(sender, e);
-            });
+                Runtime.Instance.WriteDebug(nameof(UnhideAllWindows), string.Empty, e, "HiddenWindows");
+                this.Invoke(() => WindowInfo.All.ToList().ForEach(window => window.Show()));
+                
+            }).ContinueWith(t => this.hiddenWindows_SelectedIndexChanged(sender, e));
         }
 
         private void ExitApplication(object sender, EventArgs e)
@@ -341,10 +330,11 @@
 
         private void SetHiddenWindowsView(View view)
         {
+            Runtime.Instance.Settings.CurrentView = view;
+
             this.hiddenWindows.View = view;
             if (this.hiddenWindows.View == View.Details)
                 this.hiddenWindows.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            Runtime.Instance.Settings.CurrentView = this.hiddenWindows.View;
         }
 
         private void viewToggle_DropDownOpening(object sender, EventArgs e)
@@ -355,7 +345,8 @@
 
         private void statusbarToggle_Click(object sender, EventArgs e)
         {
-            this.statusStrip1.Visible = this.statusbarToggle.Checked;
+            Runtime.Instance.Settings.HideStatusbar = !this.statusbarToggle.Checked;
+            this.statusStrip1.Visible = Runtime.Instance.Settings.HideStatusbar;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -414,8 +405,6 @@
             this.statusStrip1.VisibleChanged +=
                 (s, e) => Runtime.Instance.Settings.HideStatusbar = !this.statusStrip1.Visible;
             Runtime.Instance.Settings.LastState.SetFormState(this);
-            //if (Runtime.Instance.Settings.StartInTaskBar)
-            //    this.Shown += (s, e) => this.MinimizeToTray();
 
             this.Shown += (s, e) =>
             {
@@ -561,7 +550,6 @@
                         WindowInfo.Find(currentWindowHandle).Hide();
                     break;
                 case HotKeyFunction.UnhideAllWindows:
-                    //WindowInfo.All.AsParallel().ForAll(window => window.Show());
                     this.UnhideAllWindows(this, new EventArgs());
                     break;
                 case HotKeyFunction.ToggleLastWindow:
